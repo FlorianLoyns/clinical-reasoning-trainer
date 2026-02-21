@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Interaktiver Trainer für Clinical Reasoning und Pflegeplanung in der generalistischen Pflegeausbildung">
+  <meta name="description" content="Clinical-Reasoning-Trainer für Pflegeauszubildende: Vom Assessment zur Pflegediagnose in 5 Schritten – alles lokal im Browser.">
   <meta name="author" content="Florian Loyns">
   <title>Clinical-Reasoning-Trainer · Klinisches Urteilen in der Pflege</title>
   <style>
@@ -2183,6 +2183,9 @@ function showXPFlash(earned, maxXP) {
 // ---- RENDER ----
 function render() {
   updateStepper();
+  // Intro-Text nur auf Startseite zeigen
+  var intro = document.getElementById('intro-text');
+  if (intro) intro.style.display = currentStep === 0 ? '' : 'none';
   switch(currentStep) {
     case 0: renderStep0(); break;
     case 1: renderStep1(); break;
