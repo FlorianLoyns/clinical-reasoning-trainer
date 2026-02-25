@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Clinical-Reasoning für Pflegeauszubildende: Vom Assessment zur Pflegediagnose in 5 Schritten – alles lokal im Browser.">
+  <meta name="description" content="Clinical-Reasoning für Pflegeauszubildende">
   <meta name="author" content="Florian Loyns">
   <title>Clinical-Reasoning · Klinisches Urteilen in der Pflege</title>
   <style>
     :root {
-      --bg:#ffffff; --fg:#1e293b; --muted:#f1f5f9;
+      --bg:#ffffff; --fg:#1e293b; --text-muted:#6b7280; --muted:#f1f5f9;
       --accent:#0d7377; --accent-hover:#0a5c5f; --accent-light:#e0f2f1;
       --secondary:#4db6ac; --secondary-light:#e0f7f5;
       --border:#cbd5e1; --border-light:#e2e8f0;
-      --success:#0f766e; --success-bg:#ccfbf1;
-      --error:#be123c; --error-bg:#ffe4e6;
-      --info-bg:#f0f9ff; --info-border:#bae6fd;
+      --success:#0f766e; --success-bg:#e6f6f4;
+      --error:#b4534a; --error-bg:#f8eceb;
+      --info-bg:#f8fafc; --info-border:#e2e8f0;
       --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-full:999px;
       --shadow-sm:0 1px 3px rgba(0,0,0,.05);
       --shadow-md:0 2px 8px rgba(0,0,0,.08);
       --transition:all .2s ease;
+      --card-pad:20px;
+      --btn-h:46px;
     }
 
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -30,7 +32,7 @@
     }
 
     h1 { margin:0 0 4px; font-size:24px; font-weight:800; }
-    h2 { font-size:18px; margin:0 0 16px; font-weight:700; }
+    h2 { font-size:18px; margin:0 0 16px; font-weight:700; line-height:1.25; }
     h3 { font-size:15px; margin:0 0 8px; }
 
     .muted { opacity:.6; }
@@ -65,17 +67,17 @@
     /* Card */
     .card {
       border-radius:var(--radius-lg);
-      padding:24px; background:var(--muted); margin-bottom:16px;
+      padding:var(--card-pad); background:var(--muted); margin-bottom:16px;
     }
     .card-white {
       border:1px solid var(--border); border-radius:var(--radius-md);
-      padding:16px; background:#fff; margin-bottom:12px;
+      padding:var(--card-pad); background:#fff; margin-bottom:12px;
     }
 
     /* Fall-Text */
     .fall-text {
       background:#fff; border:1px solid var(--border);
-      border-radius:var(--radius-md); padding:16px; margin-bottom:16px;
+      border-radius:var(--radius-md); padding:var(--card-pad); margin-bottom:16px;
       font-size:14px; line-height:1.65; box-shadow:var(--shadow-sm);
     }
     .fall-label {
@@ -92,7 +94,7 @@
       font-size:14px; user-select:none;
       box-shadow:var(--shadow-sm);
     }
-    .cue-item:hover { border-color:#bbb; box-shadow:var(--shadow-md); transform:translateY(-1px); }
+    .cue-item:hover { border-color:var(--border); box-shadow:var(--shadow-md); transform:translateY(-1px); }
     .cue-item.selected { border-color:var(--accent); background:var(--accent-light); box-shadow:var(--shadow-md); }
     .cue-item .check {
       width:22px; height:22px; border-radius:6px;
@@ -132,7 +134,7 @@
       user-select:none; transition:var(--transition);
       box-shadow:var(--shadow-sm);
     }
-    .cluster-chip:hover { border-color:#bbb; box-shadow:var(--shadow-md); transform:translateY(-1px); }
+    .cluster-chip:hover { border-color:var(--border); box-shadow:var(--shadow-md); transform:translateY(-1px); }
     .cluster-chip:active { cursor:grabbing; opacity:.7; transform:scale(.97); }
     .cluster-chip.correct-chip { border-color:var(--success); background:var(--success-bg); }
     .cluster-chip.incorrect-chip { border-color:var(--error); background:var(--error-bg); }
@@ -174,13 +176,82 @@
     .result-bar-fill.green { background:var(--success); }
     .result-bar-fill.red { background:var(--error); }
 
+    /* Result page layout refinements */
+    .result-layout { display:flex; flex-direction:column; gap:16px; }
+    .result-hero { padding-top:20px; padding-bottom:20px; }
+    .result-level-progress { margin-top:10px; }
+    .result-level-progress .result-bar-track { height:10px !important; border-radius:999px; background:var(--border); }
+    .result-level-progress .result-bar-fill { border-radius:999px !important; }
+    .result-level-progress div[style*="font-size:12px"] { font-size:14px !important; color:#6b7280 !important; margin-top:10px !important; }
+
+    .result-section { padding:var(--card-pad); }
+    .result-section-title {
+      margin:0 0 12px 0; font-size:18px; font-weight:700; color:var(--fg); line-height:1.25;
+    }
+
+    .result-badge {
+      display:block;
+      width:fit-content;
+      margin:14px auto 0;
+      padding:10px 18px;
+      border-radius:10px;
+      background:var(--accent-light);
+      color:var(--accent);
+      font-size:15px;
+      font-weight:800;
+      line-height:1;
+      letter-spacing:.2px;
+      text-align:center;
+      border:1px solid rgba(34, 197, 94, 0.22);
+    }
+    .result-hero .meta-line {
+      text-align:center;
+      margin-top:14px;
+      font-size:13px;
+      color:#6b7280;
+    }
+    .result-cta {
+      width:100%;
+      margin-top:10px;
+      border-radius:12px;
+    }
+    .result-table-card {
+      background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg);
+      padding:16px; box-shadow:var(--shadow-sm);
+    }
+    .result-row { margin:0 0 10px 0; }
+    .result-row:last-child { margin-bottom:0; }
+    .result-row-head {
+      display:flex; justify-content:space-between; gap:12px; align-items:center;
+      margin-bottom:6px; font-size:14px;
+    }
+    .result-row-head strong { font-size:14px; }
+    .result-track-lg { height:10px; border-radius:999px; }
+    .result-track-lg .result-bar-fill { border-radius:999px; }
+
+    .ergebnis .instruction {
+      background:#fff; border:1px solid var(--border);
+      box-shadow:var(--shadow-sm);
+      line-height:1.55;
+    }
+
+    @media (max-width: 640px) {
+      .result-row-head { flex-direction:column; align-items:flex-start; gap:2px; }
+      .result-row-head strong { font-size:13px; }
+      .result-section-title { font-size:16px; }
+    }
+
+
+    .controls.result-final { display:block; }
+    .controls.result-final #btnNext { width:100%; }
+
     /* Buttons – Primary / Secondary / Tertiary */
     .controls { display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; }
 
     button {
-      padding:12px 24px; font-size:15px; cursor:pointer; border:none;
+      padding:12px 24px; min-height:var(--btn-h); font-size:15px; cursor:pointer; border:none;
       border-radius:var(--radius-md); font-weight:700; transition:var(--transition);
-      font-family:inherit; position:relative; overflow:hidden;
+      font-family:inherit; position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:6px;
     }
     button:active { transform:scale(.98); }
     .btn-primary { background:var(--accent); color:#fff; box-shadow:var(--shadow-sm); }
@@ -194,24 +265,27 @@
     }
 
     .instruction {
-      font-size:14px; margin-bottom:16px; padding:12px 16px;
+      font-size:14px; margin-bottom:16px; padding:14px 16px;
       background:#fff; border-radius:var(--radius-md);
-      border-left:3px solid var(--accent);
+      border:1px solid var(--border);
+      border-left:4px solid var(--accent);
       box-shadow:var(--shadow-sm);
+      line-height:1.55;
     }
 
     .orientation {
-      font-size:13px; margin-bottom:16px; padding:16px;
+      font-size:13px; margin-bottom:16px; padding:14px 16px;
       background:#fff; border-radius:var(--radius-md);
       border:1px solid var(--border);
       display:flex; gap:12px; align-items:flex-start;
       box-shadow:var(--shadow-sm);
     }
     .orientation .ori-icon {
-      flex-shrink:0; width:36px; height:36px; border-radius:50%;
-      background:var(--accent); color:#fff;
+      flex-shrink:0; width:32px; height:32px; border-radius:50%;
+      background:var(--success); color:#fff;
       display:flex; align-items:center; justify-content:center;
-      font-size:16px; font-weight:700;
+      font-size:14px; font-weight:700;
+      box-shadow:var(--shadow-sm);
     }
     .orientation .ori-body { flex:1; }
     .orientation .ori-what { font-weight:700; margin-bottom:4px; }
@@ -221,6 +295,7 @@
       font-style:italic;
     }
 
+    .exam-mode .orientation { display:none !important; }
     .hidden { display:none !important; }
 
     /* Ergebnis */
@@ -232,8 +307,19 @@
     .score-label { text-align:center; font-size:14px; opacity:.6; }
 
     .app-footer {
-      text-align:center; padding:48px 0 16px; font-size:11px;
-      color:#bbb; line-height:1.7;
+      margin-top:14px;
+      padding:0 0 4px;
+      text-align:center;
+      font-size:12px;
+      color:#6b7280;
+      line-height:1.35;
+    }
+    .app-footer a {
+      color:inherit;
+      text-decoration:none;
+    }
+    .app-footer a:hover {
+      text-decoration:underline;
     }
 
     /* Sub-nav pills */
@@ -250,6 +336,7 @@
       .step-label { font-size:9px; }
       .stepper { gap:0; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
       .card { padding:16px; }
+      .card-white, .fall-text, .result-section { padding:16px; }
 
       /* Cluster Chips mobile */
       .cluster-chip { font-size:12px; padding:8px 14px; min-height:44px; display:flex; align-items:center; }
@@ -279,7 +366,7 @@
 
       /* Orientation Box kompakter */
       .orientation { padding:12px; font-size:12px; }
-      .ori-icon { width:28px; height:28px; font-size:13px; }
+      .orientation .ori-icon { width:28px; height:28px; font-size:13px; }
 
       /* Eval Buttons volle Breite */
       .card button { min-height:44px; }
@@ -338,7 +425,7 @@
       transform:translateX(-50%);
       background:var(--fg); color:#fff;
       font-size:12px; font-weight:400; line-height:1.5;
-      padding:10px 14px; border-radius:var(--radius-sm);
+      padding:11px 14px; border-radius:var(--radius-sm);
       width:max-content; max-width:280px;
       box-shadow:var(--shadow-md);
       z-index:100; pointer-events:none;
@@ -355,7 +442,92 @@
     @media (max-width:600px) {
       .fach .fach-tip { max-width:220px; font-size:11px; padding:8px 12px; }
     }
-  </style>
+
+    /* Modus-Auswahl */
+    .mode-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin:14px 0 16px;
+    }
+    .mode-card {
+      border:1px solid var(--border);
+      border-radius:var(--radius-md);
+      background:#fff;
+      min-height:var(--btn-h);
+      padding:11px 14px;
+      cursor:pointer;
+      transition:var(--transition);
+      box-shadow:var(--shadow-sm);
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      text-align:left;
+    }
+    .mode-card:hover {
+      transform:translateY(-1px);
+      box-shadow:var(--shadow-sm);
+      border-color:rgba(13,115,119,.28);
+    }
+    .mode-card:focus-visible {
+      outline:none;
+      box-shadow:0 0 0 3px rgba(13,115,119,.16);
+      border-color:var(--accent);
+    }
+    .mode-card.active {
+      border-color:var(--accent);
+      background:rgba(13,115,119,.04);
+      box-shadow:inset 0 0 0 1px rgba(13,115,119,.10);
+    }
+    .mode-title {
+      font-weight:700;
+      font-size:15px;
+      margin:0;
+      color:var(--fg);
+      line-height:1.15;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .mode-dot {
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--border);
+      border:1px solid rgba(0,0,0,.08);
+      flex-shrink:0;
+    }
+    .mode-card.active .mode-dot {
+      background:var(--success);
+      border-color:rgba(0,0,0,.06);
+      box-shadow:0 0 0 3px rgba(22,163,74,.12);
+    }
+    .mode-sub {
+      font-size:12px;
+      color:var(--fg);
+      opacity:.75;
+      line-height:1.2;
+      margin:4px 0 0;
+    }
+    .mode-chip { display:none; }
+    .mode-inline { display:none; }
+    .mode-inline .pill { display:none; }
+    .mode-inline .pill.active { display:none; }
+    @media (max-width:700px){ .mode-grid{grid-template-columns:1fr;} }
+
+
+  
+#intro-text a.license-link{
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+#intro-text a.license-link:hover{
+  opacity: 0.8;
+}
+
+</style>
 </head>
 <body>
 
@@ -380,13 +552,13 @@
   </g>
 </svg>
   <div>
-    <h1 style="margin:0 0 2px;">Clinical-Reasoning </h1>
+    <h1 style="margin:0 0 2px;">Clinical-Reasoning</h1>
     <div style="font-size:15px;color:var(--accent);font-weight:500;">Klinisches Urteilen in der Pflege</div>
   </div>
 </div>
 
 <div id="intro-text" style="margin:16px 0 24px;padding:12px 16px;background:var(--muted);border-radius:var(--radius-md);font-size:13px;line-height:1.55">
-  <span class="fach" tabindex="0"><span class="fach-tip">Klinisches Urteilen – der systematische Denkprozess von der Beobachtung zur Pflegeentscheidung.</span>Clinical Reasoning</span> bedeutet pflegerisch zu denken und gute Entscheidungen zu treffen – eine Kernkompetenz in der Pflege. Dieser Trainer führt dich Schritt für Schritt durch den Clinical-Reasoning-Zyklus nach Levett-Jones et al. (2010) und nutzt dabei den Pflegeprozess nach Fiechter und Meier (1981) als Struktur: von der Informationssammlung über die Pflegediagnose (<span class="fach" tabindex="0"><span class="fach-tip">Pflegediagnose-Format: <strong>P</strong>roblem – <strong>E</strong>tiologie (Ursache) – <strong>S</strong>ymptome (Zeichen).</span>PES</span>) und Zielformulierung (<span class="fach" tabindex="0"><span class="fach-tip">Zielformulierung: <strong>S</strong>pezifisch – <strong>M</strong>essbar – <strong>A</strong>ttraktiv – <strong>R</strong>ealistisch – <strong>T</strong>erminiert.</span>SMART</span>) bis zur Maßnahmenplanung und <span class="fach" tabindex="0"><span class="fach-tip">Überprüfung: Wurde das Ziel erreicht? Maßnahme beibehalten, anpassen oder beenden?</span>Evaluation</span>. DSGVO-konform: Alle Daten bleiben lokal in deinem Browser – keine Übertragung, kein Tracking.
+  <span class="fach" tabindex="0"><span class="fach-tip">Klinisches Urteilen – der systematische Denkprozess von der Beobachtung zur Pflegeentscheidung.</span>Clinical Reasoning</span> bedeutet pflegerisch zu denken und gute Entscheidungen zu treffen – eine Kernkompetenz in der Pflege. Dieser Trainer führt dich Schritt für Schritt durch den Clinical-Reasoning-Zyklus nach Levett-Jones et al. (2010) und nutzt dabei den Pflegeprozess nach Fiechter und Meier (1981) als Struktur: von der Informationssammlung über die Pflegediagnose (<span class="fach" tabindex="0"><span class="fach-tip">Pflegediagnose-Format: <strong>P</strong>roblem – <strong>E</strong>tiologie (Ursache) – <strong>S</strong>ymptome (Zeichen).</span>PES</span>) und Zielformulierung (<span class="fach" tabindex="0"><span class="fach-tip">Zielformulierung: <strong>S</strong>pezifisch – <strong>M</strong>essbar – <strong>A</strong>ttraktiv – <strong>R</strong>ealistisch – <strong>T</strong>erminiert.</span>SMART</span>) bis zur Maßnahmenplanung und <span class="fach" tabindex="0"><span class="fach-tip">Überprüfung: Wurde das Ziel erreicht? Maßnahme beibehalten, anpassen oder beenden?</span>Evaluation</span>. DSGVO-konform: Alle Daten bleiben lokal in deinem Browser – keine Übertragung, kein Tracking. Lizenz: <a class="license-link" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>.
 </div>
 
 <!-- Stepper -->
@@ -435,6 +607,7 @@
 </div>
 
 
+
 <script>
 /* ============================================================
    CLINICAL REASONING TRAINER
@@ -473,7 +646,8 @@ document.addEventListener('click', function(e) {
 // ---- FALL-DATEN ----
 const fall1 = {
   titel: "Frau Yıldız Kara, 78 Jahre",
-  setting: "Innere Medizin / Allgemeinstation",
+  setting: "Akutpflege / Innere Medizin",
+  schwierigkeit: "leicht",
   text: `Frau Yıldız Kara (78 Jahre) wurde vor drei Tagen wegen einer Pneumonie stationär aufgenommen. Sie erhält intravenöse Antibiotikatherapie und Sauerstoff über eine Nasenbrille (2 l/min). Vor der Erkrankung lebte sie selbstständig in ihrer Wohnung. Ihr Ehemann ist vor einem Jahr verstorben.
 
 Bei der Übernahme berichtet die Nachtschwester: Frau Kara habe in der Nacht kaum geschlafen und mehrfach nach dem Pflegepersonal geklingelt. Sie habe zweimal die Bettdecke durchgeschwitzt. Am Morgen wirkt sie müde und lustlos, lehnt das Frühstück ab und sagt: 'Ich habe einfach keinen Hunger.' Auf die Frage nach ihrem Befinden antwortet sie: 'Es geht schon, ich will niemandem zur Last fallen.'
@@ -811,7 +985,8 @@ Im Gespräch erzählt sie, dass ihre Tochter in München lebt und nur selten zu 
 
 const fall2 = {
   titel: "Herr Dariusz Kowalski, 54 Jahre",
-  setting: "Akutpsychiatrie / Geschützte Station",
+  setting: "Psychiatrie / Geschützte Station",
+  schwierigkeit: "mittel",
   text: `Herr Dariusz Kowalski (54 Jahre) wurde vor zwei Tagen über die psychiatrische Notaufnahme aufgenommen. Seine Ehefrau hatte die Polizei gerufen, nachdem er gesagt hatte, er sehe keinen Sinn mehr. Er ist Geschäftsführer eines mittelständischen Betriebs und seit drei Monaten krankgeschrieben. Diagnose: Schwere depressive Episode mit somatischem Syndrom.
 
 Bei der Übernahme im Frühdienst berichtet die Nachtwache: Herr Kowalski sei gegen 4 Uhr aufgewacht und habe danach nicht mehr geschlafen. Er liege im Bett, reagiere kaum auf Ansprache, Blickkontakt werde vermieden. Das Abendessen und das Frühstück habe er nicht angerührt. Medikation: Mirtazapin 30 mg zur Nacht, Lorazepam 1 mg bei Bedarf.
@@ -1144,6 +1319,7 @@ Seine Ehefrau besucht ihn täglich und wirkt sichtlich belastet. Zwei Kinder: So
 const fall3 = {
   titel: "Amira Haddad, 11 Jahre",
   setting: "Pädiatrie / Kinderstation",
+  schwierigkeit: "schwer",
   text: `Amira Haddad (11 Jahre) wurde vor vier Tagen mit einer diabetischen Ketoazidose (DKA) auf die Kinderintensivstation aufgenommen und gestern auf die Normalstation verlegt. Diagnose: Diabetes mellitus Typ 1, Erstmanifestation. Die Insulintherapie wird aktuell eingestellt (ICT mit Pen), die Blutzuckerwerte schwanken noch zwischen 80 und 280 mg/dl.
 
 Bei der Übernahme im Frühdienst berichtet die Nachtwache: Amira habe wieder geweint und gefragt: 'Muss ich mir jetzt jeden Tag spritzen? Für immer?' Sie sei erst gegen Mitternacht eingeschlafen und um 5 Uhr wieder wach gewesen. Das Abendessen habe sie kaum angerührt, beim Frühstück nimmt sie nur ein halbes Brötchen ohne Belag. Sie sagt: 'Ich darf ja eh nichts mehr.' Gewicht: 34 kg bei 148 cm (BMI 15,5 – deutlicher Gewichtsverlust vor Diagnose).
@@ -1475,7 +1651,8 @@ Die Mutter ist alleinerziehend (Verkäuferin, Teilzeit) und übernachtet auf Sta
 
 const fall4 = {
   titel: "Herr Giovanni Esposito, 82 Jahre",
-  setting: "Langzeitpflege / Altenpflegeeinrichtung",
+  setting: "Langzeitpflege / Pflegeheim",
+  schwierigkeit: "mittel",
   text: `Herr Giovanni Esposito (82 Jahre) lebt seit acht Monaten im Wohnbereich 3 einer Altenpflegeeinrichtung. Sein Sohn hatte ihn angemeldet, nachdem er zu Hause zweimal den Herd angelassen und einmal nachts die Wohnung verlassen hatte. Diagnosen: Vaskuläre Demenz (mittleres Stadium), arterielle Hypertonie, Gonarthrose beidseits. Herr Esposito war bis vor zwei Jahren selbstständiger Restaurantbesitzer (italienische Küche), seine Frau Maria ist vor drei Jahren verstorben.
 
 Die Nachtwache berichtet: Herr Esposito war nachts unruhig, stand dreimal auf und lief auf den Flur. Er suchte 'seine Küche' und wurde ärgerlich, als man ihn zurück ins Zimmer bringen wollte: 'Ich muss arbeiten, die Gäste warten!' Um 4 Uhr hat er sich schließlich hingelegt. Beim Frühstück im Speisesaal sitzt er vor dem Teller, rührt mit dem Löffel im Kaffee, isst aber nicht. Auf Ansprache lächelt er freundlich, antwortet aber oft zusammenhanglos. Er erkennt Pflegekräfte nicht immer und nennt eine Kollegin regelmäßig 'Maria' (Name seiner verstorbenen Frau).
@@ -1806,6 +1983,7 @@ Seit ca. drei Wochen lehnt er die Morgenpflege zunehmend ab, wehrt Berührungen 
 const fall5 = {
   titel: "Frau Nadja Petrow, 67 Jahre",
   setting: "Ambulante Pflege / Häusliche Versorgung",
+  schwierigkeit: "schwer",
   text: `Frau Nadja Petrow (67 Jahre) wird seit der Entlassung aus der Reha zweimal täglich (Früh- und Abenddienst) durch den Pflegedienst versorgt (Pflegegrad 3). Diagnosen: Chronische Herzinsuffizienz (NYHA III), Diabetes mellitus Typ 2 (insulinpflichtig), Zustand nach Oberschenkelhalsfraktur rechts (TEP vor 6 Wochen). Sie lebt allein in einer Altbauwohnung im 2. OG ohne Aufzug. Ihr Mann ist vor 5 Jahren verstorben. Eine Tochter (42) lebt in der Nachbarstadt, arbeitet Vollzeit, kommt zweimal pro Woche, kauft ein und putzt. Eine Nachbarin schaut gelegentlich vorbei.
 
 Beim heutigen Hausbesuch im Frühdienst fällt auf: Frau Petrow sitzt im Nachthemd im Sessel und hat offensichtlich nicht im Bett geschlafen. Sie sagt: 'Ich komme nicht mehr hoch, wenn ich mich hinlege – die Luft bleibt weg.' Beide Beine sind deutlich ödematös, Gewicht 89 kg (vor 2 Wochen: 86 kg, Zunahme 3 kg). Im Kühlschrank: kaum Lebensmittel, abgelaufener Joghurt, Fertiggerichte. Auf dem Tisch liegen ungeöffnete Briefe und eine Insulinpen-Packung. BZ nüchtern: 245 mg/dl. Sie gibt zu, das Insulin seit 3 Tagen nicht gespritzt zu haben: 'Ich vergesse das immer.'
@@ -2074,7 +2252,782 @@ Die Wohnung ist unordentlich, der Weg vom Schlafzimmer zum Bad mit Stolperfallen
 
 
 // Fallauswahl: Jeder Fall wird erst gespielt, bevor einer wiederholt wird
-const faelle = [fall1, fall2, fall3, fall4, fall5];
+const fall6 = {
+  titel: "Herr Thomas Weber, 48 Jahre",
+  setting: "Akutpflege / Chirurgie",
+  schwierigkeit: "leicht",
+  text: `Herr Thomas Weber (48 Jahre) wurde vor zwei Tagen wegen eines Kolonkarzinoms operiert (Hemikolektomie rechts). Er befindet sich auf der viszeralchirurgischen Normalstation. Ein Periduralkatheter (PDK) zur regionalen Schmerztherapie wurde heute Morgen wegen Dislokation (Verrutschen) vorzeitig entfernt. Er erhält nun Schmerzmittel nach ärztlicher Bedarfsanordnung (Ibuprofen, Novaminsulfon, Oxycodon b.B.). 
+
+Bei der Übergabe berichtet der Frühdienst: Herr Weber habe nachts sehr unruhig geschlafen und immer wieder gestöhnt.
+Als du das Zimmer betrittst, liegt Herr Weber flach und völlig angespannt auf dem Rücken. Auf die Frage nach Schmerzen presst er hervor: 'Es zerreißt mich, 7 von 10!' Er atmet sehr flach und oberflächlich (Schonatmung). Die Vitalzeichen zeigen: RR 145/95 mmHg, Puls 102/min, Temperatur 37,8 °C. Er schwitzt stark und das Flügelhemd ist feucht.
+
+Du bittest ihn, sich für die Körperpflege aufzusetzen und tief durchzuatmen. Er wehrt panisch ab: 'Nein, bloß nicht bewegen! Wenn ich aufstehe oder huste, reißt meine Naht auf!' Der Bauchverband ist jedoch trocken und völlig intakt. Seine Beine hat er seit gestern kaum bewegt, die Medizinische Thromboseprophylaxestrümpfe (MTPS) rutschen leicht. 
+Er arbeitet als Buchhalter und spielt in seiner Freizeit gerne Schach. Seine Frau kommt täglich zu Besuch.`,
+
+  cues: [
+    { id: "c1",  text: "48 Jahre, Buchhalter, spielt Schach",                          relevant: false, cluster: null,
+      grund: "Demographische und soziale Informationen, die für die akute postoperative Pflegeplanung in diesem Moment irrelevant sind.",
+      clusterGrund: "" },
+    { id: "c2",  text: "2. Tag nach Hemikolektomie rechts (große Bauch-OP)",           relevant: true,  cluster: "sich-bewegen",
+      grund: "Die Bauch-OP ist der Ausgangspunkt für die Schmerzen, die Bewegungseinschränkung und die Risiken.",
+      clusterGrund: "Das OP-Trauma im Bauchraum schränkt die Mobilität massiv ein – ATL Sich bewegen." },
+    { id: "c3",  text: "PDK heute Morgen vorzeitig entfernt",                          relevant: true,  cluster: "schmerz",
+      grund: "Erklärt den plötzlichen Wirkverlust der Analgesie und die Schmerzspitze am Morgen.",
+      clusterGrund: "Fehlende regionale Schmerzausschaltung betrifft das Wohlbefinden und die Sicherheit." },
+    { id: "c4",  text: "Schmerzangabe: NRS 7/10 ('Es zerreißt mich')",                  relevant: true,  cluster: "schmerz",
+      grund: "Ein NRS-Wert von 7 ist ein akutes Handlungssignal für das Schmerzmanagement.",
+      clusterGrund: "Ausdruck von akuten starken Schmerzen – ATL Kommunizieren / Für Sicherheit sorgen (Schmerz)." },
+    { id: "c5",  text: "Atmet sehr flach und oberflächlich (Schonatmung)",             relevant: true,  cluster: "atmen",
+      grund: "Schonatmung birgt ein massives Risiko für Atelektasen und eine postoperative Pneumonie.",
+      clusterGrund: "Direkte Beeinträchtigung der Lungenbelüftung – ATL Atmen." },
+    { id: "c6",  text: "Temperatur 37,8 °C (leicht erhöht)",                            relevant: true,  cluster: "atmen",
+      grund: "Subfebrile Temperatur kann postoperativ normal sein, aber auch ein erstes Zeichen für Pneumonie oder Wundinfektion.",
+      clusterGrund: "Beeinflusst die Temperaturregulation und weist ggf. auf Komplikationen der Atmung hin – ATL Körpertemperatur regulieren / Atmen." },
+    { id: "c7",  text: "Schwitzt stark, feuchtes Hemd",                                relevant: true,  cluster: "schmerz",
+      grund: "Schwitzen ist hier primär ein vegetatives Zeichen für starke Schmerzen und körperlichen Stress.",
+      clusterGrund: "Vegetative Begleitsymptomatik des starken Schmerzes – ATL Für Sicherheit sorgen (Schmerz)." },
+    { id: "c8",  text: "RR 145/95 mmHg, Puls 102/min",                                  relevant: true,  cluster: "schmerz",
+      grund: "Tachykardie und erhöhter Blutdruck sind (bei fehlender kardialer Vorgeschichte) klassische vegetative Schmerzreaktionen.",
+      clusterGrund: "Messbare körperliche Reaktion auf den nicht therapierten Schmerz – ATL Für Sicherheit sorgen." },
+    { id: "c9",  text: "Panik bei Mobilisation ('Naht reißt auf!')",                   relevant: true,  cluster: "sich-bewegen",
+      grund: "Die unbegründete Angst blockiert die dringend nötige Frühmobilisation.",
+      clusterGrund: "Angst verhindert die selbstständige und pflegerisch angeleitete Bewegung – ATL Sich bewegen." },
+    { id: "c10", text: "Angst vor dem Husten",                                          relevant: true,  cluster: "atmen",
+      grund: "Fehlendes Abhusten erhöht das Pneumonierisiko weiter. Patient braucht Anleitung (Hustenschutz).",
+      clusterGrund: "Angst behindert das Sekretmanagement der Lunge – ATL Atmen." },
+    { id: "c11", text: "Liegt flach und angespannt auf dem Rücken",                     relevant: true,  cluster: "sich-bewegen",
+      grund: "Die angespannte Haltung verstärkt muskuläre Verspannungen und zeigt Immobilität.",
+      clusterGrund: "Ausdruck der schmerzbedingten Immobilität – ATL Sich bewegen." },
+    { id: "c12", text: "Beine seit gestern kaum bewegt",                                relevant: true,  cluster: "sich-bewegen",
+      grund: "Fehlende Wadenmuskelpumpe ist ein Hauptrisikofaktor für tiefe Beinvenenthrombosen (TVT).",
+      clusterGrund: "Fehlende Beinbewegung erfordert dringend Thromboseprophylaxe – ATL Sich bewegen." },
+    { id: "c13", text: "Medizinische Thromboseprophylaxestrümpfe (MTPS) rutschen leicht",                 relevant: true,  cluster: "sich-bewegen",
+      grund: "Rutschende Strümpfe verlieren ihre Wirkung und können als Einschnürung sogar das Thromboserisiko erhöhen.",
+      clusterGrund: "Ein Prophylaxe-Risiko – gehört zur Unterstützung bei der ATL Sich bewegen." },
+    { id: "c14", text: "Bauchverband trocken und intakt",                               relevant: true,  cluster: "schmerz",
+      grund: "Wichtiger objektiver Hinweis, dass chirurgisch alles in Ordnung ist und die Angst des Patienten unbegründet ist.",
+      clusterGrund: "Wichtig für die Argumentation bei der Schmerz- und Angstedukation – ATL Kommunizieren / Für Sicherheit sorgen." },
+    { id: "c15", text: "Frau kommt täglich zu Besuch",                                  relevant: false, cluster: null,
+      grund: "Eine wichtige soziale Ressource, aber in diesem akuten postoperativen Moment kein primär handlungsleitender Hinweis.",
+      clusterGrund: "" },
+    { id: "c16", text: "Schmerzmittel-Bedarfsanordnung liegt vor",                      relevant: false, cluster: null,
+      grund: "Ärztliche Anordnung. Relevant für dein pflegerisches Handeln ist der Abruf der Medikation, nicht die Anordnung an sich.",
+      clusterGrund: "" },
+  ],
+
+  clusters: [
+    { id: "schmerz", name: "ATL: Für Sicherheit sorgen / Schmerz", correctCues: ["c3", "c4", "c7", "c8", "c14"] },
+    { id: "atmen", name: "ATL: Atmen / Körpertemperatur regulieren", correctCues: ["c5", "c6", "c10"] },
+    { id: "sich-bewegen", name: "ATL: Sich bewegen", correctCues: ["c2", "c9", "c11", "c12", "c13"] },
+  ],
+
+  pes: [
+    {
+      cluster: "schmerz", clusterName: "Akuter postoperativer Schmerz",
+      bausteine: [
+        { id: "b1a", text: "Akuter Schmerz mit starken vegetativen Begleitreaktionen", type: "P" },
+        { id: "b1b", text: "Bauch-OP (OP-Wunde) und plötzlicher Wegfall der Analgesie durch entfernten Periduralkatheter", type: "E" },
+        { id: "b1c", text: "NRS 7/10, starkes Schwitzen, RR 145/95 mmHg, Puls 102/min", type: "S" },
+        { id: "b1d", text: "Angst, dass die Naht reißt", type: "X" },
+      ],
+      explanation: "Der akute Schmerz ist das <strong>Problem</strong> (P). Die <strong>Ursachen</strong> (E) sind die frische OP-Wunde gepaart mit dem Verlust des schmerzausschaltenden PDKs. Die <strong>Symptome</strong> (S) sind sowohl subjektiv (NRS 7) als auch objektiv messbar (RR, Puls, Schwitzen). Die Angst vor dem Nahtriss ist ein Problem für die Mobilisation, aber nicht die Ursache des Wundschmerzes."
+    },
+    {
+      cluster: "atmen", clusterName: "Atmung / Pneumonierisiko",
+      bausteine: [
+        { id: "b2a", text: "Gefahr einer Lungenkomplikation (Pneumonie/Atelektasen) durch beeinträchtigte Atemfunktion", type: "P" },
+        { id: "b2b", text: "Schmerzbedingte Schonatmung und Zurückhalten von Hustenstoß wegen Schmerzangst", type: "E" },
+        { id: "b2c", text: "Flache, oberflächliche Atmung, Temperatur 37,8 °C, Aussage 'bloß nicht husten'", type: "S" },
+        { id: "b2d", text: "Bauchverband ist trocken und intakt", type: "X" },
+      ],
+      explanation: "Die Gefahr der Lungenkomplikation (Pneumonierisiko) ist das <strong>Problem</strong> (P). Die <strong>Ursachen</strong> (E) liegen im Schmerz: Es tut weh, also atmet er nicht tief ein und hustet nicht ab. Die <strong>Symptome/Risikoindikatoren</strong> (S) sind die sichtbare Schonatmung und das subfebrile Fieber. Der trockene Verband zeigt, dass die Wunde okay ist, gehört aber nicht in die Atem-Diagnose."
+    },
+    {
+      cluster: "sich-bewegen", clusterName: "Immobilität / Thromboserisiko",
+      bausteine: [
+        { id: "b3a", text: "Beeinträchtigte körperliche Mobilität und hohes Thromboserisiko", type: "P" },
+        { id: "b3b", text: "Starke Wundschmerzen, große OP-Höhle, unbegründete Angst vor einer Nahtdehiszenz ('Aufreißen')", type: "E" },
+        { id: "b3c", text: "Liegt flach und angespannt, bewegt Beine nicht, weigert sich aufzustehen, MTS rutschen", type: "S" },
+        { id: "b3d", text: "Puls 102/min", type: "X" },
+      ],
+      explanation: "Die beeinträchtigte Mobilität (mit Thromboserisiko) ist das <strong>Problem</strong> (P). Die <strong>Ursachen</strong> (E) sind neben dem Schmerz vor allem die Panik des Patienten, dass die OP-Naht aufreißt. Die <strong>Symptome</strong> (S) sind das absolute Vermeiden von Bewegung und die nicht korrekt sitzende Prophylaxe (MTPS). Der hohe Puls ist ein Schmerzzeichen, kein primäres Mobilitätssymptom."
+    }
+  ],
+
+  smartZiele: [
+    {
+      cluster: "schmerz", clusterName: "Akuter postoperativer Schmerz",
+      diagnose: "Akuter Schmerz mit starken vegetativen Begleitreaktionen",
+      optionen: [
+        { id: "sz1a", text: "Herr Weber soll keine Schmerzen mehr haben und durchschlafen.", correct: false,
+          feedback: "<strong>Verständlicher Impuls, aber noch nicht SMART.</strong> Nicht <em>realistisch</em>: Eine völlige Schmerzfreiheit (NRS 0) ist am 2. Tag nach einer großen Bauch-OP nicht erreichbar und medizinisch teils gar nicht gewünscht (Gefahr der Atemdepression durch zu viele Opiate). Tipp: Reduktion auf ein erträgliches Maß formulieren." },
+        { id: "sz1b", text: "Herr Weber äußert innerhalb von 45 Minuten nach Gabe der Bedarfsmedikation eine Schmerzlinderung auf NRS < 4/10. Seine Körperhaltung ist entspannter, Tachykardie und Schwitzen sind rückläufig.", correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Schmerzlinderung, Körperhaltung, Parameter. <em>Messbar:</em> NRS < 4, Pulsrückgang. <em>Attraktiv:</em> Erträglicher Schmerz. <em>Realistisch:</em> 45 Minuten entsprechen der Wirklatenz von Medikamenten wie Oxycodon oder Novamin. <em>Terminiert:</em> 45 Minuten." },
+        { id: "sz1c", text: "Der Patient bekommt sofort Oxycodon, um die Schmerzspitze zu brechen.", correct: false,
+          feedback: "<strong>Nicht SMART.</strong> Das ist eine Maßnahme, kein Ziel! Ein Ziel beschreibt den Zustand des Patienten in der Zukunft, den du durch Maßnahmen erreichen willst." }
+      ]
+    },
+    {
+      cluster: "atmen", clusterName: "Atmung / Pneumonierisiko",
+      diagnose: "Gefahr einer Pneumonie durch Schonatmung",
+      optionen: [
+        { id: "sz2a", text: "Der Patient soll wieder normal atmen und kräftig abhusten.", correct: false,
+          feedback: "<strong>Noch nicht SMART.</strong> Nicht <em>spezifisch</em> (was ist 'normal'?) und nicht <em>messbar</em>. Bei einer frischen Bauch-OP wird die Atmung einige Tage lang nicht komplett 'normal' sein. Tipp: Formuliere konkrete Übungen." },
+        { id: "sz2b", text: "Herr Weber führt unter Schmerzschutz und nach Anleitung innerhalb der heutigen Schicht stündlich 5 tiefe Atemzüge in den Bauch durch, ohne dass der Schmerz unerträglich wird.", correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> 5 tiefe Atemzüge in den Bauch. <em>Messbar:</em> 5x stündlich. <em>Attraktiv:</em> 'Unter Schmerzschutz' nimmt die Angst. <em>Realistisch:</em> Kleine Intervalle (5 Atemzüge) strengen nicht zu sehr an. <em>Terminiert:</em> Heute / stündlich." },
+        { id: "sz2c", text: "Die Lunge ist morgen wieder frei, die Temperatur sinkt auf 36,5 °C und die Sauerstoffsättigung liegt bei 100 %.", correct: false,
+          feedback: "<strong>Verständlicher Impuls, aber noch nicht SMART.</strong> Nicht <em>realistisch</em>: Eine Temperatur von 37,8°C sinkt nicht auf Befehl ab, und 100% Sättigung ist post-OP nicht zwingend erreichbar." }
+      ]
+    },
+    {
+      cluster: "sich-bewegen", clusterName: "Immobilität / Thromboserisiko",
+      diagnose: "Beeinträchtigte Mobilität und hohes Thromboserisiko",
+      optionen: [
+        { id: "sz3a", text: "Herr Weber soll sofort aufstehen und allein über den Flur laufen, um eine Thrombose zu verhindern.", correct: false,
+          feedback: "<strong>Gefährlich und nicht SMART.</strong> Völlig un-<em>realistisch</em> und ein hohes Sturzrisiko. Ein Patient mit starken Schmerzen nach Bauch-OP läuft nicht sofort über den Flur. Frühmobilisation erfolgt in kleinsten Schritten." },
+        { id: "sz3b", text: "Die Medizinische Thromboseprophylaxestrümpfe (MTPS) müssen besser sitzen.", correct: false,
+          feedback: "<strong>Nicht SMART.</strong> Das ist eine vage Aufgabe für die Pflege, aber kein patientenzentriertes Ziel. Was genau heißt 'besser'? Und was ist mit der eigenen Bewegung?" },
+        { id: "sz3c", text: "Herr Weber mobilisiert sich heute Vormittag (ca. 30 Min nach Analgesie) mit pflegerischer Anleitung in den Stuhlsitz. Er führt im Bett stündlich 10 Venenpump-Übungen (Fußkreisen) durch.", correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Stuhlsitz, Venenpumpe. <em>Messbar:</em> 10 Übungen stündlich. <em>Attraktiv:</em> Timing ist mit Analgesie abgestimmt. <em>Realistisch:</em> Stuhlsitz (und Fußkreisen) sind am 2. Tag post-OP machbar. <em>Terminiert:</em> Heute Vormittag / stündlich." }
+      ]
+    }
+  ],
+
+  sechsW: [
+    {
+      cluster: "schmerz", clusterName: "Akuter postoperativer Schmerz",
+      ziel: "Schmerzlinderung auf NRS < 4 innerhalb von 45 Minuten, Rückgang der Tachykardie",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegefachperson", optionen: ["Pflegefachperson", "Physiotherapeutin", "Hausärztin"] },
+        { text: " verabreicht " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "sofort (und idealerweise ca. 45 Min. vor geplanten Pflegehandlungen/Mobilisation)", optionen: ["sofort (und idealerweise ca. 45 Min. vor geplanten Pflegehandlungen/Mobilisation)", "erst heute Abend zur Nachtruhe", "nur wenn der Patient mehrfach nachfragt"] },
+        { text: " die " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "Bedarfsmedikation (z.B. Oxycodon/Novamin) nach ärztlicher Anordnung und evaluiert den NRS-Wert sowie Puls/RR", optionen: ["Bedarfsmedikation (z.B. Oxycodon/Novamin) nach ärztlicher Anordnung und evaluiert den NRS-Wert sowie Puls/RR", "die Morgenmedikation ohne Schmerzmittel", "einen feuchtwarmen Bauchwickel"] },
+        { text: " " },
+        { luecke: true, id: "w4", wFrage: "Wo?", correct: "direkt im Patientenzimmer, dokumentiert in der Kurve", optionen: ["direkt im Patientenzimmer, dokumentiert in der Kurve", "im Behandlungsraum", "auf dem Stationsflur"] },
+        { text: ", um " },
+        { luecke: true, id: "w5", wFrage: "Warum?", correct: "die akute Schmerzspitze zu durchbrechen, den vegetativen Stress zu mindern und tiefe Atmung sowie Bewegung überhaupt erst zu ermöglichen", optionen: ["die akute Schmerzspitze zu durchbrechen, den vegetativen Stress zu mindern und tiefe Atmung sowie Bewegung überhaupt erst zu ermöglichen", "den Patienten ruhigzustellen, damit er nicht mehr klingelt", "die ärztliche Anordnung abzuhaken"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Pflegefachperson – BTM-Gabe/Bedarf ist delegierbar, aber Überwachung bleibt Fachaufgabe), <strong>Wann</strong> (Sofort und vor Pflegehandlungen – Prinzip 'Analgesie vor Aktivität'), <strong>Was</strong> (Bedarfsmedikation verabreichen & evaluieren – ohne Nachfrage bringt Schmerzmittel nichts), <strong>Wo</strong> (Im Zimmer mit Doku – Wirkung muss transparent gemacht werden), <strong>Warum</strong> (Schmerz durchbrechen – in der Chirurgie ist Schmerztherapie die absolute Voraussetzung für alle anderen Prophylaxen wie Bewegung und Atemtraining)."
+    },
+    {
+      cluster: "atmen", clusterName: "Atmung / Pneumonierisiko",
+      ziel: "5 tiefe Atemzüge stündlich, unter Schmerzschutz",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Bezugspflegekraft", optionen: ["Bezugspflegekraft", "Reinigungsfachkraft", "Ehefrau"] },
+        { text: " leitet Herrn Weber " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "nach Wirkeintritt der Schmerzmittel und danach bei jedem Betreten des Zimmers", optionen: ["nach Wirkeintritt der Schmerzmittel und danach bei jedem Betreten des Zimmers", "direkt nach dem Essen", "nur einmal am Tag an"] },
+        { text: " zur " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "schmerzarmen Atem- und Hustentechnik an (Ein kleines Kissen mit beiden Händen sanft auf die Wunde pressen = Wundkompression)", optionen: ["schmerzarmen Atem- und Hustentechnik an (Ein kleines Kissen mit beiden Händen sanft auf die Wunde pressen = Wundkompression)", "oberflächlichen Hechelatmung an", "Inhalation mit ätherischen Ölen an"] },
+        { text: " " },
+        { luecke: true, id: "w4", wFrage: "Wo?", correct: "in leicht aufgerichteter Oberkörperposition im Bett", optionen: ["in leicht aufgerichteter Oberkörperposition im Bett", "im Stehen vor dem Spiegel", "in völlig flacher Rückenlage"] },
+        { text: ", um " },
+        { luecke: true, id: "w5", wFrage: "Warum?", correct: "die Zugkräfte auf die frische Naht zu minimieren, ihm die Angst vor dem 'Aufreißen' zu nehmen und die Lunge tief zu belüften", optionen: ["die Zugkräfte auf die frische Naht zu minimieren, ihm die Angst vor dem 'Aufreißen' zu nehmen und die Lunge tief zu belüften", "die Bauchmuskeln zu trainieren", "den Blutdruck weiter zu erhöhen"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Bezugspflegekraft – Anleitung ist Fachaufgabe), <strong>Wann</strong> (Nach Analgesie – mit Schmerzen klappt kein tiefes Einatmen), <strong>Was</strong> (Wundkompression mit Kissen – ein einfacher, aber extrem effektiver Trick in der Bauchchirurgie, um Dehnungsschmerz beim Husten/Atmen zu nehmen), <strong>Wo</strong> (Leicht aufgerichteter Oberkörper – erleichtert die Zwerchfellatmung), <strong>Warum</strong> (Angst nehmen und Lunge belüften – die Wunde reißt durch tiefes Atmen nicht auf, aber die Angst davor blockiert den Patienten)."
+    },
+    {
+      cluster: "sich-bewegen", clusterName: "Immobilität / Thromboserisiko",
+      ziel: "Mobilisation in Stuhlsitz (Vormittag), Venenpumpe im Bett",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegefachperson (bei Erstmobilisation mit schmerzgeplagtem Pat. idealerweise zu zweit)", optionen: ["Pflegefachperson (bei Erstmobilisation mit schmerzgeplagtem Pat. idealerweise zu zweit)", "Ehefrau allein", "Krankenpflegeschüler im 1. Einsatz allein"] },
+        { text: " mobilisiert Herrn Weber " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "im Wirkmaximum der Bedarfsmedikation (ca. 45 Min. nach Gabe)", optionen: ["im Wirkmaximum der Bedarfsmedikation (ca. 45 Min. nach Gabe)", "sofort auf nüchternen Magen", "mitten in der Nacht"] },
+        { text: " " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "über die En-bloc-Technik (rückenschonend für die Bauchdecke) an die Bettkante und dann in den Stuhl, MTS vorher glattziehen", optionen: ["über die En-bloc-Technik (rückenschonend für die Bauchdecke) an die Bettkante und dann in den Stuhl, MTS vorher glattziehen", "mit schnellem Ruck an den Händen hochziehend", "per Patientenlifter"] },
+        { text: " " },
+        { luecke: true, id: "w4", wFrage: "Wo?", correct: "vom Bett in den Stuhl auf seiner Operations-zugewandten Seite (kurzer Weg)", optionen: ["vom Bett in den Stuhl auf seiner Operations-zugewandten Seite (kurzer Weg)", "direkt in den Rollstuhl für eine Raucherpause", "in den Speisesaal auf dem Flur"] },
+        { text: ", um " },
+        { luecke: true, id: "w5", wFrage: "Warum?", correct: "den Kreislauf anzuregen, die Lungenbelüftung zu verbessern, dem Dekubitus- und Thromboserisiko entgegenzuwirken und Vertrauen in den eigenen Körper zurückzugeben", optionen: ["den Kreislauf anzuregen, die Lungenbelüftung zu verbessern, dem Dekubitus- und Thromboserisiko entgegenzuwirken und Vertrauen in den eigenen Körper zurückzugeben", "das Bettlaken leichter wechseln zu können", "die Wundnaht bewusst zu belasten"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Zu zweit – Patient hat starke Schmerzen und Kreislauf könnte bei Erstmobilisation instabil sein), <strong>Wann</strong> (Im Wirkmaximum – sonst blockiert der Schmerz jede Bewegung), <strong>Was</strong> (En-bloc-Technik – Rollen über die Seite, nicht über die Bauchmuskeln hochziehen; MTS richten!), <strong>Wo</strong> (Vom Bett in den Stuhl – kleiner, sicherer Radius am 2. Tag post-OP), <strong>Warum</strong> (Kreislauf/Atmung/Prophylaxen – Sitzen im Stuhl zwingt zu tieferer Atmung und entlastet den Rücken)."
+    }
+  ],
+
+  evaluation: [
+    {
+      cluster: "schmerz", clusterName: "Akuter postoperativer Schmerz",
+      ziel: "NRS < 4 nach 45 Minuten, Rückgang Puls",
+      verlauf: "Tag 2 (45 Minuten später): Herr Weber hat das angeordnete Oxycodon erhalten. Auf Nachfrage gibt er nun Schmerzen von NRS 3/10 an. Er stöhnt nicht mehr. Seine Körperhaltung ist deutlich entspannter, er liegt nicht mehr so verkrampft da. Die Vitalzeichenkontrolle zeigt: RR 130/80 mmHg, Puls 84/min. Das Schwitzen hat aufgehört.",
+      fragen: {
+        zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Richtig! Die Schmerzen sind auf NRS 3 (Ziel war <4) gesunken. Die vegetativen Parameter (Puls 84 statt 102, Blutdruck gesunken, kein Schwitzen mehr) bestätigen die Schmerzlinderung objektiv.", "Teilweise erreicht": "Etwas zu vorsichtig. NRS ist < 4, Haltung ist entspannt, Puls und RR sind runtergegangen. Alle Zielkriterien sind messbar erfüllt.", "Nicht erreicht": "Genauer hinsehen: NRS 3 statt 7, Puls 84 statt 102. Die Schmerzspitze ist durchbrochen!" }
+        },
+        massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Richtig! Die Bedarfsmedikation war exakt die richtige Maßnahme. Das Prinzip 'Regelmäßige Evaluierung und Analgesie vor Aktivität' muss beibehalten werden, da die OP erst 2 Tage her ist.", "Anpassen": "Die Maßnahme hat perfekt funktioniert. Eine Anpassung (z.B. andere Medikamente) ist aktuell ärztlich nicht nötig.", "Beenden": "Die Schmerztherapie post-OP muss zwingend weiterlaufen, nur die Schmerzspitze ist gebrochen. Beenden wäre ein Fehler." }
+        },
+        begruendung: { correct: "bg1b",
+          optionen: [
+            { id: "bg1a", text: "Der Patient ist schmerzfrei, die Bedarfsmedikation kann abgesetzt werden." },
+            { id: "bg1b", text: "Das Schmerzmanagement hat hervorragend gewirkt (NRS und Vitalwerte gesenkt). Die Gabe von Schmerzmitteln vor pflegerischer Aktivität wird als Standard beibehalten." },
+            { id: "bg1c", text: "Der Puls ist gesunken, deshalb muss ein Kardiologe konsiliarisch hinzugezogen werden." }
+          ],
+          feedback: { "bg1a": "Er hat NRS 3, nicht 0. Und nach Abklingen der Wirkung kommt der Schmerz zurück.", "bg1b": "Genau! Die vegetativen Zeichen und die NRS-Skala passen zusammen. Jetzt ist das Zeitfenster für Pflege und Mobilisation offen.", "bg1c": "Der gesunkene Puls ist positiv! Es ist das Nachlassen der schmerzbedingten Tachykardie, kein kardiologisches Problem." }
+        }
+      }
+    },
+    {
+      cluster: "atmen", clusterName: "Atmung / Pneumonierisiko",
+      ziel: "5 tiefe Atemzüge stündlich unter Schmerzschutz, Angstreduktion",
+      verlauf: "Tag 2 (mittags): Nach der Schmerzmittelgabe hast du Herrn Weber ein kleines festes Kissen gegeben. Er presst es sanft auf den Bauch und schafft tatsächlich 5 tiefe Atemzüge. Danach hustet er einmal kräftig Sekret ab und sagt überrascht: 'Mit dem Kissen geht es viel besser, die Naht hat gehalten!' Die Temperatur liegt aktuell bei 37,5 °C.",
+      fragen: {
+        zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Richtig! Er atmet tief durch (5 Züge), nutzt den Hustenschutz (Kissen) und – ganz wichtig – die unbegründete Angst ist gebrochen ('Naht hat gehalten'). Sogar die subfebrile Temperatur sinkt leicht.", "Teilweise erreicht": "Alle Kriterien erfüllt: Atemzüge geschafft, Schmerzschutz genutzt, Angst reduziert. Das ist ein voller Erfolg in der Edukation.", "Nicht erreicht": "Im Gegenteil: Die Maßnahme hat sofort gewirkt. Er traut sich wieder zu husten." }
+        },
+        massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Richtig! Der Trick mit dem Kissen funktioniert. Jetzt muss diese Übung zur Routine werden ('stündlich'). Das Kissen bleibt griffbereit im Bett liegen.", "Anpassen": "Die Maßnahme wirkt perfekt. Jetzt etwas zu ändern, würde den Patienten nur verwirren.", "Beenden": "Einmal tief durchatmen reicht nicht zur Pneumonieprophylaxe. Die Übung muss regelmäßig fortgesetzt werden." }
+        },
+        begruendung: { correct: "bg2b",
+          optionen: [
+            { id: "bg2a", text: "Die Lunge ist frei, Atemtraining kann beendet werden." },
+            { id: "bg2b", text: "Die Wundkompression gibt Sicherheit und reduziert den Dehnungsschmerz. Die schmerzarme Hustentechnik wird als stündliche Routine beibehalten." },
+            { id: "bg2c", text: "Der Patient hat Schleim abgehustet, es muss sofort abgesaugt werden." }
+          ],
+          feedback: { "bg2a": "Die Lunge muss freigehalten werden. Prophylaxe endet nicht nach einem Hustenstoß.", "bg2b": "Genau! Angst nehmen und Schmerz reduzieren sind die besten Mittel für gute Atmung in der Chirurgie.", "bg2c": "Er hustet es selbst ab – das ist das allerbeste Zeichen! Absaugen wäre invasiv, übergriffig und absolut kontraindiziert." }
+        }
+      }
+    },
+    {
+      cluster: "sich-bewegen", clusterName: "Immobilität / Thromboserisiko",
+      ziel: "Mobilisation in Stuhlsitz (Vormittag), Venenpumpe im Bett",
+      verlauf: "Tag 2 (später Vormittag): Herr Weber wurde mit Hilfe von zwei Pflegekräften (En-bloc-Technik) an die Bettkante mobilisiert und setzte sich in den Stuhl. Nach etwa 8 Minuten klagte er über Schwindel, 'Sterne sehen' und Übelkeit. Er wollte sofort zurück ins Bett. Im Bett bewegt er nun auf Aufforderung die Füße (Venenpumpe). Die MTS sitzen faltenfrei.",
+      fragen: {
+        zielErreicht: { correct: "Teilweise erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Nicht ganz. Er saß im Stuhl (erreicht), MTS sitzen, Venenpumpe klappt. Aber er hat es keine 15-30 Minuten im Stuhl geschafft, weil sein Kreislauf (Orthostase) dekompensiert ist.", "Teilweise erreicht": "Richtig differenziert! Die Erstmobilisation in den Stuhl hat begonnen, scheiterte aber an der Kreislaufreaktion (Schwindel) vor Ablauf der Zielzeit. Die Venenpumpe im Bett funktioniert.", "Nicht erreicht": "Genauer hinsehen: Er ist aufgestanden und sitzt wieder! Dass der Kreislauf post-OP schwankt, ist normal. Die Maßnahme war kein totaler Reinfall." }
+        },
+        massnahme: { correct: "Anpassen", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Wenn du beim nächsten Mal genauso vorgehst, wird ihm wieder schwindelig. Der Kreislauf braucht eine langsamere Anpassung.", "Anpassen": "Richtig! Die Mobilisation war gut, aber zu schnell für den Kreislauf. Anpassung beim nächsten Versuch: Erst Bettkopfteil hoch, dann länger an der Bettkante sitzen lassen, Füße kreisen lassen (Kreislauftraining), bevor es in den Stuhl geht.", "Beenden": "Kreislaufprobleme post-OP sind extrem häufig. Deswegen die Mobilisation abzubrechen ('Bettruhe'), würde das Thromboserisiko massiv erhöhen." }
+        },
+        begruendung: { correct: "bg3b",
+          optionen: [
+            { id: "bg3a", text: "Die Mobilisation ist gescheitert. Der Patient bleibt heute streng im Bett." },
+            { id: "bg3b", text: "Klassische orthostatische Dysregulation post-OP. Nächste Mobilisation wird angepasst: Langsamer aufstehen, Zwischenstopp an der Bettkante, vorher ausreichend trinken." },
+            { id: "bg3c", text: "Der Schwindel kommt von der OP-Naht, der Chirurg muss sofort informiert werden." }
+          ],
+          feedback: { "bg3a": "Strenge Bettruhe ist falsch! Er bewegt ja schon die Füße im Bett. Später am Tag ein neuer, langsamer Versuch.", "bg3b": "Genau! Der Körper lag lange flach, die Medikamente drücken den Blutdruck zusätzlich. Das ist ein pflegerisches Alltagsproblem, das durch langsamere Mobilisation gelöst wird.", "bg3c": "Schwindel beim Aufstehen ist Kreislauf (Orthostase) oder Opiat-Nebenwirkung, kein primäres chirurgisches Wundproblem." }
+        }
+      }
+    }
+  ]
+};
+
+
+
+const fall7 = {
+  titel: "Frau Mai Nguyen, 68 Jahre",
+  setting: "Akutpflege / Neurologie (Stroke Unit)",
+  schwierigkeit: "schwer",
+  text: `Frau Mai Nguyen (68 Jahre) wurde vor drei Tagen mit einem ischämischen Schlaganfall (Apoplex) der linken Hirnhemisphäre aufgenommen. Sie ist wach, aber orientiert sich nur schwer zur rechten Seite. Diagnosen: Hemiparese rechts, motorische Aphasie (Sprachstörung), Verdacht auf Dysphagie (Schluckstörung). Vorher war sie voll selbstständig.
+
+Bei der Morgenpflege sitzt Frau Nguyen im Bett. Sie wirkt extrem frustriert, weil sie sich nicht verständlich machen kann. Sie zeigt auf den Nachttisch und sagt immer wieder 'Tatu... Tatu...', meint aber das Wasserglas. Als die Pflegekraft ihr das Wasser reicht (klares Wasser), trinkt sie hastig, verschluckt sich sofort massiv und hustet stark mit tränenden Augen. Die Stimme klingt danach 'belegt' und gurgelnd.
+
+Bei der Körperpflege fällt auf: Frau Nguyen wäscht sich mit der linken (gesunden) Hand das Gesicht, lässt die rechte Gesichtshälfte aber komplett trocken und unbeachtet. Ihren rechten Arm lässt sie schlaff herabhängen, er wirkt wie 'vergessen' (Neglect).
+Die Vitalzeichen sind stabil: RR 135/85 mmHg, Puls 78/min, Temperatur 37,2 °C.
+Der Ehemann sitzt am Bett und versucht, sie zu füttern, schiebt ihr den Löffel aber sehr schnell in den Mund, was erneutes Husten auslöst. Er sagt verzweifelt: 'Sie muss doch was essen, sie verhungert mir sonst!'`,
+
+  cues: [
+    { id: "c1",  text: "68 Jahre, ischämischer Schlaganfall links",                   relevant: true,  cluster: "kommunizieren",
+      grund: "Die medizinische Diagnose erklärt die Symptome (Rechtsseitenlähmung, Sprachstörung) und bestimmt die Rehabilitationsziele.",
+      clusterGrund: "Schlaganfall links führt typischerweise zu Problemen rechts und Sprachstörungen – ATL Kommunizieren / Sich bewegen." },
+    { id: "c2",  text: "Verschluckt sich bei klarem Wasser, hustet stark",            relevant: true,  cluster: "essen-trinken",
+      grund: "Klassisches Zeichen einer Dysphagie (Schluckstörung). Klares Wasser fließt zu schnell und löst Aspiration aus.",
+      clusterGrund: "Akute Aspirationsgefahr beim Trinken – ATL Essen und Trinken." },
+    { id: "c3",  text: "Stimme klingt nach dem Trinken 'belegt' und gurgelnd",        relevant: true,  cluster: "essen-trinken",
+      grund: "Ein 'gurgelnder' Stimmklang (wet voice) ist ein hochrisikoreicher Hinweis auf stille Aspiration (Flüssigkeit auf den Stimmbändern/in der Trachea).",
+      clusterGrund: "Warnsignal für Aspiration – ATL Essen und Trinken." },
+    { id: "c4",  text: "Sagt 'Tatu... Tatu...', meint Wasserglas (Aphasie)",          relevant: true,  cluster: "kommunizieren",
+      grund: "Motorische Aphasie: Das Sprachverständnis ist oft intakt, aber die Wortbildung gestört. Erfordert Geduld und Ja/Nein-Fragen.",
+      clusterGrund: "Sprachstörung beeinträchtigt die Mitteilung von Bedürfnissen – ATL Kommunizieren." },
+    { id: "c5",  text: "Wirkt extrem frustriert",                                     relevant: true,  cluster: "kommunizieren",
+      grund: "Psychische Folge der Aphasie. Frustration muss pflegerisch aufgefangen werden (Validieren, Zeit geben).",
+      clusterGrund: "Emotionaler Ausdruck der Kommunikationsbarriere – ATL Kommunizieren." },
+    { id: "c6",  text: "Wäscht nur linke Gesichtshälfte, ignoriert rechts (Neglect)", relevant: true,  cluster: "sich-waschen",
+      grund: "Neglect (Wahrnehmungsstörung) ist mehr als eine Lähmung. Die Seite wird vom Gehirn ausgeblendet. Pflegerisch: Wahrnehmung fördern (Bobath).",
+      clusterGrund: "Wahrnehmungsstörung beeinträchtigt die Selbstpflege massiv – ATL Sich waschen und kleiden." },
+    { id: "c7",  text: "Rechter Arm hängt schlaff herab, wie 'vergessen'",            relevant: true,  cluster: "sich-waschen",
+      grund: "Verletzungsgefahr für die gelähmte Schulter (Schulter-Hand-Syndrom). Muss korrekt gelagert werden.",
+      clusterGrund: "Hemiparese und Neglect – ATL Sich bewegen / Sich waschen." },
+    { id: "c8",  text: "Ehemann füttert zu schnell, löst Husten aus",                 relevant: true,  cluster: "essen-trinken",
+      grund: "Angehörigen-Edukation ist hier lebenswichtig. Falsches Anreichen gefährdet die Patientin (Aspiration).",
+      clusterGrund: "Falsches Anreichen erhöht Aspirationsgefahr – ATL Essen und Trinken." },
+    { id: "c9",  text: "Vitalzeichen stabil (RR 135/85, Puls 78, Temp 37,2)",         relevant: false, cluster: null,
+      grund: "Aktuell keine akute Kreislaufinstabilität. Die Gefahr liegt in der Aspiration, nicht im Kreislauf.",
+      clusterGrund: "" },
+    { id: "c10", text: "Ehemann sagt: 'Sie muss doch was essen'",                     relevant: true,  cluster: "essen-trinken",
+      grund: "Zeigt die Sorge und das Unwissen des Ehemanns. Er braucht Aufklärung über Aspirationsgefahr vs. Mangelernährung.",
+      clusterGrund: "Sorge der Angehörigen beeinflusst das Essverhalten – ATL Essen und Trinken." },
+    { id: "c11", text: "Vorher voll selbstständig",                                   relevant: true,  cluster: "sich-waschen",
+      grund: "Ressource und Rehabilitationsziel: Sie kennt die Abläufe, kann diese aber motorisch/kognitiv gerade nicht abrufen.",
+      clusterGrund: "Zielvorgabe für die reaktivierende Pflege – ATL Sich waschen und kleiden." },
+    { id: "c12", text: "Befindet sich auf Stroke Unit",                               relevant: false, cluster: null,
+      grund: "Kontextinformation zum Setting.",
+      clusterGrund: "" },
+    { id: "c13", text: "Zeigt auf den Nachttisch",                                    relevant: true,  cluster: "kommunizieren",
+      grund: "Nonverbale Kommunikation (Gestik) funktioniert! Dies ist eine wichtige Ressource für die Verständigung.",
+      clusterGrund: "Nutzbare Ressource zum Ausgleich der Aphasie – ATL Kommunizieren." },
+  ],
+
+  clusters: [
+    { id: "essen-trinken", name: "ATL: Essen und Trinken (Dysphagie)", correctCues: ["c2", "c3", "c8", "c10"] },
+    { id: "sich-waschen", name: "ATL: Sich waschen und kleiden (Selbstversorgung)", correctCues: ["c6", "c7", "c11"] },
+    { id: "kommunizieren", name: "ATL: Kommunizieren", correctCues: ["c1", "c4", "c5", "c13"] },
+  ],
+
+  pes: [
+    {
+      cluster: "essen-trinken", clusterName: "Schluckstörung / Aspirationsgefahr",
+      bausteine: [
+        { id: "b1a", text: "Hohe Aspirationsgefahr (Verschlucken) bei Dysphagie", type: "P" },
+        { id: "b1b", text: "Neurologische Schluckstörung nach Apoplex, herabgesetzter Schutzreflex, zu schnelle Nahrungsangabe durch Ehemann", type: "E" },
+        { id: "b1c", text: "Husten bei Wasseraufnahme, 'belegte' gurgelnde Stimme nach Schlucken, Tränen in den Augen", type: "S" },
+        { id: "b1d", text: "Temperatur 37,2 °C", type: "X" },
+      ],
+      explanation: "Die Aspirationsgefahr ist das lebensbedrohliche <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) ist der Schlaganfall, verschlimmert durch ungeeignete Konsistenz (Wasser) und schnelles Füttern. Die <strong>Symptome</strong> (S) sind Husten und die 'wet voice' (gurgelnde Stimme). Temperatur ist (noch) normal, also kein Symptom einer Pneumonie."
+    },
+    {
+      cluster: "sich-waschen", clusterName: "Selbstversorgungsdefizit / Neglect",
+      bausteine: [
+        { id: "b2a", text: "Selbstversorgungsdefizit (Körperpflege) mit Wahrnehmungsstörung (Neglect)", type: "P" },
+        { id: "b2b", text: "Hemiparese rechts, neuropsychologischer Neglect (Ausblenden der betroffenen Seite), Verlust der Handlungskontrolle", type: "E" },
+        { id: "b2c", text: "Wäscht nur die linke Gesichtshälfte, ignoriert rechten Arm, rechte Körperhälfte wird nicht in Pflege einbezogen", type: "S" },
+        { id: "b2d", text: "Vitalzeichen stabil", type: "X" },
+      ],
+      explanation: "Das Selbstversorgungsdefizit ist das <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) ist nicht nur die Lähmung, sondern vor allem der Neglect (das Gehirn 'sieht' die Seite nicht). Die <strong>Symptome</strong> (S) sind das halbseitige Waschen und das Ignorieren des Arms."
+    },
+    {
+      cluster: "kommunizieren", clusterName: "Kommunikation / Aphasie",
+      bausteine: [
+        { id: "b3a", text: "Beeinträchtigte verbale Kommunikation (motorische Aphasie)", type: "P" },
+        { id: "b3b", text: "Schädigung des Sprachzentrums (Broca-Areal) durch Ischämie", type: "E" },
+        { id: "b3c", text: "Wortfindungsstörungen ('Tatu...'), Frustration, nutzt Gestik (Zeigen)", type: "S" },
+        { id: "b3d", text: "Schluckstörung", type: "X" },
+      ],
+      explanation: "Die beeinträchtigte Kommunikation ist das <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) ist der Schlaganfall im Sprachzentrum. Die <strong>Symptome</strong> (S) sind die Fehlbenennungen und die Frustration. Die Schluckstörung ist ein begleitendes Problem, gehört aber zur ATL Essen & Trinken."
+    }
+  ],
+
+  smartZiele: [
+    {
+      cluster: "essen-trinken", clusterName: "Schluckstörung / Aspirationsgefahr",
+      diagnose: "Hohe Aspirationsgefahr bei Dysphagie",
+      optionen: [
+        { id: "sz1a", text: "Frau Nguyen verschluckt sich nicht mehr und isst ihren Teller leer.", correct: false,
+          feedback: "<strong>Nicht SMART.</strong> 'Verschluckt sich nicht mehr' ist schwer zu garantieren. 'Teller leer essen' ist gefährlich, wenn sie dabei aspiriert. Sicherheit geht vor Menge!" },
+        { id: "sz1b", text: "Frau Nguyen nimmt innerhalb von 24h angedickte Flüssigkeiten und breiige Kost in aufrechter Sitzposition ohne Hustenreiz oder gurgelnde Stimme zu sich. Der Ehemann kann 3 Regeln des sicheren Anreichens benennen.", correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Angedickt, breiig, aufrecht. <em>Messbar:</em> Kein Husten, keine 'wet voice'. <em>Attraktiv:</em> Sicherheit steht im Vordergrund. <em>Realistisch:</em> Mit Kostanpassung ist Aspirationsschutz machbar. <em>Terminiert:</em> 24h." },
+        { id: "sz1c", text: "Die Patientin darf nichts mehr oral zu sich nehmen, bis der Logopäde kommt.", correct: false,
+          feedback: "<strong>Das ist eine Maßnahme (Nahrungskarenz), kein Pflegeziel.</strong> Zudem ist 'nichts essen' keine langfristige Lösung für die Ernährung." }
+      ]
+    },
+    {
+      cluster: "sich-waschen", clusterName: "Selbstversorgungsdefizit / Neglect",
+      diagnose: "Selbstversorgungsdefizit mit Neglect",
+      optionen: [
+        { id: "sz2a", text: "Frau Nguyen wäscht sich wieder ganz normal.", correct: false,
+          feedback: "<strong>Zu ungenau.</strong> Was ist 'normal' nach einem Schlaganfall? Ein Neglect verschwindet nicht sofort. Ziele müssen den Weg dorthin beschreiben." },
+        { id: "sz2b", text: "Frau Nguyen wäscht im Rahmen der Morgenpflege ihr Gesicht und den Oberkörper mit pflegerischer Führung der betroffenen Hand (Guiding). Sie richtet ihren Blick mindestens 3x zur betroffenen rechten Seite.", correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Guiding, Blickzuwendung rechts. <em>Messbar:</em> Durchführung der Waschung, 3x Blickkontakt. <em>Attraktiv:</em> Einbeziehung der betroffenen Seite (Bobath). <em>Realistisch:</em> Mit Führung machbar. <em>Terminiert:</em> Morgenpflege." },
+        { id: "sz2c", text: "Die Pflegekraft übernimmt die Waschung vollständig, damit es schneller geht.", correct: false,
+          feedback: "<strong>Falscher Ansatz!</strong> Das ist 'satt-sauber-trocken'-Pflege, aber keine rehabilitative Pflege. Das Ziel muss die Aktivierung der Patientin sein, nicht Schnelligkeit." }
+      ]
+    },
+    {
+      cluster: "kommunizieren", clusterName: "Kommunikation / Aphasie",
+      diagnose: "Beeinträchtigte verbale Kommunikation",
+      optionen: [
+        { id: "sz3a", text: "Frau Nguyen lernt bis morgen wieder richtig sprechen.", correct: false,
+          feedback: "<strong>Nicht realistisch.</strong> Aphasie-Therapie dauert Wochen bis Monate. Ein Ziel für morgen muss erreichbarer sein." },
+        { id: "sz3b", text: "Frau Nguyen nutzt zur Mitteilung ihrer Grundbedürfnisse (Trinken, Schmerzen, Toilette) eine Bildtafel und antwortet auf geschlossene Fragen (Ja/Nein) adäquat per Kopfnicken/-schütteln.", correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Bildtafel, Ja/Nein-Fragen. <em>Messbar:</em> Bedürfnisse werden verstanden. <em>Attraktiv:</em> Reduziert Frustration sofort. <em>Realistisch:</em> Nonverbale Kommunikation ist oft erhalten. <em>Terminiert:</em> Ab sofort." },
+        { id: "sz3c", text: "Wir sprechen nicht mehr mit der Patientin, um sie nicht zu frustrieren.", correct: false,
+          feedback: "<strong>Ethisch und fachlich falsch.</strong> Isolation verschlimmert die Aphasie. Kommunikation muss angepasst, nicht eingestellt werden." }
+      ]
+    }
+  ],
+
+  sechsW: [
+    {
+      cluster: "essen-trinken", clusterName: "Schluckstörung / Aspirationsgefahr",
+      ziel: "Aspirationsfreie Nahrungsaufnahme, Edukation Ehemann",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegefachperson (Initial)", optionen: ["Pflegefachperson (Initial)", "Ehemann allein", "Praktikant"] },
+        { text: " reicht Frau Nguyen " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "in ruhiger Umgebung, bei vollem Bewusstsein (nicht müde)", optionen: ["in ruhiger Umgebung, bei vollem Bewusstsein (nicht müde)", "nebenbei beim Fernsehen", "im Liegen vor dem Schlafen"] },
+        { text: " " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "angedickte Flüssigkeiten (Stufe 2) und homogene breiige Kost in kleinen Löffelportionen", optionen: ["angedickte Flüssigkeiten (Stufe 2) und homogene breiige Kost in kleinen Löffelportionen", "klare Suppe und Zwieback (Mischkonsistenz)", "Wasser aus der Schnabeltasse"] },
+        { text: " an. Sie achtet dabei auf eine " },
+        { luecke: true, id: "w4", wFrage: "Wo / Wie?", correct: "aufrechte Sitzposition (90°) mit leicht geneigtem Kopf (Chin-Tuck-Manöver)", optionen: ["aufrechte Sitzposition (90°) mit leicht geneigtem Kopf (Chin-Tuck-Manöver)", "Rückenlage mit erhöhtem Kopfteil", "Kopf weit in den Nacken gelegt"] },
+        { text: ", um " },
+        { luecke: true, id: "w5", wFrage: "Warum?", correct: "den Atemweg zu schützen, die Schluckgeschwindigkeit zu verlangsamen und Aspiration zu verhindern", optionen: ["den Atemweg zu schützen, die Schluckgeschwindigkeit zu verlangsamen und Aspiration zu verhindern", "die Patientin schneller satt zu bekommen", "den Ehemann zu entlasten"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Fachperson muss Erstgabe überwachen, Ehemann erst nach Anleitung), <strong>Wann</strong> (Wachheit ist essenziell für den Schluckreflex), <strong>Was</strong> (Andicken bremst die Fließgeschwindigkeit, gibt Zeit zum Schlucken. Mischkonsistenzen wie Suppe mit Einlage sind gefährlich!), <strong>Wie</strong> (90° Sitz, Kinn zur Brust/Chin-Tuck verengt den Kehlkopfeingang und schützt die Luftröhre), <strong>Warum</strong> (Aspirationspneumonie verhindern)."
+    },
+    {
+      cluster: "sich-waschen", clusterName: "Selbstversorgungsdefizit / Neglect",
+      ziel: "Waschtraining mit Guiding, Wahrnehmung rechts fördern",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegefachperson", optionen: ["Pflegefachperson", "Reinigungskraft", "Ehemann"] },
+        { text: " führt die Körperpflege " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "am Waschbecken (sobald kreislaufstabil) oder an der Bettkante", optionen: ["am Waschbecken (sobald kreislaufstabil) oder an der Bettkante", "schnell im Bett liegend", "nur abends"] },
+        { text: " durch und nähert sich dabei von der " },
+        { luecke: true, id: "w3", wFrage: "Wo?", correct: "betroffenen (rechten) Seite, um die Aufmerksamkeit dorthin zu lenken", optionen: ["betroffenen (rechten) Seite, um die Aufmerksamkeit dorthin zu lenken", "gesunden (linken) Seite, damit es einfacher ist", "Fußseite"] },
+        { text: ". Sie nutzt die Technik des " },
+        { luecke: true, id: "w4", wFrage: "Was?", correct: "Guidings (Führen der gelähmten Hand zum Gesicht)", optionen: ["Guidings (Führen der gelähmten Hand zum Gesicht)", "vollständigen Übernehmens", "verbalen Befehls"] },
+        { text: ", um " },
+        { luecke: true, id: "w5", wFrage: "Warum?", correct: "die Körperwahrnehmung auf der Neglect-Seite zu stimulieren und neuronale Plastizität zu fördern (Bobath-Konzept)", optionen: ["die Körperwahrnehmung auf der Neglect-Seite zu stimulieren und neuronale Plastizität zu fördern (Bobath-Konzept)", "die Zeit effizient zu nutzen", "die gesunde Seite zu schonen"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wo</strong> (Annäherung von der betroffenen Seite zwingt das Gehirn, den Neglect zu überwinden – Bobath-Prinzip), <strong>Was</strong> (Guiding: Nicht *für* den Patienten waschen, sondern *mit* seiner Hand. Das gibt sensorisches Feedback an das Gehirn), <strong>Warum</strong> (Neuronale Plastizität: Das Gehirn lernt durch Spüren. 'Use it or lose it')."
+    },
+    {
+      cluster: "kommunizieren", clusterName: "Kommunikation / Aphasie",
+      ziel: "Bedürfnisse mitteilen mittels Bildtafel",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Alle an der Versorgung Beteiligten (Pflege, Ärzte, Ehemann)", optionen: ["Alle an der Versorgung Beteiligten (Pflege, Ärzte, Ehemann)", "Nur die Logopädin", "Nur die Pflege"] },
+        { text: " nutzen bei der Kommunikation " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "immer bei Kontaktaufnahme", optionen: ["immer bei Kontaktaufnahme", "nur bei der Visite", "nur wenn die Patientin schreit"] },
+        { text: " " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "geschlossene Fragen (Ja/Nein), Bildkarten und geduldiges Warten auf Reaktion", optionen: ["geschlossene Fragen (Ja/Nein), Bildkarten und geduldiges Warten auf Reaktion", "lange, komplexe Sätze", "lautes Sprechen und mehrfaches Wiederholen"] },
+        { text: " " },
+        { luecke: true, id: "w4", wFrage: "Wo?", correct: "auf Augenhöhe, mit Blickkontakt und möglichst reizarm", optionen: ["auf Augenhöhe, mit Blickkontakt und möglichst reizarm", "vom Türrahmen aus", "während mehrere Personen gleichzeitig sprechen"] },
+        { text: ", um " },
+        { luecke: true, id: "w5", wFrage: "Warum?", correct: "Frustration zu senken und der Patientin eine verlässliche Verständigung über Grundbedürfnisse zu ermöglichen", optionen: ["Frustration zu senken und der Patientin eine verlässliche Verständigung über Grundbedürfnisse zu ermöglichen", "Zeit zu sparen und Nachfragen zu vermeiden", "die Sprachtherapie zu ersetzen"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Kommunikationsstrategie muss im Team einheitlich sein – sonst wird Frau Nguyen jedes Mal neu überfordert), <strong>Wann</strong> (Konsequent bei jeder Kontaktaufnahme), <strong>Was</strong> (kurze Ja/Nein-Fragen, Bildkarten, Pausen lassen), <strong>Wo</strong> (Augenhöhe und reizarm unterstützen die Konzentration), <strong>Warum</strong> (Aphasie bedeutet nicht fehlendes Verstehen – die Patientin braucht eine passende Ausdrucksmöglichkeit)."
+    }
+  ],
+
+  evaluation: [
+    {
+      cluster: "essen-trinken", clusterName: "Schluckstörung / Aspirationsgefahr",
+      ziel: "Aspirationsfreie Nahrungsaufnahme mit angedickter Kost, Edukation Ehemann",
+      verlauf: "Später am Vormittag erhält Frau Nguyen angedickte Flüssigkeit (Stufe 2) in aufrechter Sitzposition. Sie trinkt langsam in kleinen Schlucken. Es kommt zu keinem Hustenreiz, die Stimme bleibt klar. Der Ehemann beobachtet die Maßnahme und kann anschließend drei Regeln benennen: aufrecht sitzen, kleine Portionen, langsam anreichen.",
+      fragen: {
+        zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Richtig! Keine Hustenattacke, keine gurgelnde Stimme und der Ehemann kann die Sicherheitsregeln benennen – alle Zielkriterien wurden erreicht.", "Teilweise erreicht": "Hier ist mehr gelungen als nur teilweise: Die Nahrungsaufnahme war aspiratonsfrei und die Angehörigenedukation war erfolgreich.", "Nicht erreicht": "Doch – genau die relevanten Zielkriterien wurden erreicht (sichere Konsistenz, Sitzposition, kein Husten, Wissen beim Ehemann)." }
+        },
+        massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Richtig! Die Maßnahme wirkt. Wichtig ist jetzt die konsequente Fortführung und ggf. logopädische Abklärung.", "Anpassen": "Aktuell gibt es keinen Grund zur Änderung – die Maßnahme hat genau das Problem adressiert.", "Beenden": "Zu früh. Das Aspirationsrisiko besteht weiterhin nach Schlaganfall; die Schutzmaßnahmen müssen fortgeführt werden." }
+        },
+        begruendung: { correct: "bg1b",
+          optionen: [
+            { id: "bg1a", text: "Da Frau Nguyen jetzt trinken kann, darf sie wieder normales Wasser aus dem Glas trinken." },
+            { id: "bg1b", text: "Die angepasste Konsistenz und das langsame Anreichen haben die Aspiration verhindert. Die Maßnahme wird beibehalten und der Ehemann weiter angeleitet." },
+            { id: "bg1c", text: "Die Stimme war vorher gurgelnd, daher sollte die orale Ernährung grundsätzlich dauerhaft beendet werden." }
+          ],
+          feedback: { "bg1a": "Noch nicht. Bei Dysphagie ist die Konsistenzanpassung zentral – klares Wasser war ja der Auslöser des Verschluckens.", "bg1b": "Genau! Das ist pflegerisch sauber begründet und verbindet Patientensicherheit mit Angehörigenedukation.", "bg1c": "Zu radikal. Es geht um sichere orale Nahrungsaufnahme, nicht um pauschales Verbot." }
+        }
+      }
+    },
+    {
+      cluster: "sich-waschen", clusterName: "Selbstversorgungsdefizit / Neglect",
+      ziel: "Waschtraining mit Guiding, Blickzuwendung zur rechten Seite",
+      verlauf: "Bei der nächsten Teilkörperpflege führt die Pflegefachperson die rechte Hand von Frau Nguyen an einen Waschlappen (Guiding). Frau Nguyen wäscht mit Unterstützung beide Gesichtshälften. Auf Ansprache und durch Positionierung von rechts richtet sie den Blick mehrfach zur betroffenen Seite. Der rechte Arm wird anschließend korrekt gelagert.",
+      fragen: {
+        zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Richtig! Genau das Ziel wurde beschrieben: beidseitige Waschung mit Guiding und wiederholte Blickzuwendung nach rechts.", "Teilweise erreicht": "Die Zielkriterien sind vollständig erfüllt – mit Unterstützung zu waschen ist hier ausdrücklich Teil des Ziels.", "Nicht erreicht": "Doch. Es geht nicht um vollständige Selbstständigkeit, sondern um aktivierende Pflege mit Einbezug der Neglect-Seite." }
+        },
+        massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Richtig! Guiding und Annäherung von rechts sind wirksam und sollten konsequent fortgeführt werden.", "Anpassen": "Eine Anpassung ist aktuell nicht nötig – die Maßnahmen greifen bereits.", "Beenden": "Das wäre kontraproduktiv. Neglect braucht Wiederholung und konsequente Stimulation." }
+        },
+        begruendung: { correct: "bg2b",
+          optionen: [
+            { id: "bg2a", text: "Da die Patientin Unterstützung braucht, sollte die Pflege die Körperpflege künftig vollständig übernehmen." },
+            { id: "bg2b", text: "Guiding und die Annäherung von rechts fördern Wahrnehmung und Aktivierung der betroffenen Seite. Deshalb werden diese Maßnahmen weitergeführt." },
+            { id: "bg2c", text: "Neglect betrifft nur das Sehen, daher ist Lagerung des Arms nicht relevant." }
+          ],
+          feedback: { "bg2a": "Das würde Reha-Potenzial verschenken. Aktivierung ist hier wichtiger als Schnelligkeit.", "bg2b": "Genau – das ist Bobath-orientierte, reaktivierende Pflege.", "bg2c": "Falsch. Neglect + Hemiparese erhöhen das Risiko für Fehlhaltung/Verletzung des Arms deutlich." }
+        }
+      }
+    },
+    {
+      cluster: "kommunizieren", clusterName: "Kommunikation / Aphasie",
+      ziel: "Mitteilung von Grundbedürfnissen über Bildtafel / Ja-Nein",
+      verlauf: "Im Spätdienst wird eine einfache Bildtafel eingesetzt (Trinken, Schmerzen, Toilette). Frau Nguyen zeigt auf 'Trinken' und nickt auf die Ja/Nein-Frage, ob sie Durst hat. Bei Zeitdruck durch eine andere Kollegin werden jedoch kurzzeitig wieder mehrere Fragen hintereinander gestellt; Frau Nguyen wirkt dann sichtbar frustriert und zieht sich zurück.",
+      fragen: {
+        zielErreicht: { correct: "Teilweise erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Nicht ganz. Die Verständigung klappt bereits teilweise, aber sie ist noch nicht durchgängig teamweit stabil umgesetzt.", "Teilweise erreicht": "Richtig! Die Patientin konnte ein Grundbedürfnis mitteilen, aber die Strategie wird noch nicht konstant von allen angewandt.", "Nicht erreicht": "Doch, es gab schon einen klaren Erfolg mit Bildtafel und Ja/Nein-Kommunikation." }
+        },
+        massnahme: { correct: "Anpassen", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Nicht ganz. Die Maßnahme ist grundsätzlich richtig, aber die Umsetzung muss im Team verbindlicher gemacht werden.", "Anpassen": "Richtig! Die Kommunikationshilfe funktioniert, aber sie muss als Teamstandard klar abgesprochen werden (kurze Fragen, Wartezeit, Bildtafel griffbereit).", "Beenden": "Auf keinen Fall – gerade die erste erfolgreiche Verständigung zeigt, dass die Maßnahme sinnvoll ist." }
+        },
+        begruendung: { correct: "bg3b",
+          optionen: [
+            { id: "bg3a", text: "Da Frau Nguyen frustriert wirkt, sollte man Kommunikation auf das Nötigste reduzieren." },
+            { id: "bg3b", text: "Die Strategie funktioniert, wenn sie konsequent angewandt wird. Daher wird sie teamweit vereinbart und die Bildtafel sichtbar am Bett platziert." },
+            { id: "bg3c", text: "Aphasie kann nur die Logopädie behandeln, pflegerische Kommunikation spielt keine Rolle." }
+          ],
+          feedback: { "bg3a": "Frustration sinkt eher durch gelingende Kommunikation – nicht durch Rückzug.", "bg3b": "Genau! Der Knackpunkt ist die einheitliche Anwendung im Team.", "bg3c": "Falsch. Pflegekommunikation ist im Alltag zentral und ergänzt die logopädische Therapie." }
+        }
+      }
+    }
+  ]
+};
+
+const fall8 = {
+  titel: "Frau Erna Schmidt, 84 Jahre",
+  setting: "Akutpflege / Alterstraumatologie",
+  schwierigkeit: "mittel",
+  text: `Frau Erna Schmidt (84 Jahre) ist vor drei Tagen in ihrer Wohnung nachts auf dem Weg zur Toilette gestürzt. Diagnose: Mediale Schenkelhalsfraktur rechts. Sie wurde am selben Tag mit einer Totalendoprothese (Hüft-TEP) versorgt. Laut ärztlicher Anordnung ist das rechte Bein vollbelastbar. Vor dem Sturz hat sie sich in ihrer Wohnung mit einem Gehstock noch selbstständig versorgt.
+
+Bei der Übergabe berichtet der Nachtdienst, dass Frau Schmidt fast durchgehend auf dem Rücken liegt und sich kaum im Bett bewegt. Als du zur Morgenpflege ins Zimmer kommst, liegt sie völlig passiv im Bett. Du bietest ihr an, sie für die Wäsche am Waschbecken mit dem Rollator zu mobilisieren. Sie klammert sich sofort ans Bettgitter und ruft panisch: 'Nein, bloß nicht! Wenn ich aufstehe, falle ich wieder hin und breche mir noch mehr!' Der Rollator steht ungenutzt in der Ecke.
+
+Bei der Inspektion der Haut fällt dir auf, dass die rechte Ferse leicht gerötet ist (Fingertest: Rötung ist nicht wegdrückbar). Der postoperative Wundverband an der rechten Hüfte ist reizlos.
+Auf ihrem Nachttisch steht noch fast der gesamte Tee von gestern. Sie hat in den letzten 24 Stunden maximal 400 ml getrunken. Ihre Lippen sind trocken und rissig. Sie sagt: 'Ich habe keinen Durst. Und wenn ich trinke, muss ich wieder auf Toilette und falle hin.'`,
+
+  cues: [
+    { id: "c1",  text: "84 Jahre, Z.n. Sturz nachts in der Wohnung",                  relevant: true,  cluster: "sich-bewegen",
+      grund: "Das Sturzereignis ist das Trauma, das die aktuelle extreme Sturzangst psychologisch erklärt.",
+      clusterGrund: "Auslöser für die aktuelle Immobilität und Angst – ATL Sich bewegen." },
+    { id: "c2",  text: "Hüft-TEP rechts vor 3 Tagen, vollbelastbar",                  relevant: true,  cluster: "sich-bewegen",
+      grund: "Wichtige chirurgische Information: Körperlich DARF sie aufstehen und belasten. Die Barriere ist psychologisch (Angst) und muskulär.",
+      clusterGrund: "Voraussetzung für die Mobilisation – ATL Sich bewegen." },
+    { id: "c3",  text: "Vorher selbstständig mit Gehstock",                           relevant: true,  cluster: "sich-bewegen",
+      grund: "Eine enorme Ressource! Sie kennt den aufrechten Gang mit Hilfsmitteln. Rehabilitationsziel ist die Rückkehr zu diesem Zustand.",
+      clusterGrund: "Ressource für die Pflegeplanung – ATL Sich bewegen." },
+    { id: "c4",  text: "Liegt fast durchgehend passiv auf dem Rücken",                relevant: true,  cluster: "haut",
+      grund: "Absolute Immobilität ist der Hauptrisikofaktor für Dekubitus, Pneumonie und Thrombose.",
+      clusterGrund: "Gefährdet die Hautdurchblutung an Prädilektionsstellen – ATL Für Sicherheit sorgen (Haut)." },
+    { id: "c5",  text: "Klammert sich ans Bettgitter ('Ich falle wieder!')",          relevant: true,  cluster: "sich-bewegen",
+      grund: "Post-Fall-Syndrom (Sturzangst). Diese Angst blockiert jede Pflegehandlung und muss validiert und schrittweise abgebaut werden.",
+      clusterGrund: "Sichtbarer Ausdruck der Sturzangst – ATL Sich bewegen / Kommunizieren." },
+    { id: "c6",  text: "Rechte Ferse leicht gerötet (nicht wegdrückbar)",             relevant: true,  cluster: "haut",
+      grund: "Ein Dekubitus Grad 1! Alarmzeichen. Das rechte Bein ist durch die OP ohnehin schwerer beweglich, die Ferse liegt dauerhaft auf.",
+      clusterGrund: "Manifestes Hautproblem, sofortiger Handlungsbedarf – ATL Für Sicherheit sorgen (Haut)." },
+    { id: "c7",  text: "Postoperativer Wundverband an der rechten Hüfte ist reizlos",  relevant: false, cluster: null,
+      grund: "Der reizlose OP-Verband an der Hüfte ist aktuell kein akutes Pflegeproblem im Vergleich zu Sturzangst, Dekubitus und Exsikkosegefahr. Daher hier bewusst ein Distraktor.",
+      clusterGrund: "" },
+    { id: "c8",  text: "Trinkmenge in 24h: maximal 400 ml",                           relevant: true,  cluster: "essen-trinken",
+      grund: "Akute Gefahr der Exsikkose. Bei alten Menschen führt das schnell zu Verwirrtheit (Delir) und verschlechtert die Hautturgor.",
+      clusterGrund: "Deutliches Flüssigkeitsdefizit – ATL Essen und Trinken." },
+    { id: "c9",  text: "Lippen sind trocken und rissig",                              relevant: true,  cluster: "essen-trinken",
+      grund: "Klinisches Zeichen (Symptom) der beginnenden Exsikkose.",
+      clusterGrund: "Körperliches Symptom des Flüssigkeitsmangels – ATL Essen und Trinken." },
+    { id: "c10", text: "Vermeidet Trinken aus Angst vor dem Toilettengang",           relevant: true,  cluster: "essen-trinken",
+      grund: "Hier verknüpfen sich zwei Probleme: Die Sturzangst ist die Ursache für die Mangeltrinkmenge. Klassisches geriatrisches Muster.",
+      clusterGrund: "Erklärt die Ursache des Trinkverhaltens – ATL Essen und Trinken." },
+    { id: "c11", text: "Rollator steht ungenutzt in der Ecke",                        relevant: true,  cluster: "sich-bewegen",
+      grund: "Hilfsmittel ist vorhanden, wird aber nicht genutzt. Edukation und Anleitung fehlen.",
+      clusterGrund: "Ungenutzte Ressource zur Sturzprophylaxe – ATL Sich bewegen." },
+    { id: "c12", text: "Nachtdienst übergibt Passivität",                             relevant: false, cluster: null,
+      grund: "Kontextinformation. Wichtig ist deine eigene Beobachtung am Morgen.",
+      clusterGrund: "" }
+  ],
+
+  clusters: [
+    { id: "haut", name: "ATL: Für Sicherheit sorgen (Dekubitusrisiko)", correctCues: ["c4", "c6"] },
+    { id: "essen-trinken", name: "ATL: Essen und Trinken (Flüssigkeitsdefizit)", correctCues: ["c8", "c9", "c10"] },
+    { id: "sich-bewegen", name: "ATL: Sich bewegen (Mobilität & Sturzangst)", correctCues: ["c1", "c2", "c3", "c5", "c11"] }
+  ],
+
+  pes: [
+    {
+          cluster: "haut", clusterName: "Dekubitus (Grad 1)",
+          bausteine: [
+            { id: "b2a", text: "Gewebebeeinträchtigung: Dekubitus Grad 1 an der rechten Ferse", type: "P" },
+            { id: "b2b", text: "Anhaltende Bettlägerigkeit (Rückenlage) und mangelnde Eigenbewegung des operierten Beins", type: "E" },
+            { id: "b2c", text: "Nicht wegdrückbare Rötung (Fingertest positiv) an der Ferse", type: "S" },
+            { id: "b2d", text: "Hüft-TEP ist vollbelastbar", type: "X" },
+          ],
+          explanation: "Hier liegt bereits ein manifestes <strong>Problem</strong> (P) vor: Ein Dekubitus Grad 1. Die <strong>Ursache</strong> (E) sind Druck und Scherkräfte durch die absolute Passivität im Bett. Das <strong>Symptom</strong> (S) ist die klassische nicht-wegdrückbare Rötung. Dass das Bein belastbar ist, ist eine Ressource, aber keine Ursache für den Druck."
+        },
+    {
+          cluster: "essen-trinken", clusterName: "Flüssigkeitsdefizit / Exsikkosegefahr",
+          bausteine: [
+            { id: "b3a", text: "Flüssigkeitsdefizit und Gefahr einer Exsikkose (Austrocknung)", type: "P" },
+            { id: "b3b", text: "Bewusste Trinkverweigerung aus Angst, zur Toilette gehen zu müssen (und dort zu stürzen)", type: "E" },
+            { id: "b3c", text: "Maximal 400 ml Trinkmenge in 24h, trockene, rissige Lippen", type: "S" },
+            { id: "b3d", text: "Rollator steht ungenutzt in der Ecke", type: "X" },
+          ],
+          explanation: "Das <strong>Problem</strong> (P) ist das klare Flüssigkeitsdefizit. Die <strong>Ursache</strong> (E) ist hier besonders: Sie trinkt nicht, weil sie Angst vor dem Toilettengang hat (Vermeidungsverhalten). Die <strong>Symptome</strong> (S) sind die gemessene Menge und die ausgetrockneten Lippen. Der Rollator hat hiermit primär nichts zu tun."
+        },
+    {
+          cluster: "sich-bewegen", clusterName: "Beeinträchtigte Mobilität & Sturzangst",
+          bausteine: [
+            { id: "b1a", text: "Beeinträchtigte körperliche Mobilität und Post-Fall-Syndrom (Sturzangst)", type: "P" },
+            { id: "b1b", text: "Traumatisches Sturzereignis, frische OP-Wunde, Verlust des Vertrauens in die eigene Kraft", type: "E" },
+            { id: "b1c", text: "Weigert sich aufzustehen, klammert sich fest, äußert panische Angst ('Ich falle wieder')", type: "S" },
+            { id: "b1d", text: "Trockene Lippen", type: "X" },
+          ],
+          explanation: "Das <strong>Problem</strong> (P) ist die Kombination aus Immobilität und starker Sturzangst. Die <strong>Ursache</strong> (E) ist das Sturztrauma selbst ('gebranntes Kind scheut das Feuer'). Die <strong>Symptome</strong> (S) sind die verbale Äußerung der Angst und das Abwehrverhalten. Trockene Lippen gehören zum Flüssigkeitsdefizit."
+        }
+  ],
+
+  smartZiele: [
+    {
+          cluster: "haut", clusterName: "Dekubitus (Grad 1)",
+          diagnose: "Dekubitus Grad 1 rechte Ferse",
+          optionen: [
+            { id: "sz2a", text: "Der Dekubitus an der Ferse heilt schnell ab.", correct: false,
+              feedback: "<strong>Zu ungenau (nicht SMART).</strong> Was heißt 'schnell'? Wie messen wir das? Bei Grad 1 heilt noch nichts ab (die Haut ist noch zu), die Rötung muss sich zurückbilden." },
+            { id: "sz2b", text: "Die Rötung an der rechten Ferse ist morgen früh vollständig abgeblasst, es entstehen keine neuen Hautschäden.", correct: true,
+              feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Rötung rechte Ferse. <em>Messbar:</em> Vollständig abgeblasst (Haut intakt). <em>Attraktiv:</em> Schmerz und offene Wunde werden verhindert. <em>Realistisch:</em> Ein Grad 1 erholt sich bei strikter Entlastung innerhalb von Stunden bis Tagen. <em>Terminiert:</em> Morgen früh." },
+            { id: "sz2c", text: "Die Pflegekraft cremt die Ferse dreimal täglich dick mit Melkfett ein.", correct: false,
+              feedback: "<strong>Fachlich falsch und keine Zielformulierung!</strong> Das ist eine (falsche) Maßnahme. Poren verschließen durch Fett begünstigt Mazeration. Druckentlastung ist das Mittel der Wahl!" }
+          ]
+        },
+    {
+          cluster: "essen-trinken", clusterName: "Flüssigkeitsdefizit / Exsikkosegefahr",
+          diagnose: "Gefahr der Exsikkose bei Trinkverweigerung",
+          optionen: [
+            { id: "sz3a", text: "Frau Schmidt trinkt sofort 2 Liter Wasser, um die Nieren durchzuspülen.", correct: false,
+              feedback: "<strong>Nicht realistisch.</strong> Eine 84-Jährige trinkt keine 2 Liter 'sofort'. Das würde auch den Magen überlasten und bei Herzinsuffizienz gefährlich sein." },
+            { id: "sz3b", text: "Frau Schmidt trinkt bis 18:00 Uhr zusätzlich zur jetzigen Menge schrittweise 800 ml ihres Lieblingstees und nutzt für den Toilettengang angstfrei den Nachtstuhl direkt am Bett.", correct: true,
+              feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> 800 ml Tee, Nutzung Nachtstuhl. <em>Messbar:</em> 800 ml bis 18 Uhr. <em>Attraktiv:</em> Lieblingstee und Nachtstuhl (nimmt die Sturzangst auf dem langen Weg zum Bad). <em>Realistisch:</em> 800 ml über den Tag verteilt sind machbar. <em>Terminiert:</em> Bis 18:00 Uhr." },
+            { id: "sz3c", text: "Wir hängen eine Infusion mit 1000ml NaCl an.", correct: false,
+              feedback: "<strong>Kein pflegerisches Ziel!</strong> Das ist eine ärztliche Maßnahme. Ziel der Pflege ist immer die Förderung der Eigenständigkeit (orale Aufnahme), solange dies möglich ist." }
+          ]
+        },
+    {
+          cluster: "sich-bewegen", clusterName: "Beeinträchtigte Mobilität & Sturzangst",
+          diagnose: "Beeinträchtigte Mobilität durch Sturzangst",
+          optionen: [
+            { id: "sz1a", text: "Frau Schmidt hat keine Angst mehr und läuft allein über den Flur.", correct: false,
+              feedback: "<strong>Nicht SMART und gefährlich.</strong> Nicht <em>realistisch</em>: Sturzangst verschwindet nicht an einem Tag. Allein laufen am 3. Tag post-OP ohne Anleitung ist ein massives Risiko." },
+            { id: "sz1b", text: "Frau Schmidt mobilisiert sich in der heutigen Frühschicht in Begleitung von 2 Pflegekräften und mit dem Rollator sicher bis vor das Waschbecken und äußert dabei ein Gefühl von Sicherheit.", correct: true,
+              feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> 2 PK, Rollator, bis zum Waschbecken. <em>Messbar:</em> Zielort erreicht, verbale Äußerung der Sicherheit. <em>Attraktiv:</em> 2 PK geben ihr die nötige Sicherheit gegen die Angst. <em>Realistisch:</em> Der kurze Weg ist am 3. Tag machbar. <em>Terminiert:</em> Heutige Frühschicht." },
+            { id: "sz1c", text: "Die Patientin wird im Bett gewaschen, damit sie nicht stürzt.", correct: false,
+              feedback: "<strong>Falscher Ansatz (Passivierende Pflege).</strong> Das ist kein patientenzentriertes Ziel, sondern eine Maßnahme, die zudem noch die Immobilität und das Dekubitusrisiko verschlimmert." }
+          ]
+        }
+  ],
+
+  sechsW: [
+    {
+          cluster: "haut", clusterName: "Dekubitus (Grad 1)",
+          ziel: "Vollständiges Abblassen der Fersenrötung",
+          teile: [
+            { text: "Die " },
+            { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegefachperson / Pflegehilfskraft", optionen: ["Pflegefachperson / Pflegehilfskraft", "Chirurg", "Reinigungsdienst"] },
+            { text: " führt " },
+            { luecke: true, id: "w2", wFrage: "Wann?", correct: "ab sofort und kontinuierlich (auch nachts)", optionen: ["ab sofort und kontinuierlich (auch nachts)", "nur nach dem Duschen", "einmal am Tag"] },
+            { text: " eine " },
+            { luecke: true, id: "w3", wFrage: "Was?", correct: "komplette Fersenfreilagerung (mit Kissen unter den Waden, Fersen 'schweben' in der Luft)", optionen: ["komplette Fersenfreilagerung (mit Kissen unter den Waden, Fersen 'schweben' in der Luft)", "Einreibung mit Vaseline", "Wickelung der Füße"] },
+            { text: " " },
+            { luecke: true, id: "w4", wFrage: "Wo?", correct: "im Pflegebett", optionen: ["im Pflegebett", "im Rollstuhl", "auf dem Boden"] },
+            { text: " durch, um " },
+            { luecke: true, id: "w5", wFrage: "Warum?", correct: "den Auflagedruck zu 100% zu entfernen und eine Durchblutung des Gewebes wiederherzustellen", optionen: ["den Auflagedruck zu 100% zu entfernen und eine Durchblutung des Gewebes wiederherzustellen", "die Beine zu wärmen", "den Fußabwärtsreflex zu trainieren"] },
+            { text: "." }
+          ],
+          feedbackDetail: "<strong>Wer</strong> (Basisaufgabe der Pflege), <strong>Wann</strong> (Ab sofort: Bei Grad 1 zählt jede Minute Druck), <strong>Was</strong> (Fersenfreilagerung [die Ferse muss hohlliegen] ist die einzige evidenzbasierte Maßnahme bei Fersendekubitus, Salben oder Ringe sind obsolet!), <strong>Wo</strong> (Im Bett), <strong>Warum</strong> (Wo kein Druck, da kein Dekubitus)."
+        },
+    {
+          cluster: "essen-trinken", clusterName: "Flüssigkeitsdefizit / Exsikkosegefahr",
+          ziel: "800ml Tee bis 18 Uhr, Nachtstuhl am Bett",
+          teile: [
+            { text: "Die " },
+            { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegefachperson", optionen: ["Pflegefachperson", "Diätassistentin", "Angehörige"] },
+            { text: " stellt " },
+            { luecke: true, id: "w2", wFrage: "Wann?", correct: "vor Beginn des Trinktrainings", optionen: ["vor Beginn des Trinktrainings", "erst wenn die Patientin muss", "nachts"] },
+            { text: " den " },
+            { luecke: true, id: "w3", wFrage: "Was?", correct: "Nachtstuhl (Toilettenstuhl) direkt griffbereit ans Bett und füllt 800ml Lieblingstee in kleine, leichte Becher", optionen: ["Nachtstuhl (Toilettenstuhl) direkt griffbereit ans Bett und füllt 800ml Lieblingstee in kleine, leichte Becher", "Blasenkatheter bereit", "Kaffeeautomaten ein"] },
+            { text: " " },
+            { luecke: true, id: "w4", wFrage: "Wo?", correct: "in direkte Sicht- und Greifweite auf den Nachttisch", optionen: ["in direkte Sicht- und Greifweite auf den Nachttisch", "auf das Fensterbrett", "in den Flur"] },
+            { text: ", um " },
+            { luecke: true, id: "w5", wFrage: "Warum?", correct: "der Patientin die Angst vor dem langen Weg zum Bad zu nehmen und sie dadurch indirekt zum Trinken zu motivieren", optionen: ["der Patientin die Angst vor dem langen Weg zum Bad zu nehmen und sie dadurch indirekt zum Trinken zu motivieren", "sie an den Stuhl zu fesseln", "die Nieren zu spülen"] },
+            { text: "." }
+          ],
+          feedbackDetail: "<strong>Wann & Was</strong> (Die Lösung für das Trinkproblem ist hier paradoxerweise die Toilette! Wenn der Nachtstuhl direkt am Bett steht, ist der 'gefährliche' Weg zum Bad weg. Das nimmt die Sturzängste und die Patientin traut sich wieder, Flüssigkeit aufzunehmen. Kleine Becher sind leichter zu heben als volle Krüge.)"
+        },
+    {
+          cluster: "sich-bewegen", clusterName: "Beeinträchtigte Mobilität & Sturzangst",
+          ziel: "Sicherer Transfer ans Waschbecken mit 2 PK",
+          teile: [
+            { text: "Die " },
+            { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegefachperson zusammen mit einer zweiten Kraft (Schüler/Hilfskraft)", optionen: ["Pflegefachperson zusammen mit einer zweiten Kraft (Schüler/Hilfskraft)", "Tochter der Patientin", "Physiotherapeut allein"] },
+            { text: " mobilisiert Frau Schmidt " },
+            { luecke: true, id: "w2", wFrage: "Wann?", correct: "zur Morgenpflege (im ausgeruhten Zustand)", optionen: ["zur Morgenpflege (im ausgeruhten Zustand)", "direkt nach dem Mittagessen", "mitten in der Nacht"] },
+            { text: " " },
+            { luecke: true, id: "w3", wFrage: "Was?", correct: "schrittweise über die Bettkante, lässt sie dort kurz sitzen (Kreislauf) und begleitet sie dann mit dem Rollator", optionen: ["schrittweise über die Bettkante, lässt sie dort kurz sitzen (Kreislauf) und begleitet sie dann mit dem Rollator", "durch hastiges Hochziehen an den Armen", "mit dem Rollstuhl"] },
+            { text: " " },
+            { luecke: true, id: "w4", wFrage: "Wo?", correct: "vom Bett zum Waschbecken im Zimmer", optionen: ["vom Bett zum Waschbecken im Zimmer", "über den gesamten Flur", "in den Speisesaal"] },
+            { text: ", um " },
+            { luecke: true, id: "w5", wFrage: "Warum?", correct: "durch Präsenz maximale Sicherheit zu vermitteln, die Sturzangst abzubauen und Thrombose/Pneumonie vorzubeugen", optionen: ["durch Präsenz maximale Sicherheit zu vermitteln, die Sturzangst abzubauen und Thrombose/Pneumonie vorzubeugen", "die Muskeln maximal zu überlasten", "das Bettlaken leichter wechseln zu können"] },
+            { text: "." }
+          ],
+          feedbackDetail: "<strong>Wer</strong> (Zu zweit: Eine PK sichert den Rollator, die andere steht eng an der operierten Seite = maximale Sicherheit bei Panik), <strong>Wann</strong> (Morgens ist die meiste Energie da), <strong>Was</strong> (Schrittweise: Erst Kreislauf an Bettkante stabilisieren lassen!), <strong>Wo</strong> (Kurzer, machbarer Weg zum Waschbecken), <strong>Warum</strong> (Sicherheit geben ist der einzige Weg, die Sturzangst zu überwinden)."
+        }
+  ],
+
+  evaluation: [
+    {
+          cluster: "haut", clusterName: "Dekubitus (Grad 1)",
+          ziel: "Vollständiges Abblassen der Fersenrötung",
+          verlauf: "Tag 4 (Frühdienst): Du überprüfst die rechte Ferse. Sie lag die ganze Nacht hohl (auf einem Kissen ab den Waden). Die Haut an der Ferse ist intakt, die gestrige Rötung ist komplett verschwunden. Der Fingertest zeigt eine normale Durchblutung.",
+          fragen: {
+            zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+              feedback: { "Vollständig erreicht": "Richtig! Das ist der Best-Case bei einem Dekubitus Grad 1. Durch 100%ige Druckentlastung hat sich das Gewebe über Nacht erholt.", "Teilweise erreicht": "Die Rötung ist komplett weg, also Ziel voll erreicht.", "Nicht erreicht": "Genauer lesen: Die Rötung ist verschwunden." }
+            },
+            massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+              feedback: { "Beibehalten": "Richtig! Die Ferse ist zwar jetzt wieder rosig, aber sobald sie wieder stundenlang aufliegt, entsteht sofort ein neuer Dekubitus. Die Freilagerung im Bett bleibt Standard.", "Anpassen": "Die Maßnahme funktioniert perfekt, keine Anpassung nötig.", "Beenden": "Gefährlich! Das Gewebe ist stark vorgeschädigt. Beenden der Freilagerung führt sofort zum Rückfall." }
+            },
+            begruendung: { correct: "bg2b",
+              optionen: [
+                { id: "bg2a", text: "Der Dekubitus ist geheilt, die Ferse kann wieder normal auf der Matratze liegen." },
+                { id: "bg2b", text: "Die konsequente Druckentlastung war erfolgreich. Da die Immobilität im Bett weiterhin hoch ist, muss die Freilagerung prophylaktisch beibehalten werden." },
+                { id: "bg2c", text: "Wir wickeln den Fuß jetzt präventiv ein." }
+              ],
+              feedback: { "bg2a": "Grad 1 heilt schnell, kommt aber noch schneller zurück, wenn die Ursache (Druck im Bett) nicht beseitigt bleibt.", "bg2b": "Genau. Prophylaxe endet nicht, wenn das Problem gelöst ist, sondern erst, wenn das *Risiko* (Immobilität) weg ist.", "bg2c": "Einwickeln erzeugt neuen Druck/Scherkräfte." }
+            }
+          }
+        },
+    {
+          cluster: "essen-trinken", clusterName: "Flüssigkeitsdefizit / Exsikkosegefahr",
+          ziel: "800ml Tee bis 18 Uhr, Nutzung Nachtstuhl",
+          verlauf: "Tag 3 (18:00 Uhr): Der Nachtstuhl steht direkt neben dem Bett. Frau Schmidt hat ihn heute zweimal mit deiner Hilfe genutzt. Auf dem Nachttisch steht eine Kanne Kamillentee. Von den angebotenen 800ml hat sie 600ml getrunken. Sie wirkt etwas wacher, die Lippen sind aber noch trocken.",
+          fragen: {
+            zielErreicht: { correct: "Teilweise erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+              feedback: { "Vollständig erreicht": "Nicht ganz. Sie hat 600ml statt der geforderten 800ml getrunken und die Lippen sind noch trocken.", "Teilweise erreicht": "Richtig! Die Maßnahme (Nachtstuhl) hat die Angst genommen und sie trinkt wieder mehr (600ml). Aber das Mengen-Ziel (800ml) wurde noch nicht ganz erreicht.", "Nicht erreicht": "Sie hat getrunken und die Toilette genutzt. Das ist ein deutlicher Fortschritt." }
+            },
+            massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+              feedback: { "Beibehalten": "Richtig. Die Strategie (Nachtstuhl am Bett = Angst weg = Patientin trinkt) ist goldrichtig. Sie braucht nur noch etwas Zeit, um den Rückstand aufzuholen.", "Anpassen": "Die Strategie stimmt. Man könnte evtl. das Getränk variieren, aber das Grundprinzip bleibt.", "Beenden": "Wenn wir den Stuhl wegnehmen, hört sie wieder auf zu trinken." }
+            },
+            begruendung: { correct: "bg3b",
+              optionen: [
+                { id: "bg3a", text: "Sie hat zu wenig getrunken, der Arzt muss eine Infusion anordnen." },
+                { id: "bg3b", text: "Der Zusammenhang zwischen Toilettenangst und Trinkverweigerung wurde erfolgreich durchbrochen. Das Trinktraining wird mit viel Zuspruch fortgesetzt." },
+                { id: "bg3c", text: "Wir zwingen sie abends, die restlichen 200ml schnell auszutrinken." }
+              ],
+              feedback: { "bg3a": "600ml oral sind besser als nichts. Eine Infusion ist aktuell nicht zwingend nötig, da sie auf dem richtigen Weg ist.", "bg3b": "Genau! Clinical Reasoning bedeutet hier: Das zugrundeliegende Problem (Angst) wurde gelöst, jetzt folgt die Besserung des Symptoms (Trinkmenge) nach und nach.", "bg3c": "Zwang ist ethisch unzulässig und führt zu Aspiration oder Ablehnung." }
+            }
+          }
+        },
+    {
+          cluster: "sich-bewegen", clusterName: "Beeinträchtigte Mobilität & Sturzangst",
+          ziel: "Sicherer Transfer ans Waschbecken mit 2 PK",
+          verlauf: "Tag 3 (Morgenpflege): Du kommst mit einer Schülerin ins Zimmer. Frau Schmidt zögert, lässt sich aber an die Bettkante mobilisieren. Eine Pflegekraft steht eng an ihrer Seite, die andere hält den Rollator. Sie steht auf, zittert leicht, klammert sich aber an die Griffe. Nach drei Schritten am Waschbecken sagt sie tief durchatmend: 'Puh, das ging ja doch. Wenn Sie mich so gut festhalten, traue ich mich das heute Mittag nochmal.'",
+          fragen: {
+            zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+              feedback: { "Vollständig erreicht": "Richtig! Sie hat den Ort (Waschbecken) erreicht, 2 PK waren dabei und das Wichtigste: Sie hat ein Gefühl von Sicherheit geäußert ('traue ich mich nochmal'). Ein riesiger Erfolg bei Sturzangst!", "Teilweise erreicht": "Guck nochmal genau hin: Sie stand am Waschbecken, hat den Rollator genutzt und fühlte sich sicher. Alles Kriterien erfüllt.", "Nicht erreicht": "Im Gegenteil! Sie hat das Vermeidungsverhalten durchbrochen." }
+            },
+            massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+              feedback: { "Beibehalten": "Richtig! Die 2-Personen-Begleitung gibt ihr aktuell die nötige Sicherheit. Das muss so beibehalten werden, bis sie muskulär und psychisch stabiler ist.", "Anpassen": "Jetzt auf 1 Pflegekraft zu reduzieren, würde die Angst sofort zurückbringen. Erst Vertrauen festigen!", "Beenden": "Bettruhe wäre hier fatal." }
+            },
+            begruendung: { correct: "bg1b",
+              optionen: [
+                { id: "bg1a", text: "Sie kann jetzt wieder alleine laufen, wir lassen den Rollator am Bett." },
+                { id: "bg1b", text: "Die physische Präsenz von 2 Pflegekräften hat die Sturzangst durchbrochen. Dieses sichere Setting wird für die nächsten Transfers beibehalten." },
+                { id: "bg1c", text: "Das Zittern zeigt, dass die Muskeln zu schwach sind. Strenge Bettruhe ist nötig." }
+              ],
+              feedback: { "bg1a": "Viel zu früh! Sie braucht weiterhin Begleitung.", "bg1b": "Genau! In der Alterstraumatologie baut man Selbstvertrauen auf, indem man anfangs 'überversorgt' (2 PK) und die Hilfe dann langsam ausschleicht.", "bg1c": "Zittern (Tremor/Schwäche) ist nach Tagen im Bett normal. Das ist ein Grund FÜR das Training, nicht dagegen." }
+            }
+          }
+        }
+  ]
+};
+
+const faelle = [fall1, fall2, fall3, fall4, fall5, fall6, fall7, fall8];
 let verbleibendeFaelle = faelle.slice().sort(function() { return Math.random() - 0.5; });
 let fall = verbleibendeFaelle.pop();
 
@@ -2109,6 +3062,9 @@ let sechsWScores = [0, 0, 0];
 let evalScores = [0, 0, 0];
 let cuesFeedbackShown = false;
 let clusterFeedbackShown = false;
+
+// Modus
+let modus = 'lernen'; // 'lernen' | 'pruefung' (Standard vorausgewählt)
 
 // Streak-System
 let currentStreak = 0;
@@ -2208,7 +3164,7 @@ function render() {
   updateStepper();
   // Intro-Text nur auf Startseite zeigen
   var intro = document.getElementById('intro-text');
-  if (intro) intro.style.display = currentStep === 0 ? '' : 'none';
+  if (intro) intro.style.display = (currentStep === 0 && modus !== 'pruefung') ? '' : 'none';
   switch(currentStep) {
     case 0: renderStep0(); break;
     case 1: renderStep1(); break;
@@ -2219,15 +3175,21 @@ function render() {
     case 6: renderStep6Eval(); break;
     case 7: renderStepResult(); break;
   }
+  document.body.classList.toggle('exam-mode', modus === 'pruefung');
+  document.querySelectorAll('.orientation').forEach(function(el){ el.style.display = (modus === 'pruefung') ? 'none' : ''; });
   btnBack.classList.toggle('hidden', currentStep === 0 || currentStep === 7);
   if (currentStep === 0) btnNext.textContent = 'Weiter \u2192';
-  else if (currentStep === 1) btnNext.textContent = 'Auswertung: Cues prüfen';
-  else if (currentStep === 2) btnNext.textContent = 'Auswertung: Cluster prüfen';
-  else if (currentStep === 3) btnNext.textContent = 'Auswertung: PES prüfen';
-  else if (currentStep === 4) btnNext.textContent = 'Auswertung: Ziel prüfen';
-  else if (currentStep === 5) btnNext.textContent = 'Auswertung: Maßnahme prüfen';
-  else if (currentStep === 6) btnNext.textContent = 'Auswertung: Evaluation prüfen';
-  else if (currentStep === 7) btnNext.textContent = '\u21BB Nochmal versuchen';
+  else if (currentStep === 1) btnNext.textContent = (modus === 'pruefung' ? 'Weiter \u2192' : 'Auswertung: Cues prüfen');
+  else if (currentStep === 2) btnNext.textContent = (modus === 'pruefung' ? 'Weiter \u2192' : 'Auswertung: Cluster prüfen');
+  else if (currentStep === 3) btnNext.textContent = (modus === 'pruefung' ? 'Weiter \u2192' : 'Auswertung: PES prüfen');
+  else if (currentStep === 4) btnNext.textContent = (modus === 'pruefung' ? 'Weiter \u2192' : 'Auswertung: Ziel prüfen');
+  else if (currentStep === 5) btnNext.textContent = (modus === 'pruefung' ? 'Weiter \u2192' : 'Auswertung: Maßnahme prüfen');
+  else if (currentStep === 6) btnNext.textContent = (modus === 'pruefung' ? 'Weiter \u2192' : 'Auswertung: Evaluation prüfen');
+  else if (currentStep === 7) btnNext.textContent = 'Neuen Fall starten';
+  btnNext.disabled = (currentStep === 0 && !modus);
+  btnNext.style.opacity = btnNext.disabled ? '.6' : '1';
+  btnNext.style.cursor = btnNext.disabled ? 'not-allowed' : '';
+  nav.classList.toggle('result-final', currentStep === 7);
 }
 
 function updateStepper() {
@@ -2255,29 +3217,65 @@ function renderStep0() {
       <div class="instruction">
         Lies das folgende Fallbeispiel aufmerksam durch. Achte auf alle Details – pflegerisch relevante und weniger relevante Informationen sind bewusst gemischt.
       </div>
+      <div class="mode-grid" id="modeGrid">
+        <div class="mode-card${modus==='lernen' ? ' active' : ''}" data-mode="lernen" tabindex="0" role="button">
+          <div class="mode-title"><span class="mode-dot"></span>Lernmodus</div>
+          <div class="mode-sub">Mit Erklärungen, Rückmeldungen und Hilfen zum Üben</div>
+        </div>
+        <div class="mode-card${modus==='pruefung' ? ' active' : ''}" data-mode="pruefung" tabindex="0" role="button">
+          <div class="mode-title"><span class="mode-dot"></span>Prüfungsmodus</div>
+          <div class="mode-sub">Ohne Hilfen – nur Aufgaben und direkte Kontrolle</div>
+        </div>
+      </div>
       <div class="fall-text">
-        <div class="fall-label">` + fall.titel + ' · ' + fall.setting + `</div>
+        <div class="fall-label">` + (function(){
+          var setting = fall.setting || fall.einsatzbereich || '';
+          var diffRaw = (fall.schwierigkeit || fall.schwierigkeitsgrad || fall.schwirigkeit || 'mittel').toString().toLowerCase().trim();
+          var diff = 'mittel';
+          if (diffRaw.indexOf('leicht') !== -1 || diffRaw.indexOf('einfach') !== -1) diff = 'leicht';
+          else if (diffRaw.indexOf('schwer') !== -1) diff = 'schwer';
+          else if (diffRaw.indexOf('mittel') !== -1) diff = 'mittel';
+          return fall.titel + ' · ' + setting + ' · ' + diff;
+        })() + `</div>
         ` + fall.text.split('\n\n').map(function(p){ return '<p style="margin-bottom:10px">' + p + '</p>'; }).join('') + `
       </div>` +
       (function() {
-        var hs = getHighscoreForFall(fall.titel);
+        var currentHs = getHighscoreForFall(fall.titel);
+        var hs = currentHs;
         var completed = getCompletedFaelleCount();
-        if (hs) {
-          return '<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px">' +
-            '<div style="flex:1;min-width:140px;padding:12px 16px;background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
-              '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.5;margin-bottom:4px">Dein Rekord</div>' +
-              '<div style="font-size:20px;font-weight:800;color:var(--accent)">' + hs.xp + ' <span style="font-size:13px;opacity:.6">/ 700 XP</span></div>' +
-            '</div>' +
-            '<div style="flex:1;min-width:140px;padding:12px 16px;background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
-              '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.5;margin-bottom:4px">Fälle bearbeitet</div>' +
-              '<div style="font-size:20px;font-weight:800;color:var(--accent)">' + completed + ' <span style="font-size:13px;opacity:.6">/ ' + faelle.length + '</span></div>' +
-            '</div>' +
-          '</div>';
-        }
-        return '';
+        var hsTitle = 'Dein Rekord (dieser Fall)';
+        if (!hs) return '';
+        var cards = '<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px">';
+        cards += '<div style="flex:1;min-width:140px;padding:12px 16px;background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
+          '<div class="fall-label" style="margin-bottom:4px">' + hsTitle + '</div>' +
+          '<div style="font-size:20px;font-weight:800;color:var(--accent)">' + hs.xp + ' <span style="font-size:13px;opacity:.6">/ 700 XP</span></div>' +
+        '</div>';
+        cards += '<div style="flex:1;min-width:140px;padding:12px 16px;background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
+          '<div class="fall-label" style="margin-bottom:4px">Fälle bearbeitet</div>' +
+          '<div style="font-size:20px;font-weight:800;color:var(--accent)">' + completed + ' <span style="font-size:13px;opacity:.6">/ ' + faelle.length + '</span></div>' +
+        '</div>';
+        cards += '</div>';
+        return cards;
       })() + `
     </div>
   `;
+
+  var modeGrid = document.getElementById('modeGrid');
+  if (modeGrid) {
+    modeGrid.querySelectorAll('.mode-card').forEach(function(card){
+      function activateMode(){
+        modus = card.dataset.mode;
+        render();
+      }
+      card.addEventListener('click', activateMode);
+      card.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activateMode();
+        }
+      });
+    });
+  }
 }
 
 // ---- STEP 1: Cues erkennen ----
@@ -2322,7 +3320,7 @@ function renderStep1() {
     list.appendChild(div);
   });
 
-  if (cuesFeedbackShown) showCueFeedback();
+  if (cuesFeedbackShown && modus !== 'pruefung') showCueFeedback();
 }
 
 function showCueFeedback() {
@@ -2359,11 +3357,13 @@ function showCueFeedback() {
       statusClass = 'color:var(--success)';
     }
 
-    // Add reasoning below the cue text
-    const reasonDiv = document.createElement('div');
-    reasonDiv.style.cssText = 'font-size:12px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.08);line-height:1.45;';
-    reasonDiv.innerHTML = '<strong style="' + statusClass + '">' + statusText + ':</strong> ' + cue.grund;
-    item.appendChild(reasonDiv);
+    // Add reasoning below the cue text (nur Lernmodus)
+    if (modus !== 'pruefung') {
+      const reasonDiv = document.createElement('div');
+      reasonDiv.style.cssText = 'font-size:12px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.08);line-height:1.45;';
+      reasonDiv.innerHTML = '<strong style="' + statusClass + '">' + statusText + ':</strong> ' + cue.grund;
+      item.appendChild(reasonDiv);
+    }
   });
 
   stepScores[0] = Math.round((correct / total) * 100);
@@ -2379,7 +3379,9 @@ function showCueFeedback() {
   if (wrong.length > 0) {
     html += '<br>' + wrong.length + ' nicht-relevante Info' + (wrong.length > 1 ? 's' : '') + ' fälschlich markiert.';
   }
-  html += '<br><span style="opacity:.7">Lies die Begründungen unter jedem Hinweis, um dein Clinical Reasoning zu schärfen.</span>';
+  if (modus !== 'pruefung') {
+    html += '<br><span style="opacity:.7">Lies die Begründungen unter jedem Hinweis, um dein Clinical Reasoning zu schärfen.</span>';
+  }
   html += '</div>';
   fb.innerHTML = html;
 }
@@ -2457,7 +3459,7 @@ function renderStep2() {
     }
   });
 
-  if (clusterFeedbackShown) showClusterFeedback();
+  if (clusterFeedbackShown && modus !== 'pruefung') showClusterFeedback();
 }
 
 let selectedChip = null;
@@ -2522,11 +3524,11 @@ function showClusterFeedback() {
         if (clusterAssignments[cueId] === cue.cluster) {
           chip.classList.add('correct-chip');
           correct++;
-          feedbackHtml += '<div style="font-size:12px;margin:4px 0;padding:6px 8px;background:' + 'var(--success-bg)' + ';border-radius:6px;line-height:1.4"><strong style="color:var(--success)">' + cue.text + ':</strong> ' + cue.clusterGrund + '</div>';
+          if (modus !== 'pruefung') feedbackHtml += '<div style="font-size:12px;margin:4px 0;padding:6px 8px;background:' + 'var(--success-bg)' + ';border-radius:6px;line-height:1.4"><strong style="color:var(--success)">' + cue.text + ':</strong> ' + cue.clusterGrund + '</div>';
         } else {
           chip.classList.add('incorrect-chip');
           var correctCluster = fall.clusters.find(function(x){ return x.id === cue.cluster; });
-          feedbackHtml += '<div style="font-size:12px;margin:4px 0;padding:6px 8px;background:' + 'var(--error-bg)' + ';border-radius:6px;line-height:1.4"><strong style="color:var(--error)">' + cue.text + ':</strong> Gehört zu <em>' + (correctCluster ? correctCluster.name : '?') + '</em>. ' + cue.clusterGrund + '</div>';
+          if (modus !== 'pruefung') feedbackHtml += '<div style="font-size:12px;margin:4px 0;padding:6px 8px;background:' + 'var(--error-bg)' + ';border-radius:6px;line-height:1.4"><strong style="color:var(--error)">' + cue.text + ':</strong> Gehört zu <em>' + (correctCluster ? correctCluster.name : '?') + '</em>. ' + cue.clusterGrund + '</div>';
         }
       }
     });
@@ -2537,12 +3539,12 @@ function showClusterFeedback() {
         var cue = fall.cues.find(function(c){ return c.id === cueId; });
         if (cue && !clusterAssignments[cueId]) {
           // Was not assigned at all
-          feedbackHtml += '<div style="font-size:12px;margin:4px 0;padding:6px 8px;background:var(--info-bg);border-radius:6px;line-height:1.4;border:1px dashed var(--border-light)"><strong>Fehlt hier: ' + cue.text + '</strong> – ' + cue.clusterGrund + '</div>';
+          if (modus !== 'pruefung') feedbackHtml += '<div style="font-size:12px;margin:4px 0;padding:6px 8px;background:var(--info-bg);border-radius:6px;line-height:1.4;border:1px dashed var(--border-light)"><strong>Fehlt hier: ' + cue.text + '</strong> – ' + cue.clusterGrund + '</div>';
         }
       }
     });
 
-    if (feedbackHtml) {
+    if (feedbackHtml && modus !== 'pruefung') {
       var fbDiv = document.createElement('div');
       fbDiv.style.marginTop = '8px';
       fbDiv.innerHTML = feedbackHtml;
@@ -2565,7 +3567,7 @@ function showClusterFeedback() {
   var fb = document.getElementById('clusterFeedback');
   fb.innerHTML = '<div class="feedback-box ' + (correct === allRelevant ? 'success' : 'info') + '" style="margin-top:10px">' +
     '<strong>' + correct + ' von ' + allRelevant + '</strong> Hinweisen korrekt zugeordnet.' +
-    '<br><span style="opacity:.7">Lies die Begründungen in jedem Cluster, um die Zusammenhaenge besser zu verstehen.</span>' +
+    (modus !== 'pruefung' ? '<br><span style="opacity:.7">Lies die Begründungen in jedem Cluster, um die Zusammenhaenge besser zu verstehen.</span>' : '') +
     '</div>';
 }
 
@@ -2674,7 +3676,7 @@ function renderStep3() {
     }
   });
 
-  if (pesFeedbackShownAll[currentPES]) showPESFeedback();
+  if (pesFeedbackShownAll[currentPES] && modus !== 'pruefung') showPESFeedback();
 }
 
 let selectedPESChip = null;
@@ -2785,7 +3787,7 @@ function renderStep4SMART() {
         smartSelections[currentSMART] = opt.id;
         renderStep4SMART();
       });
-      div.addEventListener('mouseenter', function() { if (smartSelections[currentSMART] !== opt.id) { div.style.background = 'var(--accent-light)'; div.style.borderColor = '#bbb'; div.style.boxShadow = 'var(--shadow-md)'; div.style.transform = 'translateY(-1px)'; } });
+      div.addEventListener('mouseenter', function() { if (smartSelections[currentSMART] !== opt.id) { div.style.background = 'var(--accent-light)'; div.style.borderColor = 'var(--border)'; div.style.boxShadow = 'var(--shadow-md)'; div.style.transform = 'translateY(-1px)'; } });
       div.addEventListener('mouseleave', function() { if (smartSelections[currentSMART] !== opt.id) { div.style.background = '#fff'; div.style.borderColor = ''; div.style.boxShadow = 'var(--shadow-sm)'; div.style.transform = ''; } });
     } else {
       div.style.cursor = 'default';
@@ -2794,7 +3796,7 @@ function renderStep4SMART() {
     optContainer.appendChild(div);
   });
 
-  if (feedbackShown) showSMARTFeedback();
+  if (feedbackShown && modus !== 'pruefung') showSMARTFeedback();
 }
 
 function showSMARTFeedback() {
@@ -2934,7 +3936,7 @@ function renderStep5SechsW() {
     container.appendChild(card);
   });
 
-  if (feedbackShown) showSechsWFeedback();
+  if (feedbackShown && modus !== 'pruefung') showSechsWFeedback();
 }
 
 function showSechsWFeedback() {
@@ -3087,7 +4089,7 @@ function renderStep6Eval() {
   }
   container.appendChild(q3);
 
-  if (feedbackShown) showEvalFeedback();
+  if (feedbackShown && modus !== 'pruefung') showEvalFeedback();
 }
 
 function showEvalFeedback() {
@@ -3175,62 +4177,55 @@ function renderStepResult() {
     var progressInLevel = totalXP - currentLevel.min;
     var levelRange = nextLevel.min - currentLevel.min;
     var levelPct = Math.min(100, Math.round((progressInLevel / levelRange) * 100));
-    levelProgressHtml = '<div style="margin-top:8px;font-size:12px;color:#888">Noch ' + (nextLevel.min - totalXP) + ' XP bis Level ' + (levels.indexOf(nextLevel) + 1) + ': ' + nextLevel.label + '</div>' +
+    levelProgressHtml = '<div style="margin-top:8px;font-size:12px;color:var(--text-muted, #6b7280)">Noch ' + (nextLevel.min - totalXP) + ' XP bis Level ' + (levels.indexOf(nextLevel) + 1) + ': ' + nextLevel.label + '</div>' +
       '<div class="result-bar-track" style="margin-top:4px;height:6px"><div class="result-bar-fill green" style="width:' + levelPct + '%;border-radius:6px"></div></div>';
   } else {
     levelProgressHtml = '<div style="margin-top:8px;font-size:12px;color:var(--success);font-weight:600">Höchstes Level erreicht!</div>';
   }
 
-  // Highscore-Anzeige
+  // Highscore-Badge (nur bei neuem Rekord)
   var highscoreHtml = '';
-  if (isNewRecord && prevHighscore && prevHighscore.xp === totalXP) {
-    // Erster Versuch oder neuer Rekord
-    highscoreHtml = '<div style="text-align:center;margin-top:8px;font-size:14px;font-weight:700;color:var(--accent)">Neuer Rekord!</div>';
-  } else if (isNewRecord) {
-    highscoreHtml = '<div style="text-align:center;margin-top:8px;font-size:14px;font-weight:700;color:var(--accent)">Neuer Rekord!</div>';
-  } else if (prevHighscore) {
-    highscoreHtml = '<div style="text-align:center;margin-top:8px;font-size:12px;color:#888">Dein Rekord: ' + prevHighscore.xp + ' XP (' + prevHighscore.date + ')</div>';
-  }
-
-  // Streak-Anzeige
-  var streakHtml = '';
-  if (bestStreak >= 3) {
-    streakHtml = '<div style="text-align:center;margin-top:6px;font-size:12px;color:var(--accent)">Beste Streak: ' + bestStreak + 'x richtig in Folge</div>';
+  if (isNewRecord) {
+    highscoreHtml = '<div class="result-badge">Neuer Rekord</div>';
   }
 
   // Gesamt-Fortschritt
   var completedCount = getCompletedFaelleCount();
   var progressHtml = '';
   if (completedCount > 0) {
-    progressHtml = '<div style="text-align:center;margin-top:6px;font-size:12px;color:#888">' + completedCount + ' von ' + faelle.length + ' Fällen bearbeitet</div>';
+    progressHtml = '<div class="meta-line">' + completedCount + ' von ' + faelle.length + ' Fällen bearbeitet</div>';
   }
 
   var barsHtml = '';
   for (var i = 0; i < 6; i++) {
     var pct = Math.round((xpEarned[i] / xpMax[i]) * 100);
-    var c = pct >= 70 ? 'green' : 'red';
-    barsHtml += '<div class="result-bar-wrap">' +
-      '<div class="result-bar-label">' + xpLabels[i] + ': <strong>' + xpEarned[i] + ' / ' + xpMax[i] + ' XP</strong></div>' +
-      '<div class="result-bar-track"><div class="result-bar-fill ' + c + '" style="width:' + pct + '%"></div></div>' +
+    barsHtml += '<div class="result-row">' +
+      '<div class="result-row-head"><span>' + xpLabels[i] + '</span><strong>' + xpEarned[i] + ' / ' + xpMax[i] + ' XP</strong></div>' +
+      '<div class="result-bar-track result-track-lg"><div class="result-bar-fill green" style="width:' + pct + '%"></div></div>' +
     '</div>';
   }
 
-  contentEl.innerHTML = '<div class="card ergebnis">' +
-    
-    '<h2 style="text-align:center;margin:0">Dein Ergebnis</h2>' +
-    '<div class="score-big">' + totalXP + ' <span style="font-size:24px;opacity:.6">/ ' + totalMaxXP + ' XP</span></div>' +
-    '<div class="score-label" style="font-size:16px;font-weight:700;opacity:1;color:var(--accent)">Level ' + (levels.indexOf(currentLevel) + 1) + ': ' + currentLevel.label + '</div>' +
-    highscoreHtml +
-    streakHtml +
-    progressHtml +
-    levelProgressHtml +
-    '<div style="margin-top:24px">' + barsHtml + '</div>' +
-    '<div class="feedback-box info" style="margin-top:16px">' +
-      '<strong>Reflexionsimpuls:</strong> ' + reflexion +
+  contentEl.innerHTML = '<div class="result-layout">' +
+    '<div class="card ergebnis result-hero">' +
+      '<h2 style="text-align:center;margin:0;font-weight:700">Dein Ergebnis</h2>' +
+      '<div class="score-big">' + totalXP + ' <span style="font-size:24px;opacity:.6">/ ' + totalMaxXP + ' XP</span></div>' +
+      '<div class="score-label" style="font-size:16px;font-weight:700;opacity:1;color:var(--accent)">Level ' + (levels.indexOf(currentLevel) + 1) + ': ' + currentLevel.label + '</div>' +
+      highscoreHtml +
+      progressHtml +
+      '<div class="result-level-progress">' + levelProgressHtml + '</div>' +
     '</div>' +
-    '<p class="small muted" style="margin-top:16px">' +
-      '<strong>Hinweis:</strong> Dieser Trainer ist eine <em>Lernhilfe</em>, kein Prüfungsinstrument. Im echten Pflegealltag gibt es oft mehrere vertretbare Wege.' +
-    '</p>' +
+    '<div class="card result-section">' +
+      '<h3 class="result-section-title">Deine Auswertung</h3>' +
+      '<div class="result-table-card">' + barsHtml + '</div>' +
+    '</div>' +
+    '<div class="card result-section">' +
+      '<div class="instruction" style="margin-bottom:12px">' +
+        '<strong>Reflexionsimpuls:</strong> ' + reflexion +
+      '</div>' +
+      '<p class="small muted" style="margin-top:0">' +
+        '<strong>Hinweis:</strong> Dieser Trainer ist eine <em>Lernhilfe</em>, kein Prüfungsinstrument. Im echten Pflegealltag gibt es oft mehrere vertretbare Wege.' +
+      '</p>' +
+    '</div>' +
   '</div>';
 }
 
@@ -3246,6 +4241,12 @@ btnNext.addEventListener('click', function() {
         return;
       }
       cuesFeedbackShown = true;
+      if (modus === 'pruefung') {
+        showCueFeedback();
+        currentStep = 2;
+        render();
+        return;
+      }
       renderStep1();
       btnNext.textContent = 'Weiter zum Clustern \u2192';
       return;
@@ -3260,6 +4261,13 @@ btnNext.addEventListener('click', function() {
         return;
       }
       clusterFeedbackShown = true;
+      if (modus === 'pruefung') {
+        showClusterFeedback();
+        currentStep = 3;
+        currentPES = 0;
+        render();
+        return;
+      }
       renderStep2();
       btnNext.textContent = 'Weiter zur PES-Zuordnung \u2192';
       return;
@@ -3275,6 +4283,18 @@ btnNext.addEventListener('click', function() {
         return;
       }
       pesFeedbackShownAll[currentPES] = true;
+      if (modus === 'pruefung') {
+        showPESFeedback();
+        if (currentPES < fall.pes.length - 1) {
+          currentPES++;
+          renderStep3();
+        } else {
+          currentStep = 4;
+          currentSMART = 0;
+          render();
+        }
+        return;
+      }
       renderStep3();
       if (currentPES < fall.pes.length - 1) {
         btnNext.textContent = 'Nächstes Cluster: ' + fall.pes[currentPES + 1].clusterName + ' \u2192';
@@ -3299,6 +4319,18 @@ btnNext.addEventListener('click', function() {
         return;
       }
       smartFeedbackShownAll[currentSMART] = true;
+      if (modus === 'pruefung') {
+        showSMARTFeedback();
+        if (currentSMART < fall.smartZiele.length - 1) {
+          currentSMART++;
+          renderStep4SMART();
+        } else {
+          currentStep = 5;
+          currentSechsW = 0;
+          render();
+        }
+        return;
+      }
       renderStep4SMART();
       if (currentSMART < fall.smartZiele.length - 1) {
         btnNext.textContent = 'Nächstes Cluster: ' + fall.smartZiele[currentSMART + 1].clusterName + ' \u2192';
@@ -3324,6 +4356,18 @@ btnNext.addEventListener('click', function() {
         return;
       }
       sechsWFeedbackShownAll[currentSechsW] = true;
+      if (modus === 'pruefung') {
+        showSechsWFeedback();
+        if (currentSechsW < fall.sechsW.length - 1) {
+          currentSechsW++;
+          renderStep5SechsW();
+        } else {
+          currentStep = 6;
+          currentEval = 0;
+          render();
+        }
+        return;
+      }
       renderStep5SechsW();
       if (currentSechsW < fall.sechsW.length - 1) {
         btnNext.textContent = 'Nächste Maßnahme: ' + fall.sechsW[currentSechsW + 1].clusterName + ' \u2192';
@@ -3349,6 +4393,17 @@ btnNext.addEventListener('click', function() {
         return;
       }
       evalFeedbackShownAll[currentEval] = true;
+      if (modus === 'pruefung') {
+        showEvalFeedback();
+        if (currentEval < fall.evaluation.length - 1) {
+          currentEval++;
+          renderStep6Eval();
+        } else {
+          currentStep = 7;
+          render();
+        }
+        return;
+      }
       renderStep6Eval();
       if (currentEval < fall.evaluation.length - 1) {
         btnNext.textContent = 'Nächste Evaluation: ' + fall.evaluation[currentEval + 1].clusterName + ' \u2192';
