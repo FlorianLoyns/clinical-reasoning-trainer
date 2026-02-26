@@ -64,7 +64,7 @@ Die Fälle mischen bewusst relevante und irrelevante Informationen, wie es im Pf
 
 ## Fallbeispiele
 
-Der Trainer umfasst **10 Fälle** aus allen Vertiefungsbereichen der generalistischen Ausbildung. Die Fallrotation sorgt dafür, dass alle Fälle gespielt werden, bevor sich einer wiederholt.
+Der Trainer umfasst **11 Fälle** aus allen Vertiefungsbereichen der generalistischen Ausbildung. Die Fallrotation sorgt dafür, dass alle Fälle gespielt werden, bevor sich einer wiederholt.
 
 | Name | Vertiefungsbereich | Schwerpunkt | Schwierigkeit |
 |---|---|---|---|
@@ -76,6 +76,7 @@ Der Trainer umfasst **10 Fälle** aus allen Vertiefungsbereichen der generalisti
 | Giovanni Esposito, 82 | Langzeitpflege | Demenz, Validation | mittel |
 | Luka Metzger, 9 | Pädiatrie | Neurodermitis, Juckreiz | leicht |
 | Amira Haddad, 11 | Pädiatrie | Diabetes Typ 1, Edukation | schwer |
+| Ben Richter, 22 | Psychiatrie | Anpassungsstörung F43.21, Tagesstruktur | leicht |
 | Anna Berger, 34 | Psychiatrie | Schwere Depression, Antrieb | mittel |
 | Dariusz Kowalski, 54 | Psychiatrie | Depression, Suizidalität | mittel |
 
