@@ -7,9 +7,7 @@
 ![Keine Abhängigkeiten](https://img.shields.io/badge/Abh%C3%A4ngigkeiten-keine-brightgreen)
 ![Mobile](https://img.shields.io/badge/Mobile-optimiert-brightgreen)
 
-| Version | Link | Navigation |
-|---|---|---|
-| Mobile-optimiert *(empfohlen)* | [index.html](https://florianloyns.github.io/clinical-reasoning-trainer/index.html) | Kreise + Schritt-Text darunter |
+Klicken Sie hier zum Ausprobieren: [index.html](https://florianloyns.github.io/clinical-reasoning-trainer/index.html)
 
 ---
 
