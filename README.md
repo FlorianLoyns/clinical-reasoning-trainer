@@ -11,7 +11,7 @@
 
 ---
 
-| Schritt 1: Situation erfassen | Schritt 4: Pflegediagnose (PESR) | Ergebnis & XP |
+| Step 1: Situation erfassen | Step 4: Pflegediagnose (PESR) | Ergebnis & XP |
 |:---:|:---:|:---:|
 | ![Situation](docs/screenshot-situation.png) | ![PESR](docs/screenshot-pesr.png) | ![Ergebnis](docs/screenshot-ergebnis.png) |
 
