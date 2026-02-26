@@ -10,7 +10,6 @@
 | Version | Link | Navigation |
 |---|---|---|
 | Mobile-optimiert *(empfohlen)* | [index.html](https://florianloyns.github.io/clinical-reasoning-trainer/index.html) | Kreise + Schritt-Text darunter |
-| Vollansicht | [vollansicht.html](https://florianloyns.github.io/clinical-reasoning-trainer/vollansicht.html) | Kreise + Labels in einer Zeile |
 
 ---
 
