@@ -7,7 +7,10 @@
 ![Keine Abhängigkeiten](https://img.shields.io/badge/Abh%C3%A4ngigkeiten-keine-brightgreen)
 ![Mobile](https://img.shields.io/badge/Mobile-optimiert-brightgreen)
 
-**[→ Direkt online ausprobieren](https://florianloyns.github.io/clinical-reasoning-trainer/index.html)**
+| Version | Link | Navigation |
+|---|---|---|
+| Mobile-optimiert *(empfohlen)* | [index.html](https://florianloyns.github.io/clinical-reasoning-trainer/index.html) | Kreise + Schritt-Text darunter |
+| Vollansicht | [vollansicht.html](https://florianloyns.github.io/clinical-reasoning-trainer/vollansicht.html) | Kreise + Labels in einer Zeile |
 
 ---
 
@@ -76,7 +79,7 @@ Der Trainer umfasst **11 Fälle** aus allen Vertiefungsbereichen der generalisti
 | Giovanni Esposito, 82 | Langzeitpflege | Demenz, Validation | mittel |
 | Luka Metzger, 9 | Pädiatrie | Neurodermitis, Juckreiz | leicht |
 | Amira Haddad, 11 | Pädiatrie | Diabetes Typ 1, Edukation | schwer |
-| Ben Richter, 22 | Psychiatrie | Anpassungsstörung, Tagesstruktur | leicht |
+| Ben Richter, 22 | Psychiatrie | Anpassungsstörung F43.21, Tagesstruktur | leicht |
 | Anna Berger, 34 | Psychiatrie | Schwere Depression, Antrieb | mittel |
 | Dariusz Kowalski, 54 | Psychiatrie | Depression, Suizidalität | mittel |
 
