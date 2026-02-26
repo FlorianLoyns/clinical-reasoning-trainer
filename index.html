@@ -338,7 +338,7 @@
       .stepper { gap:0; overflow:visible; }
       .step-indicator { flex:1; min-width:0; overflow:hidden; }
       .step-label { display:none; }
-      #step-mobile-label { display:block; text-align:center; font-size:13px; font-weight:700; color:var(--accent); margin:6px 0 12px; letter-spacing:.2px; }
+      #step-mobile-label { display:none; text-align:center; font-size:13px; font-weight:700; color:var(--accent); margin:6px 0 12px; letter-spacing:.2px; }
       .card { padding:16px; }
       .card-white, .fall-text, .result-section { padding:16px; }
 
@@ -558,6 +558,11 @@
   <div>
     <h1 style="margin:0 0 2px;">Clinical-Reasoning</h1>
     <div style="font-size:15px;color:var(--accent);font-weight:500;">Klinisches Urteilen in der Pflege</div>
+
+    <div id="filterHintInline" style="font-size:12px;color:var(--text-muted);margin-top:6px;">
+            Fall-Auswahl: <strong id="filterValue">alle</strong> · Tastatur: L/M/S/A
+    </div>
+
   </div>
 </div>
 
@@ -4116,12 +4121,52 @@ Im Erstgespräch der Tagesklinik wirkt Ben niedergeschlagen, aber kooperativ. Er
 };
 
 const faelle = [fall1, fall2, fall3, fall4, fall5, fall6, fall7, fall8, fall9, fall10, fall11];
-let verbleibendeFaelle = faelle.slice().sort(function() { return Math.random() - 0.5; });
+
+// --- Schwierigkeitsfilter (Tastatur: l/m/s/a) ---
+let fallFilter = (function(){
+  try { return localStorage.getItem('fallFilter') || 'alle'; } catch(e) { return 'alle'; }
+})(); // 'alle' | 'leicht' | 'mittel' | 'schwer'
+if (['alle','leicht','mittel','schwer'].indexOf(fallFilter) === -1) fallFilter = 'alle';
+updateFilterDisplay();
+
+function normalizeSchwierigkeit(f) {
+  var diffRaw = (f.schwierigkeit || f.schwierigkeitsgrad || f.schwirigkeit || 'mittel')
+    .toString().toLowerCase().trim();
+
+  if (diffRaw.indexOf('leicht') !== -1 || diffRaw.indexOf('einfach') !== -1) return 'leicht';
+  if (diffRaw.indexOf('schwer') !== -1) return 'schwer';
+  return 'mittel';
+}
+
+function getGefilterteFaelle() {
+  if (fallFilter === 'alle') return faelle.slice();
+  return faelle.filter(function(f) { return normalizeSchwierigkeit(f) === fallFilter; });
+}
+
+
+function updateFilterDisplay() {
+  var el = document.getElementById('filterValue');
+  if (!el) return;
+  var label = (fallFilter === 'alle') ? 'alle' : fallFilter;
+  el.textContent = label;
+}
+
+function resetVerbleibendeFaelle() {
+  
+  updateFilterDisplay();
+var basis = getGefilterteFaelle();
+  // Fallback: falls der Filter keine Fälle findet
+  if (!basis.length) basis = faelle.slice();
+  verbleibendeFaelle = basis.sort(function() { return Math.random() - 0.5; });
+}
+
+let verbleibendeFaelle = [];
+resetVerbleibendeFaelle();
 let fall = verbleibendeFaelle.pop();
 
 function naechsterFall() {
   if (verbleibendeFaelle.length === 0) {
-    verbleibendeFaelle = faelle.slice().sort(function() { return Math.random() - 0.5; });
+    resetVerbleibendeFaelle();
   }
   fall = verbleibendeFaelle.pop();
 }
@@ -4246,6 +4291,33 @@ function showXPFlash(earned, maxXP) {
     setTimeout(function() { flash.remove(); }, 500);
   }, 1200);
 }
+
+
+// ---- Keyboard: Schwierigkeits-Filter (l/m/s/a) ----
+document.addEventListener('keydown', function(e) {
+  // nicht dazwischenfunken, wenn jemand gerade tippt
+  var t = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+  if (t === 'input' || t === 'textarea' || t === 'select') return;
+
+  var key = (e.key || '').toLowerCase();
+
+  if (key === 'l') fallFilter = 'leicht';
+  else if (key === 'm') fallFilter = 'mittel';
+  else if (key === 's') fallFilter = 'schwer';
+  else if (key === 'a') fallFilter = 'alle';
+  else return;
+
+  try { localStorage.setItem('fallFilter', fallFilter); 
+  updateFilterDisplay();
+} catch(e) {}
+
+  // sofort passend neu ziehen, wenn wir noch in der Fall-Startansicht sind
+  resetVerbleibendeFaelle();
+  if (typeof currentStep !== 'undefined' && currentStep === 0) {
+    fall = verbleibendeFaelle.pop();
+    render();
+  }
+});
 
 // ---- RENDER ----
 function render() {
