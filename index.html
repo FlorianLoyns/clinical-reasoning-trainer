@@ -45,6 +45,8 @@
     .step-indicator {
       flex:1; text-align:center; position:relative; padding-bottom:8px;
     }
+
+    .step-indicator.clickable { cursor:pointer; }
     .step-indicator::after {
       content:''; position:absolute; bottom:0; left:0; right:0;
       height:3px; background:var(--border); border-radius:2px;
@@ -530,6 +532,10 @@
 #intro-text a.license-link:hover{
   opacity: 0.8;
 }
+
+
+    #filterValue { cursor: pointer; }
+    #filterValue:focus { outline: none; }
 
 </style>
 </head>
@@ -4151,6 +4157,40 @@ function updateFilterDisplay() {
   el.textContent = label;
 }
 
+
+
+function cycleFallFilter() {
+  var order = ['alle', 'leicht', 'mittel', 'schwer'];
+  var idx = order.indexOf(fallFilter);
+  if (idx === -1) idx = 0;
+  fallFilter = order[(idx + 1) % order.length];
+  try { localStorage.setItem('fallFilter', fallFilter); } catch(e) {}
+  resetVerbleibendeFaelle();
+  // Wenn du gerade den Startscreen siehst: direkt passenden Fall ziehen
+  if (currentStep === 0) {
+    fall = verbleibendeFaelle.pop();
+  }
+  updateFilterDisplay();
+  render();
+}
+
+(function initFilterToggleClick() {
+  var el = document.getElementById('filterValue');
+  if (!el) return;
+  el.setAttribute('title', 'Tippen/Klicken: Filter wechseln (alle → leicht → mittel → schwer)');
+  el.setAttribute('tabindex', '0');
+  el.addEventListener('click', function(e) {
+    e.preventDefault();
+    cycleFallFilter();
+  });
+  el.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      cycleFallFilter();
+    }
+  });
+})();
+
 function resetVerbleibendeFaelle() {
   
   updateFilterDisplay();
@@ -4174,6 +4214,7 @@ function naechsterFall() {
 
 // ---- STATE ----
 let currentStep = 0;
+let maxUnlockedStep = 0; // bis zu diesem Schritt darf per Stepper gesprungen werden
 let selectedCues = new Set();
 let clusterAssignments = {};
 let pesAssignmentsAll = [{}, {}, {}];
@@ -4321,7 +4362,9 @@ document.addEventListener('keydown', function(e) {
 
 // ---- RENDER ----
 function render() {
-  updateStepper();
+  
+  maxUnlockedStep = Math.max(maxUnlockedStep, currentStep);
+updateStepper();
   // Intro-Text nur auf Startseite zeigen
   var intro = document.getElementById('intro-text');
   if (intro) intro.style.display = (currentStep === 0 && modus !== 'pruefung') ? '' : 'none';
@@ -4355,14 +4398,34 @@ function render() {
 function updateStepper() {
   document.querySelectorAll('.step-indicator').forEach(el => {
     const s = parseInt(el.dataset.step);
-    el.classList.remove('active', 'done');
-    if (s === currentStep) el.classList.add('active');
-    else if (s < currentStep) el.classList.add('done');
+    el.classList.remove('active', 'done', 'clickable');
+    if (s === currentStep) {
+      el.classList.add('active');
+    } else if (s <= maxUnlockedStep) {
+      el.classList.add('done', 'clickable');
+    }
   });
   var stepLabels = ['Situation erfassen','Cues erkennen','Clustern','PESR-Diagnose','SMART-Ziel','6-W-Maßnahmen','Evaluation','Ergebnis'];
   var mobileLabel = document.getElementById('step-mobile-label');
   if (mobileLabel) mobileLabel.textContent = 'Schritt ' + (currentStep + 1) + ' · ' + stepLabels[currentStep];
 }
+
+// Stepper: Klick auf bereits erreichte Schritte erlaubt (kein Vorspringen)
+(function initStepperClick() {
+  var stepper = document.getElementById('stepper');
+  if (!stepper) return;
+  stepper.addEventListener('click', function(e) {
+    var item = e.target.closest('.step-indicator');
+    if (!item) return;
+    var s = parseInt(item.dataset.step);
+    if (isNaN(s)) return;
+    if (s <= maxUnlockedStep) {
+      currentStep = s;
+      render();
+    }
+  });
+})();
+
 
 // ---- STEP 0: Situation erfassen ----
 function renderStep0() {
