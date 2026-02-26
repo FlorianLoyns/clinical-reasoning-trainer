@@ -63,6 +63,7 @@
     .step-label { font-size:11px; display:block; color:var(--fg); opacity:.5; }
     .step-indicator.active .step-label { opacity:1; font-weight:700; color:var(--accent); }
     .step-indicator.done .step-label { opacity:.7; color:var(--success); }
+    #step-mobile-label { display:none; }
 
     /* Card */
     .card {
@@ -336,7 +337,8 @@
       .controls { gap:8px; }
       .stepper { gap:0; overflow:visible; }
       .step-indicator { flex:1; min-width:0; overflow:hidden; }
-      .step-label { font-size:9px; white-space:nowrap; overflow:hidden; }
+      .step-label { display:none; }
+      #step-mobile-label { display:block; text-align:center; font-size:13px; font-weight:700; color:var(--accent); margin:6px 0 12px; letter-spacing:.2px; }
       .card { padding:16px; }
       .card-white, .fall-text, .result-section { padding:16px; }
 
@@ -598,6 +600,7 @@
     <span class="step-label">ERGEBNIS</span>
   </div>
 </div>
+<div id="step-mobile-label"></div>
 
 <!-- Content area -->
 <div id="content"></div>
@@ -4284,6 +4287,9 @@ function updateStepper() {
     if (s === currentStep) el.classList.add('active');
     else if (s < currentStep) el.classList.add('done');
   });
+  var stepLabels = ['Situation erfassen','Cues erkennen','Clustern','PESR-Diagnose','SMART-Ziel','6-W-Maßnahmen','Evaluation','Ergebnis'];
+  var mobileLabel = document.getElementById('step-mobile-label');
+  if (mobileLabel) mobileLabel.textContent = 'Schritt ' + (currentStep + 1) + ' · ' + stepLabels[currentStep];
 }
 
 // ---- STEP 0: Situation erfassen ----
