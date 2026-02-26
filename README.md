@@ -11,7 +11,7 @@
 
 ---
 
-| Step 1: Situation erfassen | Step 4: Pflegediagnose (PESR) | Ergebnis & XP |
+| Schritt 1: Situation erfassen | Schritt 4: Pflegediagnose (PESR) | Ergebnis & XP |
 |:---:|:---:|:---:|
 | ![Situation](docs/screenshot-situation.png) | ![PESR](docs/screenshot-pesr.png) | ![Ergebnis](docs/screenshot-ergebnis.png) |
 
@@ -90,6 +90,7 @@ Der Trainer umfasst **10 Fälle** aus allen Vertiefungsbereichen der generalisti
 - Falsche Antworten werden nach Fehlerart eingeordnet (komplett daneben, teilweise richtig, überambitioniert) – jede Rückmeldung endet mit einem konkreten Tipp
 - Richtige Antworten erklären, *warum* sie richtig sind, nicht nur, dass sie es sind
 - Teilerfolge und nachvollziehbare Fehler werden ausdrücklich anerkannt
+- **Individueller Reflexionsimpuls** am Ende: die Ergebnisseite analysiert die Einzelschritte und zeigt gezielte Tipps für die Bereiche, in denen Punkte verloren wurden – kein generischer Text, sondern schrittspezifisches Feedback
 
 **Gamification**
 - **XP-System** – 700 XP pro Durchlauf, gewichtet nach Schrittkomplexität (PESR und 6-W-Planung zählen stärker als Cue-Erkennung)
