@@ -4907,20 +4907,47 @@ function renderStepResult() {
     }
   }
 
-  // Reflexion basierend auf Level
-  var reflexion = '';
-  if (totalXP >= 630) {
-    reflexion = 'Hervorragend! Du beherrschst den Clinical-Reasoning-Prozess vom Assessment bis zur Evaluation souverän.';
-  } else if (totalXP >= 500) {
-    reflexion = 'Starke Leistung! Du denkst systematisch und planst fundiert. Nur noch der letzte Feinschliff trennt dich vom höchsten Level.';
-  } else if (totalXP >= 360) {
-    reflexion = 'Solide Arbeit! Deine Diagnostik sitzt. Maßnahmenplanung und Evaluation sind der Feinschliff – du bist auf einem guten Weg.';
-  } else if (totalXP >= 240) {
-    reflexion = 'Du erkennst Muster und strukturierst sicher – das war einer der kniffligsten Schritte, und du hast ihn geschafft. Nächster Fokus: präzise Diagnosen ableiten.';
-  } else if (totalXP >= 120) {
-    reflexion = 'Du hast ein gutes Auge für relevante Hinweise – das ist die Grundlage! Jetzt geht es darum, diese systematisch zu ordnen. Das kommt mit der Übung.';
+  // Reflexion: stepScores-basierte Stärken- und Schwächenanalyse
+  var stepTipps = [
+    'Übe, bei der Informationssammlung zwischen pflegerisch relevanten und irrelevanten Details zu unterscheiden. Frage dich: Zeigt diese Information ein Problem oder eine Ressource?',
+    'Arbeite die ATL nach Juchli nochmals durch. Welche Beobachtungen gehören zu Mobilität, welche zu Ernährung, welche zu Kommunikation? Thematisches Ordnen ist die Grundlage jeder Pflegediagnose.',
+    'Beim PESR-Schema immer in dieser Reihenfolge vorgehen: erst das <strong>Problem</strong> benennen, dann die <strong>Ursache</strong> (Etiologie), dann erkennbare <strong>Zeichen</strong> (Symptome), dann <strong>Ressourcen</strong>. Baustein für Baustein.',
+    'Prüfe Ziele auf alle 5 SMART-Kriterien – besonders <em>Messbar</em> (wie viel, wie oft?) und <em>Terminiert</em> (bis wann?) werden häufig zu vage formuliert.',
+    'Eine vollständige Pflegemaßnahme beantwortet alle 6 W. Besonders <em>Was</em> (konkret benennen, nicht nur „unterstützen") und <em>Warum</em> (pflegerische Begründung, kein Allgemeinplatz) sind entscheidend.',
+    'Bei der Evaluation: erst prüfen, ob das Ziel tatsächlich erreicht wurde – dann begründen, warum die Maßnahme beibehalten, angepasst oder beendet werden soll. Beides gehört zusammen.'
+  ];
+
+  // Stärken (≥ 80 %) und Schwächen (< 50 %) identifizieren
+  var weakSteps = [];
+  var strongSteps = [];
+  for (var j = 0; j < 6; j++) {
+    if (stepScores[j] < 50) weakSteps.push(j);
+    else if (stepScores[j] >= 80) strongSteps.push(j);
+  }
+  // Schwächste zuerst
+  weakSteps.sort(function(a, b) { return stepScores[a] - stepScores[b]; });
+
+  var reflexionHtml = '';
+  if (strongSteps.length > 0) {
+    var staerkenLabels = strongSteps.map(function(k) { return '<strong>' + xpLabels[k] + '</strong>'; });
+    reflexionHtml += '<div style="margin-bottom:10px">Besonders stark: ' + staerkenLabels.join(', ') + '.</div>';
+  }
+  if (weakSteps.length === 0) {
+    reflexionHtml += totalXP >= 630
+      ? 'Hervorragend! Du beherrschst den Clinical-Reasoning-Prozess souverän – vom Assessment bis zur Evaluation.'
+      : 'Alle Schritte über 50 % – das ist eine solide Grundlage. Gezieltes Wiederholen der schwächeren Bereiche bringt dich auf das nächste Level.';
   } else {
-    reflexion = 'Clinical Reasoning ist einer der anspruchsvollsten Lernprozesse in der Pflege – dass du übst, ist schon der richtige Schritt. Nimm dir beim nächsten Mal Zeit für jeden einzelnen Schritt.';
+    reflexionHtml += '<div style="font-size:13px;margin-bottom:4px;opacity:.7">Gezielte Tipps für deine Entwicklungsfelder:</div>';
+    reflexionHtml += weakSteps.slice(0, 2).map(function(k) {
+      return '<div style="margin-top:8px;padding:10px 12px;background:var(--muted);border-radius:var(--radius-sm);border-left:3px solid var(--accent)">' +
+        '<div style="font-weight:700;margin-bottom:4px">' + xpLabels[k] + ' <span style="font-weight:400;opacity:.6">(' + stepScores[k] + '\u202f%)</span></div>' +
+        '<div style="font-size:13px;line-height:1.5">' + stepTipps[k] + '</div>' +
+      '</div>';
+    }).join('');
+    if (weakSteps.length > 2) {
+      reflexionHtml += '<div style="font-size:12px;margin-top:8px;opacity:.6">Weitere Entwicklungsfelder: ' +
+        weakSteps.slice(2).map(function(k) { return xpLabels[k]; }).join(', ') + '.</div>';
+    }
   }
 
   // Fortschrittsbalken zum nächsten Level
@@ -4972,7 +4999,8 @@ function renderStepResult() {
     '</div>' +
     '<div class="card result-section">' +
       '<div class="instruction" style="margin-bottom:12px">' +
-        '<strong>Reflexionsimpuls:</strong> ' + reflexion +
+        '<div style="font-weight:700;margin-bottom:8px">Reflexionsimpuls</div>' +
+        reflexionHtml +
       '</div>' +
       '<p class="small muted" style="margin-top:0">' +
         '<strong>Hinweis:</strong> Dieser Trainer ist eine <em>Lernhilfe</em>, kein Prüfungsinstrument. Im echten Pflegealltag gibt es oft mehrere vertretbare Wege.' +
