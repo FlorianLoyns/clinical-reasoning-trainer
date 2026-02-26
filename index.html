@@ -334,9 +334,9 @@
       h1 { font-size:20px; }
       button { width:100%; }
       .controls { gap:8px; }
-      .step-label { font-size:9px; white-space:nowrap; }
-      .stepper { gap:0; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; scroll-snap-type:x mandatory; }
-      .step-indicator { flex:0 0 auto; min-width:44px; scroll-snap-align:start; }
+      .stepper { gap:0; overflow:visible; }
+      .step-indicator { flex:1; min-width:0; overflow:hidden; }
+      .step-label { font-size:9px; white-space:nowrap; overflow:hidden; }
       .card { padding:16px; }
       .card-white, .fall-text, .result-section { padding:16px; }
 
@@ -3776,7 +3776,343 @@ Im Aufnahmegespräch ergibt sich: Anna ist seit drei Wochen krankgeschrieben (Be
   ],
 };
 
-const faelle = [fall1, fall2, fall3, fall4, fall5, fall6, fall7, fall8, fall9, fall10];
+const fall11 = {
+  titel: "Ben Richter, 22 Jahre",
+  setting: "Psychiatrie / Tagesklinik",
+  schwierigkeit: "leicht",
+  text: `Ben Richter (22 Jahre) ist Student der Wirtschaftswissenschaften im 3. Semester und lebt in einer Wohngemeinschaft. Er stellt sich auf Empfehlung seines Hausarztes in der psychiatrischen Tagesklinik vor. Vor drei Monaten hat sich seine Freundin nach einer zweijährigen Beziehung von ihm getrennt. Seitdem leidet Ben unter ausgeprägten Ein- und Durchschlafstörungen, Appetitlosigkeit und einem anhaltenden Gefühl innerer Leere.
+
+Er besucht kaum noch Vorlesungen, meidet seinen Freundeskreis und verbringt die meiste Zeit in seinem Zimmer. Die Körperpflege vernachlässigt er zunehmend – er trägt seit zwei Tagen dieselbe Kleidung und duscht unregelmäßig. Abends greift er regelmäßig zu Energydrinks, „um wach zu bleiben", schläft dann erst gegen 2–3 Uhr ein und bleibt bis 11–12 Uhr im Bett, ohne sich erholt zu fühlen.
+
+Im Erstgespräch der Tagesklinik wirkt Ben niedergeschlagen, aber kooperativ. Er sagt: „Ich weiß nicht mehr, wofür ich morgens aufstehen soll." Suizidalität wird auf Nachfrage verneint. Der PHQ-9-Score beträgt 12 (mittelgradige depressive Symptomatik). Als Diagnose wird eine Anpassungsstörung mit längerer depressiver Reaktion (ICD-10: F43.21) gestellt. Das Gewicht ist in den letzten drei Monaten um 3 kg gesunken; Ben isst häufig nur eine Mahlzeit pro Tag, oft erst am Abend.`,
+
+  cues: [
+    { id: "c1",  text: "22 Jahre, Student (Wirtschaftswissenschaften, 3. Semester), lebt in WG",
+      relevant: false, cluster: null,
+      grund: "Demographische und biographische Angabe – liefert Kontext zur Lebenssituation, ist aber kein pflegerisch steuerbares Problem.",
+      clusterGrund: "" },
+    { id: "c2",  text: "Trennung von der Freundin vor 3 Monaten (2-jährige Beziehung)",
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Das auslösende Lebensereignis der Anpassungsstörung – erklärt die Ätiologie der gesamten Symptomatik und ist zentral für das Verständnis des Pflegeproblems.",
+      clusterGrund: "Das kritische Lebensereignis (Trennung) ist die Ätiologie der eingeschränkten Alltagsgestaltung – ATL Raum und Zeit gestalten, arbeiten und spielen." },
+    { id: "c3",  text: "PHQ-9: 12 (mittelgradige depressive Symptomatik)",
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Der PHQ-9-Wert objektiviert den Schweregrad der depressiven Symptomatik und ist Grundlage für Pflegeintensität und Zielsetzung.",
+      clusterGrund: "Objektiviertes Maß der depressiven Belastung – beeinflusst Tagesstruktur und Alltagsgestaltung (ATL Raum und Zeit gestalten, arbeiten und spielen)." },
+    { id: "c4",  text: "Diagnose: Anpassungsstörung mit längerer depressiver Reaktion (F43.21)",
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Die psychiatrische Diagnose erklärt Antriebsverlust, Rückzug und Alltagseinschränkungen – Grundlage der Pflegeplanung.",
+      clusterGrund: "Die Diagnose begründet die Beeinträchtigung der Alltagsgestaltung und Teilhabe (ATL Raum und Zeit gestalten, arbeiten und spielen)." },
+    { id: "c5",  text: '„Ich weiß nicht mehr, wofür ich morgens aufstehen soll."',
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Äußerung von Antriebslosigkeit und fehlender Perspektive – zeigt das subjektive Erleben der eingeschränkten Alltagsgestaltung und ist pflegerisch relevant.",
+      clusterGrund: "Verbalisierter Antriebsverlust und fehlende Tagesstruktur – ATL Raum und Zeit gestalten, arbeiten und spielen." },
+    { id: "c6",  text: "Ein- und Durchschlafstörungen: schläft erst gegen 2–3 Uhr ein, wacht nachts auf",
+      relevant: true,  cluster: "schlafen",
+      grund: "Einschlaf- und Durchschlafstörungen sind ein direktes Symptom der Anpassungsstörung und pflegerisch durch Schlafhygieneberatung und Rituale beeinflussbar.",
+      clusterGrund: "Einschlaf- und Durchschlafstörungen beeinträchtigen die ATL Ruhen und schlafen direkt." },
+    { id: "c7",  text: "Schläft bis 11–12 Uhr, fühlt sich nicht erholt (nicht-erholsamer Schlaf)",
+      relevant: true,  cluster: "schlafen",
+      grund: "Der verzögerte Schlaf-Wach-Rhythmus mit subjektiv nicht-erholsamem Schlaf zeigt eine Dysregulation des zirkadianen Rhythmus – pflegerisch durch Zeitstrukturierung beeinflussbar.",
+      clusterGrund: "Gestörter Schlaf-Wach-Rhythmus und fehlende Erholung – Beeinträchtigung der ATL Ruhen und schlafen." },
+    { id: "c8",  text: 'Greift abends regelmäßig zu Energydrinks (Koffein) „um wach zu bleiben"',
+      relevant: true,  cluster: "schlafen",
+      grund: "Koffeinkonsum am Abend ist ein direkt beeinflussbarer Verstärker der Einschlafstörung – pflegerisch durch Beratung zur Schlafhygiene adressierbar.",
+      clusterGrund: "Koffeinkonsum am Abend als vermeidbarer Auslöser der Einschlafstörung – ATL Ruhen und schlafen." },
+    { id: "c9",  text: "Appetitlosigkeit: isst häufig nur eine Mahlzeit pro Tag, oft erst abends",
+      relevant: true,  cluster: "essen",
+      grund: "Appetitlosigkeit mit massiv reduzierter Nahrungsaufnahme ist ein Kernsymptom der depressiven Reaktion und pflegerisch durch Strukturierung der Mahlzeiten beeinflussbar.",
+      clusterGrund: "Unzureichende Nahrungsaufnahme durch Appetitlosigkeit – direkte Beeinträchtigung der ATL Essen und trinken." },
+    { id: "c10", text: "Gewichtsabnahme 3 kg in 3 Monaten",
+      relevant: true,  cluster: "essen",
+      grund: "3 kg in 3 Monaten zeigen eine klinisch bedeutsame Mangelernährung als Folge der Appetitlosigkeit – pflegerisch und ärztlich zu überwachen.",
+      clusterGrund: "Gewichtsverlust als objektives Zeichen der unzureichenden Nahrungsaufnahme – ATL Essen und trinken." },
+    { id: "c11", text: "Vorlesungsbesuch stark reduziert (letzte 6 Wochen kaum Teilnahme)",
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Der Rückzug aus dem Studium zeigt die konkrete Beeinträchtigung der sozialen Teilhabe und Tagesstruktur – pflegerisch durch Strukturierungsangebote beeinflussbar.",
+      clusterGrund: "Ausfall der Haupttagesstruktur (Studium) durch Antriebslosigkeit – ATL Raum und Zeit gestalten, arbeiten und spielen." },
+    { id: "c12", text: "Verbringt die meiste Zeit in seinem Zimmer, meidet Freundeskreis",
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Sozialer Rückzug und Passivität sind zentrale Symptome der depressiven Reaktion und verstärken den Kreislauf aus Antriebslosigkeit und Isolation.",
+      clusterGrund: "Sozialer Rückzug und fehlende Aktivität – Beeinträchtigung der ATL Raum und Zeit gestalten, arbeiten und spielen." },
+    { id: "c13", text: "Körperpflege vernachlässigt: seit 2 Tagen gleiche Kleidung, unregelmäßiges Duschen",
+      relevant: false, cluster: null,
+      grund: "Hinweis auf Selbstvernachlässigung – bei leichter Anpassungsstörung bildet die Körperpflege keinen eigenständigen pflegerischen Schwerpunkt; sie wird im Rahmen der Alltagsgestaltung mitbehandelt.",
+      clusterGrund: "" },
+    { id: "c14", text: "Kooperativ im Erstgespräch, zeigt Krankheitseinsicht",
+      relevant: false, cluster: null,
+      grund: "Positive Ressource, aber kein Pflegeproblem – die Kooperationsbereitschaft fließt in die Ressourcen (R) der PESR-Diagnosen ein.",
+      clusterGrund: "" },
+    { id: "c15", text: "Keine Suizidalität (auf Nachfrage verneint)",
+      relevant: false, cluster: null,
+      grund: "Wichtige Sicherheitsinformation – keine Suizidalität bedeutet, dass kein eigenständiger Sicherheitsschwerpunkt gebildet werden muss. Die Information gehört in die Falldokumentation, ist aber kein Pflegeproblem.",
+      clusterGrund: "" },
+    { id: "c16", text: "Niedergeschlagene Stimmung, Gefühl innerer Leere seit 3 Monaten",
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Das subjektive Erleben von Leere und Niedergeschlagenheit ist das Leitsymptom der Anpassungsstörung und Grundlage für das pflegerische Beziehungsangebot.",
+      clusterGrund: "Anhaltende Niedergeschlagenheit und innere Leere als Kernsymptom der Alltagsbeeinträchtigung – ATL Raum und Zeit gestalten, arbeiten und spielen." },
+  ],
+
+  clusters: [
+    { id: "schlafen",          name: "ATL: Ruhen und schlafen",                                        correctCues: ["c6","c7","c8"] },
+    { id: "alltagsgestaltung", name: "ATL: Raum und Zeit gestalten, arbeiten und spielen",             correctCues: ["c2","c3","c4","c5","c11","c12","c16"] },
+    { id: "essen",             name: "ATL: Essen und trinken",                                         correctCues: ["c9","c10"] },
+  ],
+
+  pes: [
+    {
+      cluster: "schlafen",
+      clusterName: "Schlafen / Ruhen und schlafen",
+      prioritaet: "Chronisches Problem",
+      bausteine: [
+        { id: "b1a", text: "Schlafstörung mit Ein- und Durchschlafproblemen und nicht-erholsamem Schlaf", type: "P" },
+        { id: "b1b", text: "Grübeln und emotionale Anspannung durch die Trennung, abendlicher Koffeinkonsum (Energydrinks), gestörter Schlaf-Wach-Rhythmus", type: "E" },
+        { id: "b1c", text: "Schläft erst gegen 2–3 Uhr ein, wacht nachts mehrfach auf, steht erst 11–12 Uhr auf, fühlt sich nicht erholt", type: "S" },
+        { id: "b1e", text: "Ben erkennt das Schlafproblem und ist bereit, Schlafgewohnheiten zu verändern; zeigt Kooperationsbereitschaft", type: "R" },
+        { id: "b1d", text: "Energydrink-Konsum aus subjektivem Erleben der Erschöpfung heraus", type: "X" },
+      ],
+      explanation: "Die Schlafstörung ist das <strong>Problem</strong> (P) – es beschreibt das konkret beobachtbare Pflegeproblem. Die <strong>Etiologie</strong> (E) benennt die veränderbaren Ursachen: Grübeln, Koffein und Rhythmusstörung – diese sind pflegerisch beeinflussbar. Die <strong>Symptome</strong> (S) sind messbar: Einschlafzeit, Aufwachzeit, subjektives Erleben. Der Energydrink-Konsum ist eine Reaktion auf die Erschöpfung, nicht die Ursache der Schlafstörung – er gehört nicht in die Ätiologie, sondern ist ein verstärkender Faktor, der in die Maßnahmenplanung einfließt."
+    },
+    {
+      cluster: "alltagsgestaltung",
+      clusterName: "Alltagsgestaltung / Raum und Zeit gestalten",
+      prioritaet: "Chronisches Problem",
+      bausteine: [
+        { id: "b2a", text: "Eingeschränkte Alltagsgestaltung und soziale Teilhabe mit Antriebsverlust", type: "P" },
+        { id: "b2b", text: "Depressive Reaktion auf kritisches Lebensereignis (Trennung) im Rahmen einer Anpassungsstörung F43.21 mit Antriebslosigkeit, Grübeln und innerer Leere", type: "E" },
+        { id: "b2c", text: "Kaum Vorlesungsbesuch, sozialer Rückzug, verbringt die meiste Zeit im Zimmer, äußert fehlende Tagesstruktur und Perspektivlosigkeit", type: "S" },
+        { id: "b2e", text: "Ben ist kooperativ, hat Krankheitseinsicht und äußert den Wunsch, wieder in den Alltag zu finden", type: "R" },
+        { id: "b2d", text: "PHQ-9: 12 (ärztliche Diagnosestellung)", type: "X" },
+      ],
+      explanation: "Die eingeschränkte Alltagsgestaltung ist das <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) ist die Anpassungsstörung mit depressiver Reaktion auf die Trennung: Antriebslosigkeit, Grübeln und innere Leere verhindern die Alltagsteilhabe. Die <strong>Symptome</strong> (S) sind konkret beobachtbar: Studienabbruch, Rückzug, Passivität. Der PHQ-9-Wert ist ein ärztliches Diagnoseinstrument – er gehört nicht in die Ätiologie, sondern ist Kontextinformation zur Pflegeplanung."
+    },
+    {
+      cluster: "essen",
+      clusterName: "Ernährung / Essen und trinken",
+      prioritaet: "Chronisches Problem",
+      bausteine: [
+        { id: "b3a", text: "Unzureichende Nahrungsaufnahme mit Gewichtsverlust", type: "P" },
+        { id: "b3b", text: "Appetitlosigkeit als Symptom der Anpassungsstörung (depressive Reaktion) sowie gestörter Tagesrhythmus ohne geregelte Mahlzeiten", type: "E" },
+        { id: "b3c", text: "Häufig nur eine Mahlzeit täglich (oft erst abends), Gewichtsverlust 3 kg in 3 Monaten", type: "S" },
+        { id: "b3e", text: "Ben versteht den Zusammenhang zwischen Ernährung und Wohlbefinden und ist bereit, Mahlzeiten strukturiert einzuplanen", type: "R" },
+        { id: "b3d", text: "Gewichtsmessung durch ärztliche Verlaufskontrolle", type: "X" },
+      ],
+      explanation: "Die unzureichende Nahrungsaufnahme ist das <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) liegt in der Appetitlosigkeit als Symptom der depressiven Reaktion und im gestörten Tagesrhythmus ohne feste Mahlzeitenstruktur. Die <strong>Symptome</strong> (S) sind messbar: eine Mahlzeit täglich, 3 kg Gewichtsverlust. Die Gewichtskontrolle durch den Arzt ist eine ärztliche Maßnahme – keine Ursache des Pflegeproblems."
+    }
+  ],
+
+  smartZiele: [
+    {
+      cluster: "schlafen",
+      clusterName: "Schlafen / Ruhen und schlafen",
+      diagnose: "Schlafstörung mit Ein- und Durchschlafproblemen und nicht-erholsamem Schlaf",
+      optionen: [
+        {
+          id: "sz1a",
+          text: "Ben soll besser schlafen.",
+          correct: false,
+          feedback: "<strong>Nicht SMART.</strong> Das Ziel ist zu vage – 'besser schlafen' ist weder spezifisch noch messbar. Was bedeutet besser? Wie wird es gemessen? Bis wann? Ein SMART-Ziel braucht konkrete Schlafzeiten, ein Messinstrument (z.B. Schlafprotokoll) und einen Zeitrahmen."
+        },
+        {
+          id: "sz1b",
+          text: "Ben schläft innerhalb von 7 Tagen an mindestens 4 Nächten vor 24:00 Uhr ein und schläft mindestens 6 Stunden durch. Ein- und Aufwachzeit sowie subjektives Erholungserleben werden täglich im Schlafprotokoll dokumentiert. Koffeinhaltige Getränke werden ab 17:00 Uhr gemieden.",
+          correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Einschlafzeit, Schlafdauer, Koffeingrenze. <em>Messbar:</em> Schlafprotokoll mit Zeiten und Erholungserleben. <em>Attraktiv:</em> Realistisches Ziel, das Ben selbst steuern kann. <em>Realistisch:</em> 4 von 7 Nächten ist ein erreichbares Etappenziel. <em>Terminiert:</em> 7 Tage."
+        },
+        {
+          id: "sz1c",
+          text: "Ben schläft ab morgen jede Nacht von 22:00 bis 7:00 Uhr durch und verzichtet vollständig auf Energydrinks.",
+          correct: false,
+          feedback: "<strong>Nicht SMART – zu wenig realistisch.</strong> Nach monatelanger Schlafstörung ist eine sofortige Normalisierung des Schlaf-Wach-Rhythmus unrealistisch. Ziele müssen erreichbar sein – sonst erzeugen sie Druck und Versagensgefühle, die die Symptomatik verschlechtern können. Schrittweise Annäherung ist evidenzbasiert."
+        }
+      ]
+    },
+    {
+      cluster: "alltagsgestaltung",
+      clusterName: "Alltagsgestaltung / Raum und Zeit gestalten",
+      diagnose: "Eingeschränkte Alltagsgestaltung und soziale Teilhabe mit Antriebsverlust",
+      optionen: [
+        {
+          id: "sz2a",
+          text: "Ben muss wieder regelmäßig Vorlesungen besuchen und sich mit Freunden treffen.",
+          correct: false,
+          feedback: "<strong>Nicht SMART.</strong> Das Ziel formuliert eine Forderung statt ein erreichbares Ergebnis. Bei einer Anpassungsstörung ist der Wiedereinstieg ein Prozess – 'muss' und 'wieder regelmäßig' ignorieren den aktuellen Leistungsstand und können Druck erzeugen. Es fehlen Messbarkeit, Zeitrahmen und Ressourcenorientierung."
+        },
+        {
+          id: "sz2b",
+          text: "Ben nimmt innerhalb von 5 Tagen an mindestens 3 Gruppenangeboten der Tagesklinik teil und erstellt täglich gemeinsam mit der Pflegekraft einen Tagesstrukturplan (Aufsteh- und Mahlzeitenzeiten, eine Aktivität). Fortschritt wird täglich im Pflegebericht dokumentiert.",
+          correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Gruppenangebote, Tagesstrukturplan, Inhalte benannt. <em>Messbar:</em> Teilnahme ja/nein, Tagesplan dokumentiert. <em>Attraktiv:</em> Passt zum tagesklinischen Setting; kleinschrittig und erreichbar. <em>Realistisch:</em> 3 von 5 Tagen ist ein Einstiegsziel ohne Überforderung. <em>Terminiert:</em> 5 Tage."
+        },
+        {
+          id: "sz2c",
+          text: "Da Ben körperlich gesund ist, soll er eigenverantwortlich entscheiden, wann er wieder am Leben teilnimmt.",
+          correct: false,
+          feedback: "<strong>Nicht SMART – und falsch verstandene Autonomie.</strong> Autonomie ohne Unterstützungsstruktur führt bei Anpassungsstörungen häufig zu weiterem Rückzug. Pflegerische Begleitung und Tagesstruktur sind evidenzbasierte Interventionen. Ein Pflegeziel darf nicht Untätigkeit formulieren."
+        }
+      ]
+    },
+    {
+      cluster: "essen",
+      clusterName: "Ernährung / Essen und trinken",
+      diagnose: "Unzureichende Nahrungsaufnahme mit Gewichtsverlust",
+      optionen: [
+        {
+          id: "sz3a",
+          text: "Ben soll wieder mehr essen.",
+          correct: false,
+          feedback: "<strong>Nicht SMART.</strong> 'Mehr essen' ist weder spezifisch noch messbar. Wie viele Mahlzeiten? Wann? Mit welchem Ziel? Es fehlt ein Messinstrument, eine konkrete Mahlzeitenstruktur und ein Zeitrahmen."
+        },
+        {
+          id: "sz3b",
+          text: "Ben isst innerhalb von 5 Tagen täglich 3 Mahlzeiten zu geregelten Zeiten (Frühstück, Mittagessen, Abendessen), dokumentiert im Ernährungsprotokoll. Das Gewicht wird 2× wöchentlich kontrolliert. Ziel ist ein stabiles Gewicht (kein weiterer Verlust).",
+          correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> 3 Mahlzeiten, konkrete Mahlzeitenbezeichnung. <em>Messbar:</em> Ernährungsprotokoll, Gewichtskontrolle 2×/Woche. <em>Attraktiv:</em> Passt zur tagesklinischen Mahlzeitenstruktur; verhindert sozialen Rückzug beim Essen. <em>Realistisch:</em> Mit Gruppenessen in der Tagesklinik gut erreichbar. <em>Terminiert:</em> 5 Tage."
+        },
+        {
+          id: "sz3c",
+          text: "Ben bekommt Aufbaunahrung verschrieben, damit der Gewichtsverlust gestoppt wird.",
+          correct: false,
+          feedback: "<strong>Kein Pflegeziel – und falscher Ansatz.</strong> Aufbaunahrung ist eine ärztliche Anordnung, kein Pflegeziel. Bei einem 22-Jährigen mit Anpassungsstörung ist das primäre Ziel die Wiederherstellung einer geregelten Mahlzeitenstruktur, nicht eine medizinische Supplementierung. Das Pflegeziel beschreibt den angestrebten Outcome, nicht eine ärztliche Maßnahme."
+        }
+      ]
+    }
+  ],
+
+  sechsW: [
+    {
+      cluster: "schlafen",
+      clusterName: "Schlafen / Ruhen und schlafen",
+      ziel: "Einschlafen vor 24:00 Uhr an 4/7 Nächten, Schlafprotokoll, Koffeinverzicht ab 17 Uhr",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegekraft Tagesklinik (Beratung) und Ben selbst (Umsetzung)", optionen: ["Pflegekraft Tagesklinik (Beratung) und Ben selbst (Umsetzung)", "ausschließlich der behandelnde Psychiater", "WG-Mitbewohner ohne professionelle Begleitung"] },
+        { text: " berät Ben zur Schlafhygiene " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "täglich zu Beginn des Tagesklinik-Tages (gemeinsame Tagesplanung) und am Abend per Protokollauswertung", optionen: ["täglich zu Beginn des Tagesklinik-Tages (gemeinsame Tagesplanung) und am Abend per Protokollauswertung", "nur wenn Ben schlecht geschlafen hat", "einmalig zu Beginn der Behandlung"] },
+        { text: " und bespricht mit ihm " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "Verzicht auf Koffein ab 17:00 Uhr, feste Zubettgehzeit um 23:00 Uhr anstreben, kein Handy nach 22:00 Uhr, kurze Entspannungsübung vor dem Schlafen (z.B. 4-7-8-Atemübung)", optionen: ["Verzicht auf Koffein ab 17:00 Uhr, feste Zubettgehzeit um 23:00 Uhr anstreben, kein Handy nach 22:00 Uhr, kurze Entspannungsübung vor dem Schlafen (z.B. 4-7-8-Atemübung)", "Sporteinheiten direkt vor dem Schlafengehen zur Erschöpfung", "Energydrinks durch Kaffee ersetzen, da weniger Zucker"] },
+        { text: " " },
+        { luecke: true, id: "w4", wFrage: "Wie oft?", correct: "täglich (Protokollführung und Reflexion)", optionen: ["täglich (Protokollführung und Reflexion)", "nur bei Schlafproblemen", "2× wöchentlich"] },
+        { text: " und dokumentiert den Verlauf " },
+        { luecke: true, id: "w5", wFrage: "Wo?", correct: "im Schlafprotokoll (Einschlafzeit, Aufwachzeit, Schlafqualität subjektiv, Koffeinkonsum)", optionen: ["im Schlafprotokoll (Einschlafzeit, Aufwachzeit, Schlafqualität subjektiv, Koffeinkonsum)", "nur mündlich beim nächsten Termin", "im Medikamentenblatt"] },
+        { text: ", um " },
+        { luecke: true, id: "w6", wFrage: "Warum?", correct: "den Schlaf-Wach-Rhythmus zu stabilisieren, Koffein als Verstärker der Einschlafstörung zu reduzieren und den Behandlungsfortschritt zu messen", optionen: ["den Schlaf-Wach-Rhythmus zu stabilisieren, Koffein als Verstärker der Einschlafstörung zu reduzieren und den Behandlungsfortschritt zu messen", "Ben zu kontrollieren und zu überwachen", "das Schlafmittel zu ersetzen"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Pflegekraft berät, Ben setzt um – bei der Anpassungsstörung ist die Eigenverantwortung zentral; die Pflegekraft begleitet und befähigt, übernimmt aber nicht), <strong>Wann</strong> (täglich – zirkadiane Rhythmusstabilisierung braucht Kontinuität; einmalige Beratung reicht nicht aus), <strong>Was</strong> (Koffeinverzicht, feste Zubettgehzeit, Handyverzicht, Atemübung – vier evidenzbasierte Schlafhygieneelemente, die synergistisch wirken), <strong>Wie oft</strong> (täglich – nur tägliche Protokollführung ermöglicht Mustererkennung und Zielevaluation), <strong>Wo dokumentiert</strong> (Schlafprotokoll mit subjektiver Qualität – die subjektive Erholungsqualität ist ebenso wichtig wie die Dauer), <strong>Warum</strong> (Rhythmusstabilisierung und Koffeinreduktion – Schlafhygiene ist die erste Interventionslinie bei nicht-organischen Schlafstörungen im Rahmen von Anpassungsstörungen)."
+    },
+    {
+      cluster: "alltagsgestaltung",
+      clusterName: "Alltagsgestaltung / Raum und Zeit gestalten",
+      ziel: "Tagesstrukturplan täglich, Teilnahme an 3 Gruppenangeboten in 5 Tagen",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Bezugspflegekraft der Tagesklinik gemeinsam mit Ben", optionen: ["Bezugspflegekraft der Tagesklinik gemeinsam mit Ben", "Ben allein ohne pflegerische Begleitung", "die WG-Mitbewohner als soziales Unterstützungssystem"] },
+        { text: " erstellt täglich " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "zu Beginn des Tageskliniktages (morgens, beim Ankommen)", optionen: ["zu Beginn des Tageskliniktages (morgens, beim Ankommen)", "nur wenn Ben von sich aus darum bittet", "abends als Reflexion des vergangenen Tages"] },
+        { text: " einen schriftlichen Tagesstrukturplan " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "Aufstehzeit, Mahlzeiten, ein Gruppenangebot, eine Freizeitaktivität – kleinschrittig, erreichbar, mit Bens eigenen Prioritäten abgestimmt", optionen: ["Aufstehzeit, Mahlzeiten, ein Gruppenangebot, eine Freizeitaktivität – kleinschrittig, erreichbar, mit Bens eigenen Prioritäten abgestimmt", "vollständiger Stundenplan für alle Tagesstunden wie im Studium", "ausschließlich therapeutische Pflichtangebote ohne Freizeit"] },
+        { text: " " },
+        { luecke: true, id: "w4", wFrage: "Wie oft?", correct: "täglich (1× pro Tageskliniktag)", optionen: ["täglich (1× pro Tageskliniktag)", "nur an Tagen, an denen Ben Gruppenangebote besucht", "wöchentlich zu Beginn der Woche"] },
+        { text: " und dokumentiert Teilnahme und Erleben " },
+        { luecke: true, id: "w5", wFrage: "Wo?", correct: "im Pflegebericht (Tagesplan, Teilnahme ja/nein, kurze Einschätzung des Befindens)", optionen: ["im Pflegebericht (Tagesplan, Teilnahme ja/nein, kurze Einschätzung des Befindens)", "nur mündlich in der Teambesprechung", "im Medikationsplan"] },
+        { text: ", um " },
+        { luecke: true, id: "w6", wFrage: "Warum?", correct: "Tagesstruktur als antidepressiven Schutzfaktor aufzubauen, soziale Isolation zu durchbrechen und Selbstwirksamkeitserfahrungen zu ermöglichen", optionen: ["Tagesstruktur als antidepressiven Schutzfaktor aufzubauen, soziale Isolation zu durchbrechen und Selbstwirksamkeitserfahrungen zu ermöglichen", "die Anwesenheitspflicht in der Tagesklinik zu dokumentieren", "Ben zu beschäftigen und abzulenken"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Bezugspflegekraft gemeinsam mit Ben – Partizipation ist entscheidend; Ben muss den Plan als seinen eigenen erleben, nicht als Fremdvorgabe), <strong>Wann</strong> (morgens bei Ankunft – der Tagesstart setzt den Rahmen; wer morgens strukturiert beginnt, hat weniger Rückzugsimpulse), <strong>Was</strong> (Aufstehzeit, Mahlzeiten, Gruppe, Aktivität – die vier Grundpfeiler der Tagesstruktur; kleinschrittig und mit Bens Prioritäten abgestimmt schützt vor Überforderung), <strong>Wie oft</strong> (täglich – Struktur wirkt nur durch Wiederholung; Konsequenz ist das wichtigste Element), <strong>Wo dokumentiert</strong> (Pflegebericht mit Teilnahme und Befinden – Verlaufsdokumentation macht Fortschritte sichtbar und motiviert), <strong>Warum</strong> (Tagesstruktur als antidepressiver Schutzfaktor – regelmäßige Aktivität und soziale Einbindung sind nachgewiesenermaßen wirksam bei depressiven Anpassungsstörungen und verhindern die Chronifizierung)."
+    },
+    {
+      cluster: "essen",
+      clusterName: "Ernährung / Essen und trinken",
+      ziel: "3 Mahlzeiten täglich zu geregelten Zeiten, Ernährungsprotokoll, Gewicht stabil",
+      teile: [
+        { text: "Die " },
+        { luecke: true, id: "w1", wFrage: "Wer?", correct: "Pflegekraft Tagesklinik (Begleitung und Protokollführung) gemeinsam mit Ben", optionen: ["Pflegekraft Tagesklinik (Begleitung und Protokollführung) gemeinsam mit Ben", "ausschließlich Ben selbst, da er körperlich in der Lage ist zu essen", "Ernährungsberatung als alleinige Zuständigkeit"] },
+        { text: " begleitet Ben " },
+        { luecke: true, id: "w2", wFrage: "Wann?", correct: "zu den drei täglichen Mahlzeiten (Frühstück ca. 8:00 Uhr, Mittagessen ca. 12:00 Uhr, Abendessen ca. 18:00 Uhr)", optionen: ["zu den drei täglichen Mahlzeiten (Frühstück ca. 8:00 Uhr, Mittagessen ca. 12:00 Uhr, Abendessen ca. 18:00 Uhr)", "nur wenn Ben Hunger angibt", "einmal täglich zum Mittagessen"] },
+        { text: " beim gemeinsamen Essen in der Gruppe " },
+        { luecke: true, id: "w3", wFrage: "Was?", correct: "Einladung zur Mahlzeit in der Gruppe (soziale Einbettung), Portion angepasst (kein Zwang zur vollen Menge), Lieblingsspeisen erfragen und berücksichtigen, auf Getränkeaufnahme achten", optionen: ["Einladung zur Mahlzeit in der Gruppe (soziale Einbettung), Portion angepasst (kein Zwang zur vollen Menge), Lieblingsspeisen erfragen und berücksichtigen, auf Getränkeaufnahme achten", "Aufbaunahrung als Mahlzeitersatz, damit die Kalorienzufuhr gesichert ist", "Essensdruck ausüben, damit Ben die vollständige Portion isst"] },
+        { text: " " },
+        { luecke: true, id: "w4", wFrage: "Wie oft?", correct: "3× täglich (alle Hauptmahlzeiten)", optionen: ["3× täglich (alle Hauptmahlzeiten)", "1× täglich zum Mittagessen", "nur wenn Ben sich selbst meldet"] },
+        { text: " und dokumentiert Mahlzeiteneinnahme und Gewicht " },
+        { luecke: true, id: "w5", wFrage: "Wo?", correct: "im Ernährungsprotokoll (Mahlzeit eingenommen ja/nein, ungefähre Menge, Getränkeaufnahme) und im Verlaufsbericht (Gewicht 2×/Woche)", optionen: ["im Ernährungsprotokoll (Mahlzeit eingenommen ja/nein, ungefähre Menge, Getränkeaufnahme) und im Verlaufsbericht (Gewicht 2×/Woche)", "nur mündlich in der Übergabe", "ausschließlich in der Fieberkurve"] },
+        { text: ", um " },
+        { luecke: true, id: "w6", wFrage: "Warum?", correct: "eine regelmäßige Nahrungsaufnahme zu etablieren, den Gewichtsverlust zu stoppen und gemeinsames Essen als soziales Ritual zur Tagesstrukturierung zu nutzen", optionen: ["eine regelmäßige Nahrungsaufnahme zu etablieren, den Gewichtsverlust zu stoppen und gemeinsames Essen als soziales Ritual zur Tagesstrukturierung zu nutzen", "Ben zur Selbstständigkeit zu zwingen", "kalorienreiche Kost zu erzwingen, damit das Gewicht schnell steigt"] },
+        { text: "." }
+      ],
+      feedbackDetail: "<strong>Wer</strong> (Pflegekraft begleitet, Ben isst selbst – keine Übernahme, sondern Begleitung; die soziale Einbettung in die Gruppe ist therapeutisch wirksam), <strong>Wann</strong> (3× täglich zu festen Zeiten – die Regelmäßigkeit der Mahlzeiten ist ein zentrales Element der Tagesstruktur und wirkt auch auf den zirkadianen Rhythmus), <strong>Was</strong> (Gruppenessen, angepasste Portion, Lieblingsspeisen, Flüssigkeit – kein Druck, aber konsequente Einladung; Vorlieben berücksichtigen erhöht die Compliance), <strong>Wie oft</strong> (3× täglich – nur bei allen 3 Mahlzeiten entsteht eine echte Struktur), <strong>Wo dokumentiert</strong> (Ernährungsprotokoll mit Menge und Gewicht – macht Fortschritt sichtbar und ermöglicht frühzeitiges Handeln bei weiterer Gewichtsabnahme), <strong>Warum</strong> (gemeinsames Essen als soziales Ritual – Mahlzeiten sind nicht nur Ernährung, sondern Tagesanker und soziale Teilhabe; bei Anpassungsstörungen ist die Normalisierung des Alltags der wichtigste therapeutische Ansatz)."
+    }
+  ],
+
+  evaluation: [
+    {
+      cluster: "schlafen", clusterName: "Schlafen / Ruhen und schlafen",
+      ziel: "Einschlafen vor 24:00 Uhr an 4/7 Nächten, Schlafprotokoll, Koffeinverzicht",
+      verlauf: "Tag 7: Ben hat das Schlafprotokoll an 6 von 7 Tagen geführt. An 4 Nächten ist er vor Mitternacht eingeschlafen (23:00–23:45 Uhr). An 3 Nächten hat er noch länger als eine Stunde gebraucht. Er berichtet, dass er auf Energydrinks nach 17 Uhr weitgehend verzichtet hat ('meistens hat es geklappt'). Die Atemübung nutzt er an 4 Abenden. 'Ich schlafe noch nicht gut, aber es wird etwas besser.'",
+      fragen: {
+        zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Richtig! 4 von 7 Nächten vor 24:00 Uhr eingeschlafen ✓, Schlafprotokoll geführt ✓, Koffeinverzicht weitgehend umgesetzt ✓. Das Ziel ist erreicht – die Verbesserung ist noch nicht stabil, aber das Etappenziel wurde erfüllt.", "Teilweise erreicht": "Prüf nochmal die Kriterien: 4 von 7 Nächten war genau das Ziel – es wurde erreicht. Das Protokoll wurde an 6 von 7 Tagen geführt. Der Koffeinverzicht wurde 'weitgehend' umgesetzt. Das Ziel ist vollständig erfüllt.", "Nicht erreicht": "4 von 7 Nächten entspricht exakt dem gesetzten Ziel. Ben hat alle drei Zielkriterien erfüllt – Schlafprotokoll, Einschlafzeit und Koffeinreduktion. Das Ziel wurde erreicht." }
+        },
+        massnahme: { correct: "Anpassen", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Das Grundprinzip wirkt – aber in 3 Nächten hat Ben noch erhebliche Einschlafprobleme. Sinnvolle Ergänzung: Die Atemübung konsequenter einsetzen und die Handynutzungszeiten nochmals besprechen.", "Anpassen": "Richtig! Das Ziel ist erreicht, aber nicht stabil. Sinnvolle Anpassung: Das neue Ziel auf 5 von 7 Nächten erhöhen, Atemübung täglich als festes Abendritual verankern und Koffeinverzicht auf 16:00 Uhr vorziehen.", "Beenden": "Das Ziel ist zwar erreicht, aber die Schlafstörung ist noch nicht stabil. Abrupt zu beenden würde den erzielten Fortschritt gefährden. Weiterentwicklung des Ziels ist jetzt angemessen." }
+        },
+        begruendung: { correct: "bg1b",
+          optionen: [
+            { id: "bg1a", text: "Das Ziel ist vollständig erreicht, daher sind keine weiteren Maßnahmen zur Schlafverbesserung nötig." },
+            { id: "bg1b", text: "Das Etappenziel ist erreicht. Das Ziel wird auf 5 von 7 Nächten vor 24:00 Uhr erhöht, die Atemübung wird als tägliches Abendritual verankert und der Koffeinverzicht auf 16:00 Uhr vorgezogen." },
+            { id: "bg1c", text: "Da 3 Nächte noch problematisch waren, ist die Maßnahme gescheitert und muss von Grund auf neu geplant werden." }
+          ],
+          feedback: { "bg1a": "Erreichtes Ziel bedeutet nicht, dass keine Weiterentwicklung nötig ist. Schlafstörungen stabilisieren sich graduell – nach dem Etappenziel folgt das nächste Niveau.", "bg1b": "Genau! Erfolg konsolidieren und graduell steigern. Die Atemübung als tägliches Ritual zu verankern ist der nächste evidenzbasierte Schritt.", "bg1c": "3 von 7 schwierigen Nächten bei gleichzeitig 4 guten Nächten ist kein Scheitern – es ist der typische Verlauf einer graduellen Schlafstörungsbehandlung. Die Maßnahme wirkt." }
+        }
+      }
+    },
+    {
+      cluster: "alltagsgestaltung", clusterName: "Alltagsgestaltung / Raum und Zeit gestalten",
+      ziel: "3 Gruppenangebote in 5 Tagen, täglicher Tagesstrukturplan",
+      verlauf: "Tag 5: Ben hat an 3 von 5 Tagen an einem Gruppenangebot teilgenommen (Kreativangebot 2×, Bewegungsgruppe 1×). Den Tagesstrukturplan hat er an 4 von 5 Tagen gemeinsam mit der Pflegekraft erstellt. Er sagt: 'Die Gruppe hat mir geholfen – ich merke, dass mir der Tag besser geht, wenn ich rausgehe.' Die Vorlesungen besucht er noch nicht, aber er hat seinen Semesterplan angeschaut.",
+      fragen: {
+        zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Richtig! 3 Gruppenangebote in 5 Tagen ✓, Tagesstrukturplan an 4 von 5 Tagen ✓. Beide Zielkriterien sind erfüllt. Die positive Selbstwahrnehmung ('mir geht es besser') und das Ansehen des Semesterplans zeigen zusätzlich einen bedeutsamen Fortschritt.", "Teilweise erreicht": "Prüf nochmals die Kriterien: 3 Gruppenangebote waren das Ziel – erreicht ✓. Tagesstrukturplan 4 von 5 Tagen – das Ziel sagte 'täglich', aber 4 von 5 ist in der klinischen Praxis als vollständig zu werten. Kein Kriterium wurde verfehlt.", "Nicht erreicht": "Ben hat alle gesetzten Ziele erreicht. Der Tagesstrukturplan wurde an 4 von 5 Tagen erstellt und 3 Gruppenangebote wurden besucht. Die Selbstwahrnehmung zeigt zusätzlich echten Therapiefortschritt." }
+        },
+        massnahme: { correct: "Anpassen", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Das Prinzip wirkt gut. Da das Ziel erreicht ist, sollte es jetzt weiterentwickelt werden: Ein Schritt in Richtung Studium (z.B. eine Vorlesung besuchen) ist sinnvoll und passt zum angezeigten Fortschritt.", "Anpassen": "Richtig! Das Ziel wird weiterentwickelt: Nächste Woche soll Ben zusätzlich eine Vorlesung besuchen oder einen Kommilitonen kontaktieren – ein konkreter Schritt zurück in das Leben außerhalb der Tagesklinik.", "Beenden": "Die Tagesstrukturarbeit bleibt das Fundament der Behandlung bei Anpassungsstörungen. Ben ist noch in Behandlung – die Struktur abrupt zu beenden, würde den Rückfall riskieren." }
+        },
+        begruendung: { correct: "bg2b",
+          optionen: [
+            { id: "bg2a", text: "Ben braucht keine weitere Pflege mehr, da er eigenverantwortlich an Gruppen teilgenommen hat." },
+            { id: "bg2b", text: "Das Etappenziel ist erreicht. Die Tagesstrukturarbeit wird fortgesetzt und erweitert: nächster Schritt ist der Besuch einer Vorlesung oder der Kontakt zu einem Kommilitonen." },
+            { id: "bg2c", text: "Da Ben die Vorlesungen noch nicht besucht, ist die Maßnahme unzureichend und muss intensiviert werden." }
+          ],
+          feedback: { "bg2a": "Eigenverantwortliche Gruppenteilnahme ist ein gutes Zeichen – aber kein Abschlusskriterium. Die Weiterentwicklung in Richtung Studium und Sozialleben braucht weiterhin Begleitung.", "bg2b": "Genau! Gradueller Aufbau mit konkretem nächsten Schritt. Tagesstruktur bleibt als Fundament erhalten und wird um reale Alltagsziele erweitert.", "bg2c": "Das Primärziel war nicht der Vorlesungsbesuch – das war ein möglicher Folgeschritt. Das gesetzte Ziel wurde erreicht. Keine Intensivierung nötig, sondern Weiterentwicklung." }
+        }
+      }
+    },
+    {
+      cluster: "essen", clusterName: "Ernährung / Essen und trinken",
+      ziel: "3 Mahlzeiten täglich, Ernährungsprotokoll, Gewicht stabil",
+      verlauf: "Tag 5: Ben hat laut Ernährungsprotokoll an 4 von 5 Tagen alle 3 Mahlzeiten eingenommen. An einem Tag hat er das Frühstück ausgelassen. Er isst nun regelmäßig mit der Gruppe in der Tagesklinik und berichtet: 'Es hilft, dass andere auch essen – alleine hätte ich's wieder vergessen.' Das Gewicht bei der zweiten Kontrolle ist stabil (kein weiterer Verlust). Ben trinkt jetzt 1,5–2 Liter täglich.",
+      fragen: {
+        zielErreicht: { correct: "Vollständig erreicht", optionen: ["Vollständig erreicht", "Teilweise erreicht", "Nicht erreicht"],
+          feedback: { "Vollständig erreicht": "Richtig! 3 Mahlzeiten täglich an 4 von 5 Tagen ✓, Ernährungsprotokoll geführt ✓, Gewicht stabil (kein weiterer Verlust) ✓. Das ausgelassene Frühstück an einem Tag fällt unter die klinisch akzeptable Varianz. Das Ziel ist vollständig erreicht.", "Teilweise erreicht": "Prüf nochmals: 4 von 5 Tagen vollständige Mahlzeiten, stabiles Gewicht, Protokoll geführt – alle Kriterien sind erfüllt. Ein ausgelassenes Frühstück ist bei einem guten Gesamtverlauf kein Zielversagen.", "Nicht erreicht": "Das Gewicht ist stabil, das Protokoll wurde geführt und an 4 von 5 Tagen wurden alle Mahlzeiten eingenommen. Die Zielkriterien sind erfüllt." }
+        },
+        massnahme: { correct: "Beibehalten", optionen: ["Beibehalten", "Anpassen", "Beenden"],
+          feedback: { "Beibehalten": "Richtig! Das gemeinsame Essen in der Gruppe wirkt nachweislich – Ben selbst benennt es als hilfreich. Die Maßnahme wird fortgesetzt und das Ziel auf vollständige 5 von 5 Tagen erweitert.", "Anpassen": "Die Maßnahme zeigt klaren Erfolg – kein Anlass zur Änderung. Das ausgelassene Frühstück ist ein Hinweis, das Frühstücksritual nochmals zu besprechen, aber keine Grundlage für eine Maßnahmenanpassung.", "Beenden": "Das Ziel ist zwar erreicht, aber die Ernährungsstruktur ist noch nicht stabil verinnerlicht. Ben selbst sagt, dass er ohne Gruppe 'es vergessen hätte' – das Gruppenessen bleibt ein notwendiger Anker." }
+        },
+        begruendung: { correct: "bg3b",
+          optionen: [
+            { id: "bg3a", text: "Da das Gewicht stabil ist, muss die Ernährung nicht mehr überwacht werden." },
+            { id: "bg3b", text: "Das Ziel ist erreicht. Die Maßnahme wird beibehalten und das Frühstücksritual wird mit Ben nochmals besprochen, um auch den Morgen besser zu verankern." },
+            { id: "bg3c", text: "Da Ben an einem Tag das Frühstück ausgelassen hat, muss die Maßnahme sofort intensiviert werden." }
+          ],
+          feedback: { "bg3a": "Stabiles Gewicht ist ein wichtiges Ziel – aber es bedeutet nicht, dass die Mahlzeitenstruktur ohne Begleitung stabil bleibt. Ben gibt selbst an, ohne Gruppe 'es zu vergessen'. Die Begleitung bleibt notwendig.", "bg3b": "Genau! Erfolg konsolidieren und das schwächste Glied (Frühstück) gezielt stärken. Das Gruppenessen als sozialen Anker beibehalten.", "bg3c": "Ein ausgelassenes Frühstück an einem Tag bei sonst gutem Verlauf ist kein Grund zur Intensivierung. Angemessen ist eine gezielte Besprechung des Morgenrituals." }
+        }
+      }
+    },
+  ],
+};
+
+const faelle = [fall1, fall2, fall3, fall4, fall5, fall6, fall7, fall8, fall9, fall10, fall11];
 let verbleibendeFaelle = faelle.slice().sort(function() { return Math.random() - 0.5; });
 let fall = verbleibendeFaelle.pop();
 
