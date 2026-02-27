@@ -6,6 +6,7 @@
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue)](https://florianloyns.github.io/clinical-reasoning-trainer/index.html)
 ![Keine Abhängigkeiten](https://img.shields.io/badge/Abh%C3%A4ngigkeiten-keine-brightgreen)
 ![Mobile](https://img.shields.io/badge/Mobile-optimiert-brightgreen)
+![Dark Mode](https://img.shields.io/badge/Dark%20Mode-unterst%C3%BCtzt-darkblue)
 
 Klicken Sie hier zum Ausprobieren: [index.html](https://florianloyns.github.io/clinical-reasoning-trainer/index.html)
 
@@ -124,6 +125,7 @@ Eine einzelne HTML-Datei – kein Build, kein Framework, kein Server, keine exte
 - Keine Datenübertragung, kein Tracking (DSGVO-konform)
 - Highscores und Filtereinstellungen werden lokal im Browser gespeichert (localStorage) – keine Daten verlassen das Gerät
 - Mobile- und touchoptimiert
+- **Dark Mode** – per Klick auf das Logo umschaltbar, respektiert die Systempräferenz, Einstellung wird gespeichert
 
 
 ## Lizenz
