@@ -71,14 +71,14 @@ Der Trainer umfasst **11 Fälle** aus allen Vertiefungsbereichen der generalisti
 | Name | Vertiefungsbereich | Schwerpunkt | Schwierigkeit |
 |---|---|---|---|
 | Yıldız Kara, 78 | Akutpflege | Dekubitus, Mangelernährung | leicht |
-| Thomas Weber, 48 | Akutpflege | Postop. Schmerz, Mobilisation | leicht |
+| Thomas Weber, 48 | Akutpflege | Postop. Schmerz, Mobilisation | mittel |
 | Erna Schmidt, 84 | Akutpflege | Sturz, kognitive Einschränkung | mittel |
 | Mai Nguyen, 68 | Akutpflege | Schlaganfall, Neglect | schwer |
 | Nadja Petrow, 67 | Ambulante Pflege | Herzinsuffizienz, Selbstmanagement | schwer |
 | Giovanni Esposito, 82 | Langzeitpflege | Demenz, Validation | mittel |
 | Luka Metzger, 9 | Pädiatrie | Neurodermitis, Juckreiz | leicht |
 | Amira Haddad, 11 | Pädiatrie | Diabetes Typ 1, Edukation | schwer |
-| Ben Richter, 22 | Psychiatrie | Anpassungsstörung F43.21, Tagesstruktur | leicht |
+| Ben Richter, 22 | Psychiatrie | Anpassungsstörung, Tagesstruktur | leicht |
 | Anna Berger, 34 | Psychiatrie | Schwere Depression, Antrieb | mittel |
 | Dariusz Kowalski, 54 | Psychiatrie | Depression, Suizidalität | mittel |
 
