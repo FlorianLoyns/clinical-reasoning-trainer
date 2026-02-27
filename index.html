@@ -55,7 +55,7 @@
     .step-indicator.done::after { background:var(--success); }
     .step-num {
       width:28px; height:28px; border-radius:50%;
-      border:2px solid var(--border); background:#fff;
+      border:2px solid var(--border); background:var(--bg);
       display:inline-flex; align-items:center; justify-content:center;
       font-size:13px; font-weight:700; margin-bottom:4px;
       transition:var(--transition);
@@ -74,12 +74,12 @@
     }
     .card-white {
       border:1px solid var(--border); border-radius:var(--radius-md);
-      padding:var(--card-pad); background:#fff; margin-bottom:12px;
+      padding:var(--card-pad); background:var(--bg); margin-bottom:12px;
     }
 
     /* Fall-Text */
     .fall-text {
-      background:#fff; border:1px solid var(--border);
+      background:var(--bg); border:1px solid var(--border);
       border-radius:var(--radius-md); padding:var(--card-pad); margin-bottom:16px;
       font-size:14px; line-height:1.65; box-shadow:var(--shadow-sm);
     }
@@ -90,7 +90,7 @@
 
     /* Cue Items */
     .cue-item {
-      background:#fff; border:1px solid var(--border); border-radius:var(--radius-md);
+      background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-md);
       padding:12px 16px; margin:8px 0; cursor:pointer;
       display:flex; align-items:center; gap:12px;
       transition:var(--transition);
@@ -117,14 +117,14 @@
     .cue-item.correct .check { border-color:var(--success); background:var(--success); }
     .cue-item.incorrect { border-color:var(--error); background:var(--error-bg); }
     .cue-item.incorrect .check { border-color:var(--error); background:var(--error); }
-    .cue-item.missed { border-color:var(--success); border-style:dashed; background:#fff; }
-    .cue-item.missed .check { border-color:var(--success); background:#fff; }
+    .cue-item.missed { border-color:var(--success); border-style:dashed; background:var(--bg); }
+    .cue-item.missed .check { border-color:var(--success); background:var(--bg); }
 
     /* Cluster zones */
     .cluster-zone {
       border:2px dashed var(--border); border-radius:var(--radius-md);
       min-height:80px; padding:12px; margin-bottom:12px;
-      background:#fff; transition:var(--transition);
+      background:var(--bg); transition:var(--transition);
     }
     .cluster-zone.dragover { border-color:var(--accent); background:var(--muted); }
     .cluster-zone-title {
@@ -133,7 +133,7 @@
     .cluster-chip {
       display:inline-block; border:1px solid var(--border);
       border-radius:var(--radius-full); padding:6px 14px; margin:3px 4px;
-      font-size:13px; background:#fff; cursor:grab;
+      font-size:13px; background:var(--bg); cursor:grab;
       user-select:none; transition:var(--transition);
       box-shadow:var(--shadow-sm);
     }
@@ -146,7 +146,7 @@
     .pes-field {
       border:2px dashed var(--border); border-radius:var(--radius-md);
       min-height:50px; padding:12px; margin-bottom:12px;
-      background:#fff; transition:var(--transition);
+      background:var(--bg); transition:var(--transition);
     }
     .pes-field.dragover { border-color:var(--accent); background:var(--muted); }
     .pes-label {
@@ -219,7 +219,7 @@
       border-radius:12px;
     }
     .result-table-card {
-      background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg);
+      background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-lg);
       padding:16px; box-shadow:var(--shadow-sm);
     }
     .result-row { margin:0 0 10px 0; }
@@ -233,7 +233,7 @@
     .result-track-lg .result-bar-fill { border-radius:999px; }
 
     .ergebnis .instruction {
-      background:#fff; border:1px solid var(--border);
+      background:var(--bg); border:1px solid var(--border);
       box-shadow:var(--shadow-sm);
       line-height:1.55;
     }
@@ -260,7 +260,7 @@
     button:active { transform:scale(.98); }
     .btn-primary { background:var(--accent); color:#fff; box-shadow:var(--shadow-sm); }
     .btn-primary:hover { background:var(--accent-hover); box-shadow:var(--shadow-md); transform:translateY(-1px); }
-    .btn-secondary { background:#fff; color:var(--accent); border:1px solid var(--accent); }
+    .btn-secondary { background:var(--bg); color:var(--accent); border:1px solid var(--accent); }
     .btn-secondary:hover { background:var(--accent-light); border-color:var(--accent-hover); }
     .btn-tertiary { background:transparent; color:var(--fg); opacity:.7; padding:12px 16px; }
     .btn-tertiary:hover { opacity:1; background:var(--muted); }
@@ -270,7 +270,7 @@
 
     .instruction {
       font-size:14px; margin-bottom:16px; padding:14px 16px;
-      background:#fff; border-radius:var(--radius-md);
+      background:var(--bg); border-radius:var(--radius-md);
       border:1px solid var(--border);
       border-left:4px solid var(--accent);
       box-shadow:var(--shadow-sm);
@@ -279,7 +279,7 @@
 
     .orientation {
       font-size:13px; margin-bottom:16px; padding:14px 16px;
-      background:#fff; border-radius:var(--radius-md);
+      background:var(--bg); border-radius:var(--radius-md);
       border:1px solid var(--border);
       display:flex; gap:12px; align-items:flex-start;
       box-shadow:var(--shadow-sm);
@@ -404,7 +404,7 @@
     .w-select select {
       appearance:auto; -webkit-appearance:auto;
       padding:8px 12px; border-radius:var(--radius-sm);
-      border:1px solid var(--accent); background:#fff;
+      border:1px solid var(--accent); background:var(--bg);
       font-size:13px; font-family:inherit; cursor:pointer;
       min-width:140px; max-width:360px;
       transition:var(--transition); box-shadow:var(--shadow-sm);
@@ -459,7 +459,7 @@
     .mode-card {
       border:1px solid var(--border);
       border-radius:var(--radius-md);
-      background:#fff;
+      background:var(--bg);
       min-height:var(--btn-h);
       padding:11px 14px;
       cursor:pointer;
@@ -569,6 +569,14 @@
     [data-theme="dark"] .w-select select { background:#1e293b; color:var(--fg); border-color:var(--accent); }
     [data-theme="dark"] #intro-text { background:var(--muted); }
     [data-theme="dark"] .step-num { background:var(--bg); color:var(--fg); }
+    /* JS-rendered inline elements */
+    [data-theme="dark"] .lueckentext { background:var(--muted); border-color:var(--border); }
+    [data-theme="dark"] .lueckentext select { background:#1e293b; color:var(--fg); border-color:var(--accent); }
+    [data-theme="dark"] .cue-item.missed { background:var(--muted); border-color:var(--success); }
+    [data-theme="dark"] .cue-item.missed .check { background:var(--muted); }
+    [data-theme="dark"] .btn-secondary { background:#1e293b; }
+    /* Override JS inline style background:var(--bg) in dark mode for cards */
+    [data-theme="dark"] [style*="background:var(--bg)"] { background:var(--bg) !important; color:var(--fg) !important; }
 
     /* Logo as dark mode toggle */
     #appLogo { transition: opacity .15s ease; margin-top:2px; }
@@ -4509,11 +4517,11 @@ function renderStep0() {
         var hsTitle = 'Dein Rekord (dieser Fall)';
         if (!hs) return '';
         var cards = '<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px">';
-        cards += '<div style="flex:1;min-width:140px;padding:12px 16px;background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
+        cards += '<div style="flex:1;min-width:140px;padding:12px 16px;background:var(--bg);border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
           '<div class="fall-label" style="margin-bottom:4px">' + hsTitle + '</div>' +
           '<div style="font-size:20px;font-weight:800;color:var(--accent)">' + hs.xp + ' <span style="font-size:13px;opacity:.6">/ 700 XP</span></div>' +
         '</div>';
-        cards += '<div style="flex:1;min-width:140px;padding:12px 16px;background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
+        cards += '<div style="flex:1;min-width:140px;padding:12px 16px;background:var(--bg);border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm)">' +
           '<div class="fall-label" style="margin-bottom:4px">Fälle bearbeitet</div>' +
           '<div style="font-size:20px;font-weight:800;color:var(--accent)">' + completed + ' <span style="font-size:13px;opacity:.6">/ ' + faelle.length + '</span></div>' +
         '</div>';
@@ -4835,6 +4843,13 @@ function showClusterFeedback() {
 }
 
 // ---- STEP 3: PES (alle 3 Cluster) ----
+function cardBg() {
+  return getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff';
+}
+function cardFg() {
+  return getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#1e293b';
+}
+
 function renderStep3() {
   var pes = fall.pes[currentPES];
   var pesAssignments = pesAssignmentsAll[currentPES];
@@ -5036,7 +5051,7 @@ function renderStep4SMART() {
     var div = document.createElement('div');
     div.className = 'smart-option';
     div.dataset.id = opt.id;
-    div.style.cssText = 'padding:12px 16px;margin-bottom:8px;border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;font-size:13px;line-height:1.5;transition:var(--transition);background:#fff;box-shadow:var(--shadow-sm);';
+    div.style.cssText = 'padding:12px 16px;margin-bottom:8px;border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;font-size:13px;line-height:1.5;transition:var(--transition);background:'+cardBg()+';color:'+cardFg()+';box-shadow:var(--shadow-sm)';
 
     if (smartSelections[currentSMART] === opt.id) {
       div.style.borderColor = 'var(--accent)';
@@ -5051,7 +5066,7 @@ function renderStep4SMART() {
         renderStep4SMART();
       });
       div.addEventListener('mouseenter', function() { if (smartSelections[currentSMART] !== opt.id) { div.style.background = 'var(--accent-light)'; div.style.borderColor = 'var(--border)'; div.style.boxShadow = 'var(--shadow-md)'; div.style.transform = 'translateY(-1px)'; } });
-      div.addEventListener('mouseleave', function() { if (smartSelections[currentSMART] !== opt.id) { div.style.background = '#fff'; div.style.borderColor = ''; div.style.boxShadow = 'var(--shadow-sm)'; div.style.transform = ''; } });
+      div.addEventListener('mouseleave', function() { if (smartSelections[currentSMART] !== opt.id) { div.style.background = cardBg(); div.style.borderColor = ''; div.style.boxShadow = 'var(--shadow-sm)'; div.style.transform = ''; } });
     } else {
       div.style.cursor = 'default';
     }
@@ -5148,7 +5163,7 @@ function renderStep5SechsW() {
     if (!teil.luecke) return;
 
     var card = document.createElement('div');
-    card.style.cssText = 'background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm);';
+    card.style.cssText = 'background:'+cardBg()+';border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm)';
 
     var lbl = document.createElement('div');
     lbl.style.cssText = 'font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;';
@@ -5157,7 +5172,7 @@ function renderStep5SechsW() {
 
     var sel = document.createElement('select');
     sel.dataset.id = teil.id;
-    sel.style.cssText = 'width:100%;padding:10px 12px;font-size:14px;border:1px solid var(--accent);border-radius:var(--radius-sm);background:#fff;font-family:inherit;cursor:pointer;box-shadow:var(--shadow-sm);-webkit-appearance:auto;appearance:auto;transition:var(--transition);';
+    sel.style.cssText = 'width:100%;padding:10px 12px;font-size:14px;border:1px solid var(--accent);border-radius:var(--radius-sm);background:'+cardBg()+';color:'+cardFg()+';font-family:inherit;cursor:pointer;box-shadow:var(--shadow-sm);-webkit-appearance:auto;appearance:auto;transition:var(--transition)';
 
     var defOpt = document.createElement('option');
     defOpt.value = ''; defOpt.textContent = '-- wählen --'; defOpt.disabled = true;
@@ -5281,7 +5296,7 @@ function renderStep6Eval() {
   ev.fragen.zielErreicht.optionen.forEach(function(opt) {
     var btn = document.createElement('button');
     btn.textContent = opt;
-    btn.style.cssText = 'display:block;width:100%;text-align:left;padding:12px 16px;margin:8px 0;border:1px solid var(--border);border-radius:var(--radius-md);background:#fff;font-size:13px;font-weight:400;color:inherit;cursor:pointer;font-family:inherit;transition:var(--transition);box-shadow:var(--shadow-sm);line-height:1.5;';
+    btn.style.cssText = 'display:block;width:100%;text-align:left;padding:12px 16px;margin:8px 0;border:1px solid var(--border);border-radius:var(--radius-md);background:'+cardBg()+';color:'+cardFg()+';font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:var(--transition);box-shadow:var(--shadow-sm);line-height:1.5';
     if (sel.zielErreicht === opt) { btn.style.borderColor = 'var(--accent)'; btn.style.background = 'var(--accent-light)'; }
     if (!feedbackShown) {
       btn.addEventListener('click', function() { evalSelections[currentEval].zielErreicht = opt; renderStep6Eval(); });
@@ -5309,7 +5324,7 @@ function renderStep6Eval() {
   ev.fragen.massnahme.optionen.forEach(function(opt) {
     var btn = document.createElement('button');
     btn.textContent = opt;
-    btn.style.cssText = 'display:block;width:100%;padding:12px 10px;margin:0;border:1px solid var(--border);border-radius:var(--radius-md);background:#fff;font-size:13px;font-weight:400;color:inherit;cursor:pointer;font-family:inherit;transition:var(--transition);box-shadow:var(--shadow-sm);text-align:center;';
+    btn.style.cssText = 'display:block;width:100%;padding:12px 10px;margin:0;border:1px solid var(--border);border-radius:var(--radius-md);background:'+cardBg()+';color:'+cardFg()+';font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:var(--transition);box-shadow:var(--shadow-sm);text-align:center';
     if (sel.massnahme === opt) { btn.style.borderColor = 'var(--accent)'; btn.style.background = 'var(--accent-light)'; }
     if (!feedbackShown) {
       btn.addEventListener('click', function() { evalSelections[currentEval].massnahme = opt; renderStep6Eval(); });
@@ -5336,7 +5351,7 @@ function renderStep6Eval() {
   ev.fragen.begruendung.optionen.forEach(function(opt) {
     var btn = document.createElement('button');
     btn.textContent = opt.text;
-    btn.style.cssText = 'display:block;width:100%;text-align:left;padding:12px 16px;margin:8px 0;border:1px solid var(--border);border-radius:var(--radius-md);background:#fff;font-size:13px;font-weight:400;color:inherit;cursor:pointer;font-family:inherit;transition:var(--transition);box-shadow:var(--shadow-sm);line-height:1.5;';
+    btn.style.cssText = 'display:block;width:100%;text-align:left;padding:12px 16px;margin:8px 0;border:1px solid var(--border);border-radius:var(--radius-md);background:'+cardBg()+';color:'+cardFg()+';font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:var(--transition);box-shadow:var(--shadow-sm);line-height:1.5';
     if (sel.begruendung === opt.id) { btn.style.borderColor = 'var(--accent)'; btn.style.background = 'var(--accent-light)'; }
     if (!feedbackShown) {
       btn.addEventListener('click', function() { evalSelections[currentEval].begruendung = opt.id; renderStep6Eval(); });
@@ -5716,7 +5731,7 @@ btnNext.addEventListener('click', function() {
     }
   } else if (currentStep === 7) {
     currentStep = 0;
-    selectedCues = new Set();
+    maxUnlockedStep = 0;
     clusterAssignments = {};
     pesAssignmentsAll = [{}, {}, {}];
     pesFeedbackShownAll = [false, false, false];
@@ -5818,6 +5833,8 @@ btnBack.addEventListener('click', function() {
     if (logoStrokes) logoStrokes.style.stroke = dark ? '#2dd4bf' : '#0d7377';
     logo.title = dark ? 'Light Mode aktivieren' : 'Dark Mode aktivieren';
     localStorage.setItem('cr-theme', dark ? 'dark' : 'light');
+    // Re-render current step so JS-generated inline styles update
+    if (typeof render === 'function') render();
   }
 
   applyTheme(isDark);
