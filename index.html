@@ -537,14 +537,51 @@
     #filterValue { cursor: pointer; }
     #filterValue:focus { outline: none; }
 
+    /* ===== DARK MODE ===== */
+    [data-theme="dark"] {
+      --bg:#0f172a; --fg:#e2e8f0; --text-muted:#94a3b8; --muted:#1e293b;
+      --accent:#2dd4bf; --accent-hover:#14b8a6; --accent-light:#134e4a;
+      --secondary:#4db6ac; --secondary-light:#134e4a;
+      --border:#334155; --border-light:#1e293b;
+      --success:#2dd4bf; --success-bg:#134e4a;
+      --error:#f87171; --error-bg:#3b1111;
+      --info-bg:#1e293b; --info-border:#334155;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.3);
+      --shadow-md:0 2px 8px rgba(0,0,0,.4);
+    }
+    [data-theme="dark"] body { background:var(--bg); color:var(--fg); }
+    [data-theme="dark"] .card { background:var(--muted); }
+    [data-theme="dark"] .card-white { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .fall-text { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .cue-item { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .cue-item.selected { background:var(--accent-light); }
+    [data-theme="dark"] .cluster-zone { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .cluster-chip { background:#1e293b; border-color:var(--border); color:var(--fg); }
+    [data-theme="dark"] .pes-field { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .mode-card { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .mode-card.active { background:var(--accent-light); border-color:var(--accent); }
+    [data-theme="dark"] .btn-secondary { background:#1e293b; border-color:var(--accent); color:var(--accent); }
+    [data-theme="dark"] .btn-tertiary { color:var(--fg); }
+    [data-theme="dark"] .orientation { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .instruction { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .feedback-box.info { background:var(--info-bg); border-color:var(--info-border); }
+    [data-theme="dark"] .result-table-card { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .w-select select { background:#1e293b; color:var(--fg); border-color:var(--accent); }
+    [data-theme="dark"] #intro-text { background:var(--muted); }
+    [data-theme="dark"] .step-num { background:var(--bg); color:var(--fg); }
+
+    /* Logo as dark mode toggle */
+    #appLogo { transition: opacity .15s ease; margin-top:2px; }
+    #appLogo:hover { opacity: .75; }
+    #appLogo:focus { outline: none; }
+
 </style>
-</head>
 <body>
 
 <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:4px">
-<svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-     style="margin-top:4px;flex-shrink:0;">
-  <g fill="none" stroke="#0d7377" stroke-linecap="round" stroke-linejoin="round">
+<svg id="appLogo" width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+     style="flex-shrink:0;cursor:pointer;" title="Dark Mode umschalten">
+  <g id="logoStrokes" fill="none" stroke="#0d7377" stroke-linecap="round" stroke-linejoin="round">
     
     <path d="M38.2 14.4
              A20 20 0 1 0 36.2 50.7
@@ -5765,6 +5802,33 @@ btnBack.addEventListener('click', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
+
+// ---- DARK MODE ----
+(function() {
+  var html = document.documentElement;
+  var logo = document.getElementById('appLogo');
+  var stored = localStorage.getItem('cr-theme');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var isDark = stored ? stored === 'dark' : prefersDark;
+
+  function applyTheme(dark) {
+    isDark = dark;
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    var logoStrokes = document.getElementById('logoStrokes');
+    if (logoStrokes) logoStrokes.style.stroke = dark ? '#2dd4bf' : '#0d7377';
+    logo.title = dark ? 'Light Mode aktivieren' : 'Dark Mode aktivieren';
+    localStorage.setItem('cr-theme', dark ? 'dark' : 'light');
+  }
+
+  applyTheme(isDark);
+
+  logo.addEventListener('click', function() { applyTheme(!isDark); });
+  logo.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); applyTheme(!isDark); }
+  });
+  logo.setAttribute('tabindex', '0');
+  logo.setAttribute('role', 'button');
+})();
 
 // Initial render
 render();
