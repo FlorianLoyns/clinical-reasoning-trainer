@@ -17,7 +17,7 @@ Klicken Sie hier zum Ausprobieren: [index.html](https://florianloyns.github.io/c
 
 ---
 
-> Ein interaktives Lernwerkzeug für die generalistische Pflegeausbildung. Der Trainer führt Auszubildende Schritt für Schritt durch klinisches Pflegedenken – von der Situationserfassung über Pflegediagnose und Maßnahmenplanung bis zur Evaluation. Alles in einer einzigen HTML-Datei, ohne Installation, offline nutzbar.
+> Ein interaktives Lernwerkzeug für die generalistische Pflegeausbildung. Der Trainer führt Lernende Schritt für Schritt durch klinisches Pflegedenken – von der Situationserfassung über Pflegediagnose und Maßnahmenplanung bis zur Evaluation. Alles in einer einzigen HTML-Datei, ohne Installation, offline nutzbar.
 
 ---
 
@@ -35,7 +35,7 @@ Klicken Sie hier zum Ausprobieren: [index.html](https://florianloyns.github.io/c
 
 ## Wofür ist es gedacht
 
-Viele Auszubildende können Beobachtungen benennen – der nächste Schritt fällt schwer:
+Viele Lernende können Beobachtungen benennen – der nächste Schritt fällt schwer:
 
 - Was ist jetzt pflegerisch wichtig?
 - Was gehört zusammen?
@@ -49,7 +49,7 @@ Er ist keine reine Quiz-Seite, sondern eine **Übung zur Pflegeplanung** – mit
 
 ## Didaktischer Rahmen
 
-Der Trainer orientiert sich am Pflegeprozess nach Fiechter und Meier (1981) sowie am Clinical-Reasoning-Zyklus nach Levett-Jones et al. (2010). Die Lernenden arbeiten in sieben Schritten:
+Der Trainer orientiert sich am Pflegeprozess nach Fiechter und Meier (1981) sowie in Anlehnung an den Clinical-Reasoning-Zyklus nach Levett-Jones et al. (2010). Die Lernenden arbeiten in sieben inhaltlichen Schritten (plus Ergebnisseite):
 
 1. **Situation erfassen** – Fall lesen und Überblick gewinnen
 2. **Cues erkennen** – pflegerisch relevante Hinweise auswählen
@@ -65,6 +65,8 @@ Die Fälle mischen bewusst relevante und irrelevante Informationen, wie es im Pf
 ## Fallbeispiele
 
 Der Trainer umfasst **11 Fälle** aus allen Vertiefungsbereichen der generalistischen Ausbildung. Die Fallrotation sorgt dafür, dass alle Fälle gespielt werden, bevor sich einer wiederholt.
+
+Über die **Fall-Auswahl** lässt sich optional nach Schwierigkeitsgrad filtern (leicht / mittel / schwer / alle). Bedienung per Touch oder Tastatur (L / M / S / A).
 
 | Name | Vertiefungsbereich | Schwerpunkt | Schwierigkeit |
 |---|---|---|---|
@@ -117,11 +119,11 @@ Neue Fälle werden ins `faelle`-Array aufgenommen und sind sofort spielbar. Tool
 
 ## Technisches
 
-Eine einzelne HTML-Datei – kein Build, kein Framework, kein Server, keine externen Abhängigkeiten. Läuft vollständig offline.
+Eine einzelne HTML-Datei – kein Build, kein Framework, kein Server, keine externen Abhängigkeiten. Läuft vollständig im Browser, auch offline.
 
 - Keine Datenübertragung, kein Tracking (DSGVO-konform)
-- Highscores und Fortschritt bleiben lokal im Browser (localStorage)
-- Mobile-optimiert mit Touch-Bedienung
+- Highscores und Filtereinstellungen werden lokal im Browser gespeichert (localStorage) – keine Daten verlassen das Gerät
+- Mobile- und touchoptimiert
 
 
 ## Lizenz
