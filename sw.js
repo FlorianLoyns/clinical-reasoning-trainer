@@ -15,7 +15,7 @@
  * und ist kein Teil der PWA-Oberfläche.
  */
 
-const CACHE_VERSION = 'crt-v1';
+const CACHE_VERSION = 'crt-v2';
 
 const CORE_ASSETS = [
   './',
