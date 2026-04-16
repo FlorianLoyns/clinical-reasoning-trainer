@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical-Reasoning · Dozenten-Auswertung</title>
+<style>
+  :root {
+    --bg:#ffffff; --fg:#1e293b; --text-muted:#6b7280; --muted:#f1f5f9;
+    --accent:#1e3a8a; --accent-hover:#1e40af; --accent-light:#dbeafe;
+    --secondary:#3b82f6; --secondary-light:#eff6ff;
+    --border:#cbd5e1; --border-light:#e2e8f0;
+    --success:#15803d; --success-bg:#dcfce7;
+    --warn:#b45309; --warn-bg:#fef3c7;
+    --error:#b4534a; --error-bg:#f8eceb;
+    --info-bg:#f8fafc; --info-border:#e2e8f0;
+    --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-full:999px;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.05);
+    --shadow-md:0 2px 8px rgba(0,0,0,.08);
+    --transition:all .2s ease;
+    --card-pad:20px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0f172a; --fg:#e2e8f0; --text-muted:#94a3b8; --muted:#1e293b;
+      --accent:#60a5fa; --accent-hover:#3b82f6; --accent-light:#1e3a8a;
+      --secondary:#93c5fd; --secondary-light:#1e3a8a;
+      --border:#334155; --border-light:#1e293b;
+      --success:#4ade80; --success-bg:#14532d;
+      --warn:#fbbf24; --warn-bg:#3b2a0e;
+      --error:#f87171; --error-bg:#3b1111;
+      --info-bg:#1e293b; --info-border:#334155;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.3);
+      --shadow-md:0 2px 8px rgba(0,0,0,.4);
+    }
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--fg);
+    padding:24px; max-width:900px; margin:0 auto; line-height:1.55;
+  }
+  h1 { margin:0 0 4px; font-size:24px; font-weight:800; }
+  h2 { font-size:18px; margin:0 0 12px; font-weight:700; line-height:1.25; }
+  h3 { font-size:15px; margin:16px 0 8px; color:var(--text-muted); font-weight:600; }
+  .sub { color:var(--text-muted); margin:0 0 24px; font-size:14px; }
+
+  .card {
+    border-radius:var(--radius-lg);
+    padding:var(--card-pad); background:var(--muted); margin-bottom:16px;
+  }
+  .card-white {
+    background:var(--bg); border:1px solid var(--border-light);
+    border-radius:var(--radius-md); padding:var(--card-pad); margin-bottom:12px;
+    box-shadow:var(--shadow-sm);
+  }
+
+  /* Tab-Bar */
+  .tab-bar {
+    display:flex; gap:4px; margin-bottom:16px;
+    border-bottom:1px solid var(--border-light);
+  }
+  .tab {
+    padding:10px 16px; border:none; background:transparent;
+    color:var(--text-muted); cursor:pointer;
+    font-size:14px; font-weight:600;
+    border-bottom:2px solid transparent;
+    transition:var(--transition);
+  }
+  .tab:hover { color:var(--fg); }
+  .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* Dropzone */
+  .dropzone {
+    border:2px dashed var(--border);
+    border-radius:var(--radius-md);
+    padding:36px 24px; text-align:center;
+    color:var(--text-muted);
+    background:var(--bg);
+    transition:var(--transition);
+    cursor:pointer;
+    display:block;
+  }
+  .dropzone:hover { border-color:var(--accent); }
+  .dropzone.dragover {
+    border-color:var(--accent); background:var(--accent-light); color:var(--fg);
+  }
+  .dropzone strong { display:block; color:var(--fg); margin-bottom:6px; font-size:15px; }
+  .dropzone input[type="file"] { display:none; }
+
+  /* Buttons (analog zum Trainer) */
+  .btn {
+    padding:10px 18px;
+    border:1px solid var(--border);
+    background:var(--bg); color:var(--fg);
+    border-radius:var(--radius-sm);
+    cursor:pointer; font-size:14px; font-weight:600;
+    transition:var(--transition);
+    box-shadow:var(--shadow-sm);
+  }
+  .btn:hover { border-color:var(--accent); color:var(--accent); box-shadow:var(--shadow-md); transform:translateY(-1px); }
+  .btn-primary {
+    background:var(--accent); color:#fff; border-color:var(--accent);
+  }
+  .btn-primary:hover { background:var(--accent-hover); color:#fff; border-color:var(--accent-hover); }
+  .btn-danger { color:var(--error); border-color:var(--border); }
+  .btn-danger:hover { color:var(--error); border-color:var(--error); }
+  .btn-sm { padding:6px 12px; font-size:12px; }
+
+  .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+
+  /* Tabellen */
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border-light); }
+  th {
+    font-weight:700; color:var(--text-muted);
+    font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+  }
+  tr:last-child td { border-bottom:none; }
+
+  /* Stat-Kacheln */
+  .stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:16px; }
+  @media (max-width: 700px) { .stats { grid-template-columns:repeat(2, 1fr); } }
+  .stat {
+    background:var(--bg); border:1px solid var(--border-light);
+    border-radius:var(--radius-md); padding:14px 12px;
+    text-align:center; box-shadow:var(--shadow-sm);
+  }
+  .stat-num { font-size:24px; font-weight:800; color:var(--accent); }
+  .stat-lbl { font-size:12px; color:var(--text-muted); margin-top:4px; }
+
+  /* Balken */
+  .bar-track {
+    height:8px; background:var(--border); border-radius:4px; overflow:hidden; min-width:80px;
+  }
+  .bar-fill { height:100%; border-radius:4px; transition:width .6s ease; }
+  .bar-fill.weak { background:var(--error); }
+  .bar-fill.medium { background:var(--warn); }
+  .bar-fill.strong { background:var(--success); }
+
+  .step-bars { display:flex; flex-direction:column; gap:10px; }
+  .step-bar-row {
+    display:grid; grid-template-columns:180px 1fr 60px;
+    gap:12px; align-items:center; font-size:14px;
+  }
+  @media (max-width: 600px) { .step-bar-row { grid-template-columns:130px 1fr 50px; font-size:13px; } }
+
+  .empty {
+    text-align:center; color:var(--text-muted);
+    padding:32px 16px; font-size:14px;
+  }
+
+  .hint {
+    background:var(--accent-light); border-left:3px solid var(--accent);
+    padding:12px 14px; border-radius:var(--radius-sm);
+    font-size:13px; line-height:1.55; margin-bottom:14px;
+    color:var(--fg);
+  }
+  .hint strong { color:var(--accent); }
+
+  .foot {
+    font-size:12px; color:var(--text-muted);
+    text-align:center; margin-top:20px; line-height:1.6;
+  }
+
+  /* Lernende-Tab */
+  .learner-row {
+    background:var(--bg); border:1px solid var(--border-light);
+    border-radius:var(--radius-md); margin-bottom:8px;
+    box-shadow:var(--shadow-sm); overflow:hidden;
+  }
+  .learner-header {
+    display:grid; grid-template-columns:1fr auto auto auto auto;
+    gap:12px; align-items:center;
+    padding:14px 16px; cursor:pointer;
+    transition:background .15s;
+  }
+  .learner-header:hover { background:var(--muted); }
+  .learner-name { font-weight:700; font-size:15px; }
+  .learner-meta { font-size:13px; color:var(--text-muted); white-space:nowrap; }
+  .learner-xp { font-weight:700; color:var(--accent); white-space:nowrap; }
+  .learner-chevron { font-size:12px; color:var(--text-muted); transition:transform .2s; }
+  .learner-row.open .learner-chevron { transform:rotate(180deg); }
+  .learner-detail {
+    display:none; padding:0 16px 16px; border-top:1px solid var(--border-light);
+  }
+  .learner-row.open .learner-detail { display:block; }
+  .trend { font-size:18px; }
+  .trend.up { color:var(--success); }
+  .trend.down { color:var(--error); }
+  .trend.flat { color:var(--text-muted); }
+  .mini-step-grid {
+    display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-top:8px;
+  }
+  .mini-step-cell {
+    font-size:11px; text-align:center; padding:6px 4px;
+    border-radius:var(--radius-sm); font-weight:600;
+  }
+  .mini-step-cell.weak { background:var(--error-bg); color:var(--error); }
+  .mini-step-cell.medium { background:var(--warn-bg); color:var(--warn); }
+  .mini-step-cell.strong { background:var(--success-bg); color:var(--success); }
+  .mini-step-label { font-size:10px; color:var(--text-muted); text-align:center; margin-top:2px; }
+
+  /* Feine Komponenten-Abstufung im Dark Mode */
+  @media (prefers-color-scheme: dark) {
+    .card-white, .dropzone, .btn, .stat { background:#1e293b; }
+    .card-white, .stat { border-color:var(--border); }
+    th, td { border-bottom-color:var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<h1>Clinical-Reasoning · Dozenten-Auswertung</h1>
+<p class="sub">Sammle Ergebnisse deiner Lerngruppe, erkenne Schwerpunkte.</p>
+
+<div class="card">
+  <div class="tab-bar">
+    <button class="tab active" data-tab="input">Import</button>
+    <button class="tab" data-tab="overview">Übersicht</button>
+    <button class="tab" data-tab="analysis">Auswertung</button>
+    <button class="tab" data-tab="learners">Lernende</button>
+  </div>
+
+  <!-- TAB 1: IMPORT -->
+  <div id="tab-input" class="tab-content">
+    <div class="hint">
+      Ziehe die JSON-Dateien aus dem Trainer hierher oder klicke auf das Feld, um mehrere Dateien auszuwählen.
+      Alle Ergebnisse werden lokal im Browser gespeichert und stehen in den Reitern <strong>Übersicht</strong> und <strong>Auswertung</strong> sofort zur Verfügung.
+    </div>
+
+    <label for="drop" class="dropzone" id="dropzone">
+      <strong>Dateien hierher ziehen oder klicken</strong>
+      <span>JSON-Exports aus dem Clinical-Reasoning-Trainer</span>
+      <input type="file" id="drop" accept=".json,application/json" multiple>
+    </label>
+
+    <div id="import-summary" style="margin-top:14px;font-size:13px;color:var(--text-muted)"></div>
+  </div>
+
+  <!-- TAB 2: ÜBERSICHT -->
+  <div id="tab-overview" class="tab-content" style="display:none;">
+    <div id="overview-stats" class="stats"></div>
+    <div id="overview-table" class="table-wrap"></div>
+    <div class="actions" id="overview-actions"></div>
+  </div>
+
+  <!-- TAB 3: AUSWERTUNG -->
+  <div id="tab-analysis" class="tab-content" style="display:none;">
+    <div id="analysis-content"></div>
+  </div>
+
+  <!-- TAB 4: LERNENDE -->
+  <div id="tab-learners" class="tab-content" style="display:none;">
+    <div id="learners-content"></div>
+  </div>
+</div>
+
+<p class="foot">
+  Daten werden lokal im Browser (localStorage) gespeichert. Keine Übertragung an Server.<br>
+  Beim Leeren des Browser-Speichers gehen die Daten verloren — regelmäßig exportieren empfohlen.
+</p>
+
+<script>
+(function() {
+  var STORAGE_KEY = 'crt_lehrer_results_v1';
+  var STEP_LABELS = ['Cues erkennen', 'ATL-Zuordnung', 'PESR-Diagnosen', 'SMART-Ziele', '6-W Maßnahmen', 'Evaluation'];
+
+  var results = loadResults();
+
+  // --- TABS ---
+  document.querySelectorAll('.tab').forEach(function(t) {
+    t.addEventListener('click', function() {
+      document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(function(x) { x.style.display = 'none'; });
+      document.getElementById('tab-' + t.dataset.tab).style.display = 'block';
+      if (t.dataset.tab === 'overview') renderOverview();
+      if (t.dataset.tab === 'analysis') renderAnalysis();
+      if (t.dataset.tab === 'learners') renderLearners();
+    });
+  });
+
+  // --- DRAG & DROP ---
+  var dz = document.getElementById('dropzone');
+  var fileInput = document.getElementById('drop');
+  var importSummary = document.getElementById('import-summary');
+
+  dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', function() { dz.classList.remove('dragover'); });
+  dz.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dz.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', function(e) {
+    handleFiles(e.target.files);
+    fileInput.value = '';
+  });
+
+  function handleFiles(files) {
+    var added = 0, failed = 0, dupes = 0;
+    var toRead = files.length;
+    if (toRead === 0) return;
+
+    Array.prototype.forEach.call(files, function(file) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          var data = JSON.parse(ev.target.result);
+          // Einzelnes Objekt oder Array (Session-Export) behandeln
+          var items = Array.isArray(data) ? data : [data];
+          items.forEach(function(item) {
+            try {
+              var rec = normalizeFromJSON(item);
+              if (rec) {
+                var isDupe = results.some(function(r) { return r._id === rec._id; });
+                if (isDupe) { dupes++; } else { results.push(rec); added++; }
+              } else { failed++; }
+            } catch(e) { failed++; }
+          });
+        } catch (err) { failed++; }
+        toRead--;
+        if (toRead === 0) finalizeImport(added, failed, dupes);
+      };
+      reader.onerror = function() {
+        failed++; toRead--;
+        if (toRead === 0) finalizeImport(added, failed, dupes);
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  function finalizeImport(added, failed, dupes) {
+    saveResults();
+    var parts = [];
+    if (added > 0) parts.push(added + ' Ergebnis' + (added === 1 ? '' : 'se') + ' importiert');
+    if (dupes > 0) parts.push(dupes + ' Duplikat' + (dupes === 1 ? '' : 'e') + ' übersprungen');
+    if (failed > 0) parts.push(failed + ' Datei' + (failed === 1 ? '' : 'en') + ' nicht lesbar');
+    importSummary.textContent = parts.length
+      ? parts.join(' · ') + ' · insgesamt ' + results.length + ' Einträge'
+      : '';
+  }
+
+  function normalizeFromJSON(d) {
+    if (!d || !d.fall || !d.schritte) return null;
+    var rec = {
+      kuerzel: d.kuerzel || 'anonym',
+      fall: d.fall,
+      setting: d.setting || '',
+      schwierigkeit: d.schwierigkeit || '',
+      modus: d.modus || 'lernen',
+      datum: d.datum || new Date().toISOString().slice(0, 10),
+      uhrzeit: d.uhrzeit || '',
+      gesamtXP: d.gesamtXP || 0,
+      stepScores: [],
+      stepXpEarned: [],
+      stepXpMax: []
+    };
+    for (var i = 0; i < STEP_LABELS.length; i++) {
+      var s = d.schritte[STEP_LABELS[i]];
+      rec.stepScores.push(s ? (s.prozent || 0) : 0);
+      rec.stepXpEarned.push(s ? (s.xpErreicht || 0) : 0);
+      rec.stepXpMax.push(s ? (s.xpMax || 0) : 0);
+    }
+    rec._id = rec.datum + '|' + rec.uhrzeit + '|' + rec.kuerzel + '|' + rec.fall;
+    return rec;
+  }
+
+  // --- STORAGE ---
+  function loadResults() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      // Defensiv: kuerzel sicherstellen für alte Einträge ohne das Feld
+      arr.forEach(function(r) { if (!r.kuerzel) r.kuerzel = 'anonym'; });
+      return arr;
+    } catch (e) { return []; }
+  }
+  function saveResults() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(results)); }
+    catch (e) { alert('Speichern fehlgeschlagen (Browser-Speicher voll?).'); }
+  }
+
+  // --- ÜBERSICHT ---
+  function renderOverview() {
+    var statsEl = document.getElementById('overview-stats');
+    var tableEl = document.getElementById('overview-table');
+    var actionsEl = document.getElementById('overview-actions');
+
+    if (results.length === 0) {
+      statsEl.innerHTML = '';
+      tableEl.innerHTML = '<div class="empty">Noch keine Ergebnisse importiert.<br>Ziehe JSON-Dateien in den Import-Reiter.</div>';
+      actionsEl.innerHTML = '';
+      return;
+    }
+
+    var avg = 0;
+    var byCase = {};
+    var teilnehmer = new Set();
+    results.forEach(function(r) {
+      avg += r.gesamtXP;
+      byCase[r.fall] = (byCase[r.fall] || 0) + 1;
+      teilnehmer.add(r.kuerzel);
+    });
+    avg = Math.round(avg / results.length);
+
+    statsEl.innerHTML =
+      '<div class="stat"><div class="stat-num">' + results.length + '</div><div class="stat-lbl">Durchläufe</div></div>' +
+      '<div class="stat"><div class="stat-num">' + teilnehmer.size + '</div><div class="stat-lbl">Teilnehmer*innen</div></div>' +
+      '<div class="stat"><div class="stat-num">' + Object.keys(byCase).length + '</div><div class="stat-lbl">Fälle gespielt</div></div>' +
+      '<div class="stat"><div class="stat-num">' + avg + '</div><div class="stat-lbl">Ø XP / 700</div></div>';
+
+    var rows = results.slice().reverse().map(function(r, idx) {
+      var realIdx = results.length - 1 - idx;
+      var pct = Math.round((r.gesamtXP / 700) * 100);
+      return '<tr>' +
+        '<td>' + escapeHtml(r.kuerzel) + '</td>' +
+        '<td>' + escapeHtml(r.fall) + '</td>' +
+        '<td>' + escapeHtml(r.setting) + '</td>' +
+        '<td>' + escapeHtml(r.modus) + '</td>' +
+        '<td>' + escapeHtml(r.datum) + '</td>' +
+        '<td><strong>' + r.gesamtXP + '</strong> XP (' + pct + '%)</td>' +
+        '<td><button class="btn btn-sm btn-danger" onclick="removeResult(' + realIdx + ')">Löschen</button></td>' +
+      '</tr>';
+    }).join('');
+
+    tableEl.innerHTML = '<table>' +
+      '<thead><tr><th>Kürzel</th><th>Fall</th><th>Setting</th><th>Modus</th><th>Datum</th><th>Punkte</th><th></th></tr></thead>' +
+      '<tbody>' + rows + '</tbody></table>';
+
+    actionsEl.innerHTML =
+      /* Export-Buttons – aktivieren wenn bereit:
+      '<button class="btn" onclick="exportCSV()">Alle Daten als CSV</button>' +
+      '<button class="btn" onclick="exportJSON()">Alle Daten als JSON</button>' +
+      */
+      '<button class="btn btn-danger" onclick="clearAll()">Alle Daten löschen</button>';
+  }
+
+  window.removeResult = function(idx) {
+    if (!confirm('Dieses Ergebnis löschen?')) return;
+    results.splice(idx, 1);
+    saveResults();
+    renderOverview();
+  };
+
+  window.clearAll = function() {
+    if (!confirm('Wirklich ALLE gesammelten Ergebnisse löschen? Das lässt sich nicht rückgängig machen.')) return;
+    results = [];
+    saveResults();
+    renderOverview();
+  };
+
+  // --- AUSWERTUNG ---
+  function renderAnalysis() {
+    var el = document.getElementById('analysis-content');
+    if (results.length === 0) {
+      el.innerHTML = '<div class="empty">Noch keine Daten für eine Auswertung.</div>';
+      return;
+    }
+
+    var stepAvgs = [0, 0, 0, 0, 0, 0];
+    var stepCounts = [0, 0, 0, 0, 0, 0];
+    results.forEach(function(r) {
+      (r.stepScores || []).forEach(function(v, i) {
+        if (typeof v === 'number') { stepAvgs[i] += v; stepCounts[i]++; }
+      });
+    });
+    for (var i = 0; i < 6; i++) stepAvgs[i] = stepCounts[i] ? Math.round(stepAvgs[i] / stepCounts[i]) : 0;
+
+    var weakest = 0;
+    for (var j = 1; j < 6; j++) if (stepAvgs[j] < stepAvgs[weakest]) weakest = j;
+
+    var byCase = {};
+    results.forEach(function(r) {
+      if (!byCase[r.fall]) byCase[r.fall] = { count: 0, sum: 0, setting: r.setting };
+      byCase[r.fall].count++;
+      byCase[r.fall].sum += r.gesamtXP;
+    });
+
+    var stepBars = '<div class="step-bars">';
+    stepAvgs.forEach(function(v, i) {
+      var cls = v < 50 ? 'weak' : (v < 75 ? 'medium' : 'strong');
+      stepBars += '<div class="step-bar-row">' +
+        '<div>' + STEP_LABELS[i] + '</div>' +
+        '<div class="bar-track"><div class="bar-fill ' + cls + '" style="width:' + v + '%"></div></div>' +
+        '<div style="text-align:right;font-weight:700">' + v + '%</div>' +
+      '</div>';
+    });
+    stepBars += '</div>';
+
+    var caseRows = Object.keys(byCase).map(function(name) {
+      var c = byCase[name];
+      var caseAvg = Math.round(c.sum / c.count);
+      return '<tr><td>' + escapeHtml(name) + '</td><td>' + escapeHtml(c.setting) + '</td><td>' + c.count + '</td><td><strong>' + caseAvg + '</strong> XP</td></tr>';
+    }).join('');
+
+    var tipps = [
+      'Trainiert das Unterscheiden von relevanten und irrelevanten Informationen. Kleine Übung: vorgegebener Fall, 2 Minuten zur Cue-Auswahl, dann Plenum-Vergleich.',
+      'ATL-Schema nach Juchli frisch durchgehen. Kartenübung: Beobachtungs-Karten den 12 ATL zuordnen – sehr effektiv.',
+      'PESR-Struktur aufbrechen: P, E, S, R getrennt üben, bevor sie kombiniert werden. Priorisierungsregel (akut > potenziell > chronisch) wiederholen.',
+      'SMART-Kriterien einzeln abprüfen. Häufige Lücke: M und T. Beispiele umformulieren lassen.',
+      '6-W-Methode mit echten Pflegeberichten abgleichen. Was fehlt? Welches W ist am häufigsten vage?',
+      'Evaluation verbinden mit einer konkreten Frage: „Wurde das Ziel erreicht – woran erkenne ich das?" Messbarkeit ist der Schlüssel.'
+    ];
+
+    var didaktikHinweis;
+    if (stepAvgs[weakest] < 60) {
+      didaktikHinweis = '<div class="hint" style="margin-top:16px">' +
+        '<strong>Didaktischer Fokus:</strong> Der Schritt <em>' + STEP_LABELS[weakest] + '</em> ist mit Ø ' + stepAvgs[weakest] + '% aktuell das schwächste Glied. ' +
+        tipps[weakest] +
+      '</div>';
+    } else {
+      didaktikHinweis = '<div class="hint" style="margin-top:16px"><strong>Gute Verteilung:</strong> Alle Schritte im akzeptablen Bereich. Schwächster Schritt: <em>' + STEP_LABELS[weakest] + '</em> (' + stepAvgs[weakest] + '%).</div>';
+    }
+
+    el.innerHTML =
+      '<h2>Durchschnittswerte pro Schritt</h2>' +
+      '<p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Alle Lernenden, alle Fälle zusammen.</p>' +
+      stepBars +
+      didaktikHinweis +
+      '<h2 style="margin-top:24px">Fälle im Vergleich</h2>' +
+      '<div class="table-wrap"><table><thead><tr><th>Fall</th><th>Setting</th><th>Durchläufe</th><th>Ø Punkte</th></tr></thead><tbody>' + caseRows + '</tbody></table></div>';
+  }
+
+  // --- LERNENDE ---
+  function renderLearners() {
+    var el = document.getElementById('learners-content');
+    if (!el) return;
+
+    try {
+      if (results.length === 0) {
+        el.innerHTML = '<div class="empty">Noch keine Daten importiert.<br>Ziehe JSON-Dateien in den Import-Reiter.</div>';
+        return;
+      }
+
+      // Gruppieren nach Kürzel
+      var byLearner = {};
+      results.forEach(function(r) {
+        var key = r.kuerzel || 'anonym';
+        if (!byLearner[key]) byLearner[key] = [];
+        byLearner[key].push(r);
+      });
+
+      var learnerKeys = Object.keys(byLearner).sort(function(a, b) {
+        var diff = byLearner[b].length - byLearner[a].length;
+        return diff !== 0 ? diff : a.localeCompare(b);
+      });
+
+      if (learnerKeys.length === 0) {
+        el.innerHTML = '<div class="empty">Keine Lernenden gefunden.</div>';
+        return;
+      }
+
+      var html = '<p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">' +
+        learnerKeys.length + ' Lernende &middot; ' + results.length + ' Durchl&auml;ufe gesamt &middot; Klick auf eine Person f&uuml;r Details.</p>';
+
+      var shortLabels = ['Cues', 'ATL', 'PESR', 'SMART', '6-W', 'Eval'];
+
+      learnerKeys.forEach(function(kuerzel, idx) {
+        var runs = byLearner[kuerzel].slice().sort(function(a, b) {
+          var ka = (a.datum || '') + (a.uhrzeit || '');
+          var kb = (b.datum || '') + (b.uhrzeit || '');
+          return ka < kb ? -1 : ka > kb ? 1 : 0;
+        });
+
+        var totalXP = runs.reduce(function(s, r) { return s + (r.gesamtXP || 0); }, 0);
+        var avgXP = Math.round(totalXP / runs.length);
+        var lastRun = runs[runs.length - 1];
+
+        // Trend: erster vs. letzter Durchlauf
+        var trendHtml = '';
+        if (runs.length >= 2) {
+          var xpFirst = runs[0].gesamtXP || 0;
+          var xpLast = lastRun.gesamtXP || 0;
+          var xpDiff = xpLast - xpFirst;
+          if (xpDiff > 30)       trendHtml = ' <span class="trend up" title="Verbesserung +' + xpDiff + ' XP">&#8593;</span>';
+          else if (xpDiff < -30) trendHtml = ' <span class="trend down" title="R&uuml;ckgang ' + xpDiff + ' XP">&#8595;</span>';
+          else                   trendHtml = ' <span class="trend flat" title="Stabil (' + (xpDiff >= 0 ? '+' : '') + xpDiff + ' XP)">&#8594;</span>';
+        }
+
+        // Einzelne Durchläufe
+        var detailRows = runs.map(function(r) {
+          var pct = Math.round(((r.gesamtXP || 0) / 700) * 100);
+          var stepCells = (r.stepScores || []).map(function(v, si) {
+            var cls = (v < 50) ? 'weak' : (v < 75) ? 'medium' : 'strong';
+            return '<div>' +
+              '<div class="mini-step-cell ' + cls + '">' + v + '%</div>' +
+              '<div class="mini-step-label">' + shortLabels[si] + '</div>' +
+            '</div>';
+          }).join('');
+
+          return '<div style="padding:12px 0;border-bottom:1px solid var(--border-light)">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:8px">' +
+              '<span style="font-size:13px;font-weight:600">' + escapeHtml(r.fall || '') + '</span>' +
+              '<span style="font-size:12px;color:var(--text-muted)">' +
+                escapeHtml(r.datum || '') +
+                (r.uhrzeit ? ' ' + escapeHtml(r.uhrzeit) : '') +
+                ' &middot; ' + escapeHtml(r.schwierigkeit || '') +
+                ' &middot; ' + escapeHtml(r.modus || '') +
+                ' &middot; <strong>' + (r.gesamtXP || 0) + ' XP (' + pct + '%)</strong>' +
+              '</span>' +
+            '</div>' +
+            (stepCells ? '<div class="mini-step-grid">' + stepCells + '</div>' : '') +
+          '</div>';
+        }).join('');
+
+        html +=
+          '<div class="learner-row" id="lr-' + idx + '">' +
+            '<div class="learner-header" onclick="toggleLearner(' + idx + ')">' +
+              '<div><span class="learner-name">' + escapeHtml(kuerzel) + '</span>' + trendHtml + '</div>' +
+              '<span class="learner-meta">' + runs.length + ' Durchlauf' + (runs.length === 1 ? '' : 'l&auml;ufe') + '</span>' +
+              '<span class="learner-meta">&Oslash; ' + avgXP + ' XP</span>' +
+              '<span class="learner-meta">Letzter: ' + escapeHtml(lastRun.datum || '') + '</span>' +
+              '<span class="learner-chevron">&#9660;</span>' +
+            '</div>' +
+            '<div class="learner-detail">' + detailRows + '</div>' +
+          '</div>';
+      });
+
+      el.innerHTML = html;
+
+    } catch (err) {
+      el.innerHTML = '<div class="hint" style="border-left-color:var(--error);background:var(--error-bg)">' +
+        '<strong>Fehler beim Rendern:</strong> ' + escapeHtml(String(err)) + '</div>';
+    }
+  }
+
+  window.toggleLearner = function(idx) {
+    var row = document.getElementById('lr-' + idx);
+    if (row) row.classList.toggle('open');
+  };
+
+  // --- EXPORT ---
+  // Level aus XP berechnen (analog zum Trainer)
+  function xpToLevel(xp) {
+    var levels = [
+      { min:0,   label:'Beobachter/in' },
+      { min:120, label:'Hinweis-Detektiv/in' },
+      { min:240, label:'Strukturierer/in' },
+      { min:360, label:'Diagnostiker/in' },
+      { min:500, label:'Pflegeplan-Profi' },
+      { min:630, label:'Clinical-Reasoning-Coach' }
+    ];
+    var lvl = 1, lbl = levels[0].label;
+    for (var i = levels.length - 1; i >= 0; i--) {
+      if (xp >= levels[i].min) { lvl = i + 1; lbl = levels[i].label; break; }
+    }
+    return { nr: lvl, label: lbl };
+  }
+
+  window.exportCSV = function() {
+    if (results.length === 0) { alert('Keine Daten zum Exportieren.'); return; }
+
+    // Durchlauf_Nr: pro Kürzel chronologisch sortiert zählen
+    var laufNr = {};
+    var sorted = results.slice().sort(function(a, b) {
+      return ((a.datum||'') + (a.uhrzeit||'')).localeCompare((b.datum||'') + (b.uhrzeit||''));
+    });
+    var runCount = {};
+    sorted.forEach(function(r) {
+      var k = r.kuerzel || 'anonym';
+      runCount[k] = (runCount[k] || 0) + 1;
+      laufNr[r._id || (r.datum + r.uhrzeit + r.kuerzel + r.fall)] = runCount[k];
+    });
+
+    var header = ['Kuerzel','Datum','Uhrzeit','Durchlauf_Nr','Fall','Setting','Schwierigkeit','Modus','GesamtXP','Level_Nr','Level_Label'];
+    STEP_LABELS.forEach(function(l) {
+      header.push(l + ' (%)');
+      header.push(l + ' (XP_erreicht)');
+      header.push(l + ' (XP_max)');
+    });
+    var lines = [header.join(';')];
+
+    sorted.forEach(function(r) {
+      var lvl = xpToLevel(r.gesamtXP || 0);
+      var rid = r._id || (r.datum + (r.uhrzeit||'') + r.kuerzel + r.fall);
+      var row = [
+        r.kuerzel || 'anonym',
+        r.datum || '',
+        r.uhrzeit || '',
+        laufNr[rid] || 1,
+        r.fall || '',
+        r.setting || '',
+        r.schwierigkeit || '',
+        r.modus || '',
+        r.gesamtXP || 0,
+        lvl.nr,
+        lvl.label
+      ];
+      for (var i = 0; i < 6; i++) {
+        row.push((r.stepScores && r.stepScores[i]) || 0);
+        row.push((r.stepXpEarned && r.stepXpEarned[i]) || 0);
+        row.push((r.stepXpMax && r.stepXpMax[i]) || 0);
+      }
+      lines.push(row.map(function(v) {
+        var s = String(v);
+        return s.indexOf(';') >= 0 ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }).join(';'));
+    });
+
+    download('\ufeff' + lines.join('\n'),
+      'CRT_Lehrer_Auswertung_' + new Date().toISOString().slice(0,10) + '.csv',
+      'text/csv;charset=utf-8');
+  };
+
+  window.exportJSON = function() {
+    if (results.length === 0) { alert('Keine Daten zum Exportieren.'); return; }
+    download(JSON.stringify(results, null, 2),
+      'CRT_Lehrer_Auswertung_' + new Date().toISOString().slice(0,10) + '.json',
+      'application/json');
+  };
+
+  function download(inhalt, name, mime) {
+    var blob = new Blob([inhalt], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 100);
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+})();
+</script>
+</body>
+</html>
