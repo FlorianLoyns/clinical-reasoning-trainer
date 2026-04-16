@@ -154,32 +154,9 @@ Der Trainer ist als **datenschutzfreundliches Lernwerkzeug** konzipiert. Alle Ve
 - **Keine Cookies**
 - **Keine Netzwerkaufrufe** zur Laufzeit (keine `fetch`-, `XMLHttpRequest`- oder `sendBeacon`-Aufrufe an Drittanbieter)
 
-### Was lokal im Browser gespeichert wird (`localStorage`)
-
-Diese Werte liegen ausschließlich auf dem Gerät der Lernenden und können im Browser jederzeit gelöscht werden (Einstellungen → Webseiten-Daten):
-
-| Schlüssel | Inhalt | Zweck |
-|---|---|---|
-| `cr-theme` | `"dark"` / `"light"` | Darkmode-Präferenz |
-| `fallFilter` | `"leicht"` / `"mittel"` / `"schwer"` / `"alle"` | Fall-Filter der Auswahlseite |
-| `cr-trainer-highscores` | JSON-Objekt mit Highscores pro Fall | Bestwerte anzeigen |
-| `crt_kuerzel` | frei gewähltes Kürzel (z. B. `"Max M."`) | optionale Zuordnung bei Export |
-| `crt_session_v1` | JSON-Array der eigenen Durchlauf-Zusammenfassungen | Export-Vorbereitung |
-
-Das `crt_kuerzel` ist ein **frei gewähltes Alias** – keine E-Mail, keine Klarnamens­erhebung. Wird kein Kürzel eingegeben, speichert der Trainer „anonym".
-
-### Export-Funktion
-
-Die CSV-/JSON-Exporte der eigenen Durchläufe werden **client­seitig erzeugt** (Blob-Download). Die Datei landet im Downloads-Ordner des Geräts – es findet kein Upload statt.
-
 ### Hosting auf GitHub Pages
 
 Wird das Projekt über GitHub Pages ausgeliefert, sieht GitHub bei jedem Seitenabruf die IP-Adresse des Besuchers; das ist eine Eigenschaft des Hostings und nicht des Trainers selbst. Wer das vermeiden möchte, kann die HTML-Datei direkt vom eigenen Gerät oder einem Schul-Server ausliefern – der Trainer funktioniert ohne jede Änderung auch offline vom lokalen Dateisystem.
-
-### Rechtlicher Hinweis
-
-Der Trainer erhebt, verarbeitet oder übermittelt keine personen­bezogenen Daten an die Betreibenden. Für den Einsatz in Bildungs­einrichtungen empfiehlt es sich, diesen Hinweis in den örtlichen Datenschutz­bestimmungen der Einrichtung zu spiegeln; eine eigenständige Datenschutz­erklärung ist aufgrund der rein lokalen Verarbeitung für das reine Üben nicht erforderlich.
-
 
 ## Lizenz
 
