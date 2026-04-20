@@ -32,7 +32,7 @@ Klicken Sie hier zum Ausprobieren: [index.html](https://florianloyns.github.io/c
 - [Eigene Fälle ergänzen](#eigene-fälle-ergänzen)
 - [Technisches](#technisches)
 - [Datenschutz](#datenschutz)
-- [Impressum & Kontakt](#impressum--kontakt)
+- [Impressum & Kontakt](#impressum)
 - [Lizenz](#lizenz)
 
 ---
