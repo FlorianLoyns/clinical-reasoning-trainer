@@ -32,6 +32,7 @@ Klicken Sie hier zum Ausprobieren: [index.html](https://florianloyns.github.io/c
 - [Eigene Fälle ergänzen](#eigene-fälle-ergänzen)
 - [Technisches](#technisches)
 - [Datenschutz](#datenschutz)
+- [Impressum & Kontakt](#impressum--kontakt)
 - [Lizenz](#lizenz)
 
 ---
@@ -157,6 +158,10 @@ Der Trainer ist als **datenschutzfreundliches Lernwerkzeug** konzipiert. Alle Ve
 ### Hosting auf GitHub Pages
 
 Wird das Projekt über GitHub Pages ausgeliefert, sieht GitHub bei jedem Seitenabruf die IP-Adresse des Besuchers; das ist eine Eigenschaft des Hostings und nicht des Trainers selbst. Wer das vermeiden möchte, kann die HTML-Datei direkt vom eigenen Gerät oder einem Schul-Server ausliefern – der Trainer funktioniert ohne jede Änderung auch offline vom lokalen Dateisystem.
+
+## Impressum
+
+Verantwortlich: Florian Loyns. Pflichtangaben nach § 5 DDG und Kontakt: [Impressum](https://florianloyns.github.io/Impressum/)
 
 ## Lizenz
 
