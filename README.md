@@ -167,6 +167,7 @@ Verantwortlich: Florian Loyns. Pflichtangaben nach § 5 DDG und Kontakt: [Impres
 
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de) · Nutzen, anpassen und teilen – unter Namensnennung, nicht-kommerziell und unter gleichen Bedingungen.
 
+
 ---
 
 **Weg vom Auswendiglernen, hin zu begründetem pflegerischem Handeln.**
