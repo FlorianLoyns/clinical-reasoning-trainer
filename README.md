@@ -1,4 +1,4 @@
-# Clinical-Reasoning-Trainer
+# Clinical-Reasoning
 
 **Klinisches Urteilen in der Pflege – interaktiv üben**
 
