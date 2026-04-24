@@ -9,15 +9,6 @@
 ![Dark Mode](https://img.shields.io/badge/Dark%20Mode-unterst%C3%BCtzt-darkblue)
 ![PWA](https://img.shields.io/badge/PWA-installierbar-blueviolet)
 
-
-
-![PWA](https://img.shields.io/badge/PWA-installierbar-blueviolet?logo=pwa)
-![Mobile](https://img.shields.io/badge/Mobile-optimiert-brightgreen?logo=googlepixel)
-![Dark Mode](https://img.shields.io/badge/Dark%20Mode-unterst%C3%BCtzt-darkblue?logo=darkreader)
-[![Lizenz](https://img.shields.io/badge/Lizenz-CC%20BY--NC--SA%204.0-lightgrey?logo=creativecommons)](https://...)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue?logo=github)](https://...)
-
-
 Klicken Sie hier zum Ausprobieren: [index.html](https://florianloyns.github.io/clinical-reasoning-trainer/)
 
 ---
