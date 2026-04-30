@@ -128,11 +128,14 @@
     .cue-item {
       background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-md);
       padding:12px 16px; margin:8px 0; cursor:pointer;
-      display:flex; align-items:center; gap:12px;
+      display:flex; flex-wrap:wrap; align-items:center; gap:12px;
       transition:var(--transition);
       font-size:14px; user-select:none;
       box-shadow:var(--shadow-sm);
+      overflow-wrap:anywhere; word-break:break-word;
     }
+    .cue-item > .check { align-self:flex-start; margin-top:2px; }
+    .cue-item > .cue-text { flex:1 1 0; min-width:0; }
     .cue-item:hover { border-color:var(--border); box-shadow:var(--shadow-md); transform:translateY(-1px); }
     .cue-item.selected { border-color:var(--accent); background:var(--accent-light); box-shadow:var(--shadow-md); }
     .cue-item .check {
@@ -4627,7 +4630,7 @@ function renderStep1() {
     const div = document.createElement('div');
     div.className = 'cue-item' + (selectedCues.has(cue.id) ? ' selected' : '');
     div.dataset.id = cue.id;
-    div.innerHTML = `<div class="check"></div><div>${cue.text}</div>`;
+    div.innerHTML = `<div class="check"></div><div class="cue-text">${cue.text}</div>`;
     if (!cuesFeedbackShown) {
       div.addEventListener('click', () => {
         if (selectedCues.has(cue.id)) selectedCues.delete(cue.id);
@@ -4678,7 +4681,7 @@ function showCueFeedback() {
     // Add reasoning below the cue text (nur Lernmodus)
     if (modus !== 'pruefung') {
       const reasonDiv = document.createElement('div');
-      reasonDiv.style.cssText = 'font-size:12px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.08);line-height:1.45;';
+      reasonDiv.style.cssText = 'flex-basis:100%;width:100%;font-size:12px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.08);line-height:1.45;overflow-wrap:anywhere;word-break:break-word;';
       reasonDiv.innerHTML = '<strong style="' + statusClass + '">' + statusText + ':</strong> ' + cue.grund;
       item.appendChild(reasonDiv);
     }
