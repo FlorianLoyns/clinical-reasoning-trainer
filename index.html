@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <!-- PWA -->
   <link rel="manifest" href="./manifest.json">
@@ -61,6 +61,10 @@
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
       background:var(--bg); color:var(--fg);
       padding:24px; max-width:800px; margin:0 auto; line-height:1.55;
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
     }
 
     h1 { margin:0 0 4px; font-size:24px; font-weight:800; }
@@ -365,7 +369,13 @@
     }
 
     @media (max-width:600px) {
-      body { padding:12px; }
+      body {
+        padding:12px;
+        padding-top: max(12px, env(safe-area-inset-top));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+      }
       h1 { font-size:20px; }
       button { width:100%; }
       .controls { gap:8px; }
@@ -802,9 +812,9 @@ Im Gespräch erzählt sie, dass ihre Tochter in München lebt und nur selten zu 
     { id: "c17", text: "O2-Gabe 2 l/min Nasenbrille",                    relevant: false, cluster: null,
       grund: "Ärztliche Anordnung. Pflegerisch relevant wäre die Beobachtung der Wirkung (SpO2-Verlauf, Dyspnoe), nicht die Verordnung selbst.",
       clusterGrund: "" },
-    { id: "c18", text: "Lebte vorher selbstständig in eigener Wohnung",   relevant: false, cluster: null,
-      grund: "Hintergrundinformation zur Biografie. Wird erst relevant im Kontext der Entlassungsplanung, nicht für die aktuelle Pflegediagnose.",
-      clusterGrund: "" },
+    { id: "c18", text: "Lebte vorher selbstständig in eigener Wohnung",   relevant: true, cluster: "psycho-sicherheit",
+      grund: "Wichtige Pflegeressource: Selbstständigkeit vor der Erkrankung zeigt Reaktivierungspotenzial und ist Anker für Pflegeziele (Erhalt der Selbstpflege, Entlassungsplanung). Außerdem erklärt es das aktuelle Hilflosigkeitserleben (Frage 'Komme ich hier wieder raus?') als Bruch mit der gewohnten Selbstkompetenz.",
+      clusterGrund: "Selbstständigkeit ist Teil der psychosozialen Identität — der Verlust der gewohnten Kompetenz erklärt Ängste und Rückzugsverhalten. Gehört zur ATL Kommunizieren / Für Sicherheit sorgen." },
   ],
 
   // Cluster-Definitionen
@@ -822,7 +832,7 @@ Im Gespräch erzählt sie, dass ihre Tochter in München lebt und nur selten zu 
     {
       id: "psycho-sicherheit",
       name: "ATL: Kommunizieren / Für Sicherheit sorgen",
-      correctCues: ["c4", "c7", "c14", "c15", "c16"],
+      correctCues: ["c4", "c7", "c14", "c15", "c16", "c18"],
     },
     {
       id: "atmen-temperatur",
@@ -861,13 +871,13 @@ Im Gespräch erzählt sie, dass ihre Tochter in München lebt und nur selten zu 
     },
     {
       cluster: "psycho-sicherheit",
-      clusterName: "Psychisches Befinden / Soziale Situation",
-      prioritaet: "Chronisches Problem",
+      clusterName: "Psychisches Befinden / Sicherheit",
+      prioritaet: "Akutes Problem",
       bausteine: [
-        { id: "b3a", text: "Angst und soziale Isolation", type: "P" },
-        { id: "b3b", text: "Ungewohnte Umgebung, Verlust des Ehemanns, seltener Kontakt zur Tochter, Hilflosigkeitserleben", type: "E" },
-        { id: "b3c", text: "Schlaflosigkeit, häufiges Klingeln, Aussage 'Will niemandem zur Last fallen', fragt ob sie wieder rauskommt", type: "S" },
-        { id: "b3e", text: "Spricht über Ängste auf Nachfrage; Tochter als emotionale Stütze vorhanden", type: "R" },
+        { id: "b3a", text: "Angst, Hilflosigkeit und Hinweise auf passive Suizidalität bei sozialer Isolation", type: "P" },
+        { id: "b3b", text: "Akute Hospitalisation, Trauer um den Ehemann, seltener Kontakt zur Tochter, fehlende soziale Einbettung", type: "E" },
+        { id: "b3c", text: "Schlaflosigkeit, häufiges Klingeln, Aussagen 'Will niemandem zur Last fallen' und 'Komme ich hier wieder raus?'", type: "S" },
+        { id: "b3e", text: "Spricht über Ängste auf Nachfrage; lebte vorher selbstständig (Reaktivierungspotenzial); Tochter als emotionale Stütze erreichbar", type: "R" },
         { id: "b3d", text: "Nachtschweiß mit Wäschewechsel", type: "X" },
       ],
       explanation: "Angst und soziale Isolation sind das <strong>Problem</strong> (P). Die <strong>Ursachen</strong> (E) ergeben ein Bild: fremde Umgebung, Trauer, fehlende Bezugspersonen und das Gefühl, anderen zur Last zu fallen. Die <strong>Symptome</strong> (S) äußern sich in Schlaflosigkeit, Unruhe und den Aussagen der Patientin, die Angst und Hoffnungslosigkeit ausdrücken. Der Nachtschweiß ist ein körperliches Symptom der Pneumonie/des Fiebers und gehört zur ATL Atmen / Körpertemperatur regulieren, nicht zur psychosozialen Diagnose."
@@ -1215,10 +1225,10 @@ Seine Ehefrau besucht ihn täglich und wirkt sichtlich belastet. Zwei Kinder: So
         { id: "b3a", text: "Selbstversorgungsdefizit: Körperpflege und Kleiden", type: "P" },
         { id: "b3b", text: "Antriebsverlust und psychomotorische Hemmung bei schwerer Depression", type: "E" },
         { id: "b3c", text: "Trägt seit 2 Tagen dieselbe Kleidung, ungepflegt, nicht gewaschen, Bartstoppeln", type: "S" },
-        { id: "b3e", text: "Zeigt Compliance bei Verbandwechsel; kann Wundzeichen benennen nach Schulung", type: "R" },
-        { id: "b3d", text: "Ehefrau besucht täglich", type: "X" },
+        { id: "b3e", text: "Motorische Hygienefähigkeit grundsätzlich erhalten; Ehefrau besucht täglich und kann motivieren; nimmt Aufforderungen wahr", type: "R" },
+        { id: "b3d", text: "Hat zwei Kinder (16 und 19 Jahre)", type: "X" },
       ],
-      explanation: "Das Selbstversorgungsdefizit bei der Körperpflege ist das <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) ist der Antriebsverlust – Herr Kowalski kann sich nicht aufraffen, nicht dass er es nicht weiß. Die <strong>Symptome</strong> (S) sind sichtbar: gleiche Kleidung, keine Körperpflege. Dass die Ehefrau täglich kommt, ist eine Ressource, gehört aber nicht zur Pflegediagnose."
+      explanation: "Das Selbstversorgungsdefizit bei der Körperpflege ist das <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) ist der Antriebsverlust – Herr Kowalski kann sich nicht aufraffen, nicht dass er es nicht weiß. Die <strong>Symptome</strong> (S) sind sichtbar: gleiche Kleidung, keine Körperpflege. Die <strong>Ressourcen</strong> (R) sind die erhaltene körperliche Fähigkeit zur Pflege und die unterstützende Ehefrau. Die Familienkonstellation der Kinder ist biografischer Kontext, nicht Teil der Pflegediagnose."
     }
   ],
 
@@ -1890,7 +1900,7 @@ Seit ca. drei Wochen lehnt er die Morgenpflege zunehmend ab, wehrt Berührungen 
         { id: "b2a", text: "Beeinträchtigte Nahrungsaufnahme durch Handlungsplanungsstörung und reduzierte Trinkmenge", type: "P" },
         { id: "b2b", text: "Demenzbedingte Apraxie (weiß nicht mehr, wie Essen abläuft), fehlende Handlungsimpulse, Ablenkbarkeit", type: "E" },
         { id: "b2c", text: "Sitzt vor dem Teller ohne zu essen, rührt nur im Kaffee, Trinkmenge 800 ml/Tag", type: "S" },
-        { id: "b2e", text: "Nimmt Fingerfood selbstständig; reagiert positiv auf vertraute Gerichte (Bruschetta); erhaltene Greiffähigkeit", type: "R" },
+        { id: "b2e", text: "Nimmt Fingerfood selbstständig; biographisch verankerte Vorlieben für italienische Küche (Restaurantbesitzer); erhaltene Greiffähigkeit", type: "R" },
         { id: "b2d", text: "War Restaurantbesitzer", type: "X" },
       ],
       explanation: "Die beeinträchtigte Nahrungsaufnahme ist das <strong>Problem</strong> (P). Die <strong>Ursache</strong> (E) ist die demenzbedingte Apraxie – Herr Esposito hat die Handlungssequenz des Essens verloren, nicht den Appetit. Die <strong>Symptome</strong> (S) sind sichtbar: Er sitzt vor dem Essen, handelt aber nicht. Dass er Restaurantbesitzer war, ist biographischer Kontext, keine Ursache der aktuellen Essproblematik."
@@ -2183,16 +2193,16 @@ Die Wohnung ist unordentlich, der Weg vom Schlafzimmer zum Bad mit Stolperfallen
     { id: "c17", text: "Tochter: 'Mama wird dünner im Gesicht, Beine dicker'",           relevant: true,  cluster: "essen-trinken",
       grund: "Zeigt Mangelernährung bei gleichzeitiger Flüssigkeitsretention – typisches Bild bei Herzinsuffizienz.",
       clusterGrund: "Hinweis auf Mangelernährung trotz Gewichtszunahme – ATL Essen und Trinken." },
-    { id: "c18", text: "Nachbarin schaut gelegentlich vorbei",                           relevant: false, cluster: null,
-      grund: "Soziale Ressource, aber nicht pflegerisch steuerbar.",
-      clusterGrund: "" },
+    { id: "c18", text: "Nachbarin schaut gelegentlich vorbei",                           relevant: true, cluster: "sicherheit",
+      grund: "Soziale Ressource im ambulanten Setting: niederschwellige Kontrollmöglichkeit (sieht Veränderungen, erinnert an Termine, holt Hilfe im Notfall). Pflege kann Nachbarschaftshilfe gezielt einbinden — z. B. Vereinbarung 'bei Sturz oder Atemnot Pflegedienst anrufen'.",
+      clusterGrund: "Nachbarschaft ist ein Sicherheitsnetz — gehört zur ATL Für Sicherheit sorgen / Soziales Umfeld." },
   ],
 
   clusters: [
     { id: "atmen", name: "ATL: Atmen / Körpertemperatur regulieren", correctCues: ["c1", "c5", "c6", "c7", "c13"] },
     { id: "essen-trinken", name: "ATL: Essen und trinken", correctCues: ["c8", "c14", "c17"] },
     { id: "sich-bewegen", name: "ATL: Sich bewegen", correctCues: ["c3", "c11", "c12"] },
-    { id: "sicherheit", name: "ATL: Für Sicherheit sorgen", correctCues: ["c2", "c4", "c9", "c10", "c16"] },
+    { id: "sicherheit", name: "ATL: Für Sicherheit sorgen", correctCues: ["c2", "c4", "c9", "c10", "c16", "c18"] },
   ],
 
   pes: [
@@ -2464,16 +2474,16 @@ Er arbeitet als Buchhalter und spielt in seiner Freizeit gerne Schach. Seine Fra
     { id: "c14", text: "Bauchverband trocken und intakt",                               relevant: true,  cluster: "schmerz",
       grund: "Wichtiger objektiver Hinweis, dass chirurgisch alles in Ordnung ist und die Angst des Patienten unbegründet ist.",
       clusterGrund: "Wichtig für die Argumentation bei der Schmerz- und Angstedukation – ATL Kommunizieren / Für Sicherheit sorgen." },
-    { id: "c15", text: "Frau kommt täglich zu Besuch",                                  relevant: false, cluster: null,
-      grund: "Eine wichtige soziale Ressource, aber in diesem akuten postoperativen Moment kein primär handlungsleitender Hinweis.",
-      clusterGrund: "" },
-    { id: "c16", text: "Schmerzmittel-Bedarfsanordnung liegt vor",                      relevant: false, cluster: null,
-      grund: "Ärztliche Anordnung. Relevant für dein pflegerisches Handeln ist der Abruf der Medikation, nicht die Anordnung an sich.",
-      clusterGrund: "" },
+    { id: "c15", text: "Frau kommt täglich zu Besuch",                                  relevant: true,  cluster: "schmerz",
+      grund: "Soziale Ressource — wichtig für Motivation bei der Mobilisation, Schmerzedukation und Angstabbau. Pflege kann die Ehefrau gezielt einbeziehen (z. B. ablenkend bei Mobilisation, gemeinsame Gespräche zur Wundsorge).",
+      clusterGrund: "Bezugsperson als Sicherheits- und Motivationsfaktor — gehört zur ATL Für Sicherheit sorgen / Kommunizieren." },
+    { id: "c16", text: "Schmerzmittel-Bedarfsanordnung liegt vor",                      relevant: true,  cluster: "schmerz",
+      grund: "Bei NRS 7/10 nach PDK-Entfernung ist die Bedarfsmedikation der erste pflegerische Hebel. Pflege beurteilt die Indikation, fordert die Medikation an und überwacht Wirkung und Nebenwirkungen — eine Kerntätigkeit, kein Hintergrund.",
+      clusterGrund: "Schmerztherapie und Bedarfsmedikation gehören zur ATL Für Sicherheit sorgen / Schmerz." },
   ],
 
   clusters: [
-    { id: "schmerz", name: "ATL: Für Sicherheit sorgen / Schmerz", correctCues: ["c3", "c4", "c7", "c8", "c14"] },
+    { id: "schmerz", name: "ATL: Für Sicherheit sorgen / Schmerz", correctCues: ["c3", "c4", "c7", "c8", "c14", "c15", "c16"] },
     { id: "atmen", name: "ATL: Atmen / Körpertemperatur regulieren", correctCues: ["c5", "c6", "c10"] },
     { id: "sich-bewegen", name: "ATL: Sich bewegen", correctCues: ["c2", "c9", "c11", "c12", "c13"] },
   ],
@@ -2986,9 +2996,9 @@ Auf ihrem Nachttisch steht noch fast der gesamte Tee von gestern. Sie hat in den
     { id: "c6",  text: "Rechte Ferse leicht gerötet (nicht wegdrückbar)",             relevant: true,  cluster: "haut",
       grund: "Ein Dekubitus Grad 1! Alarmzeichen. Das rechte Bein ist durch die OP ohnehin schwerer beweglich, die Ferse liegt dauerhaft auf.",
       clusterGrund: "Manifestes Hautproblem, sofortiger Handlungsbedarf – ATL Für Sicherheit sorgen (Haut)." },
-    { id: "c7",  text: "Postoperativer Wundverband an der rechten Hüfte ist reizlos",  relevant: false, cluster: null,
-      grund: "Der reizlose OP-Verband an der Hüfte ist aktuell kein akutes Pflegeproblem im Vergleich zu Sturzangst, Dekubitus und Exsikkosegefahr. Daher hier bewusst ein Distraktor.",
-      clusterGrund: "" },
+    { id: "c7",  text: "Postoperativer Wundverband an der rechten Hüfte ist reizlos",  relevant: true,  cluster: "haut",
+      grund: "Wichtige Pflegebeobachtung und Ressource: Ein reizloser Verband zeigt komplikationsfreie Wundheilung an und ist Argument gegen Mobilisationsangst — die Wunde ist sicher. Pflege dokumentiert Wundzustand bei jedem Verbandwechsel.",
+      clusterGrund: "Hautbeobachtung und Wundkontrolle — gehört zur ATL Für Sicherheit sorgen (Haut)." },
     { id: "c8",  text: "Trinkmenge in 24h: maximal 400 ml",                           relevant: true,  cluster: "essen-trinken",
       grund: "Akute Gefahr der Exsikkose. Bei alten Menschen führt das schnell zu Verwirrtheit (Delir) und verschlechtert die Hautturgor.",
       clusterGrund: "Deutliches Flüssigkeitsdefizit – ATL Essen und Trinken." },
@@ -3008,7 +3018,7 @@ Auf ihrem Nachttisch steht noch fast der gesamte Tee von gestern. Sie hat in den
 
   clusters: [
     { id: "sich-bewegen", name: "ATL: Sich bewegen (Mobilität & Sturzangst)", correctCues: ["c1", "c2", "c3", "c5", "c11"] },
-    { id: "haut", name: "ATL: Für Sicherheit sorgen (Dekubitusrisiko)", correctCues: ["c4", "c6"] },
+    { id: "haut", name: "ATL: Für Sicherheit sorgen (Dekubitusrisiko)", correctCues: ["c4", "c6", "c7"] },
     { id: "essen-trinken", name: "ATL: Essen und trinken (Flüssigkeitsdefizit)", correctCues: ["c8", "c9", "c10"] },
   ],
 
@@ -3058,8 +3068,8 @@ Auf ihrem Nachttisch steht noch fast der gesamte Tee von gestern. Sie hat in den
       optionen: [
         { id: "sz2a", text: "Der Dekubitus an der Ferse heilt schnell ab.", correct: false,
           feedback: "<strong>Zu ungenau (nicht SMART).</strong> Was heißt 'schnell'? Wie messen wir das? Bei Grad 1 heilt noch nichts ab (die Haut ist noch zu), die Rötung muss sich zurückbilden." },
-        { id: "sz2b", text: "Die Rötung an der rechten Ferse ist morgen früh vollständig abgeblasst, es entstehen keine neuen Hautschäden.", correct: true,
-          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Rötung rechte Ferse. <em>Messbar:</em> Vollständig abgeblasst (Haut intakt). <em>Attraktiv:</em> Schmerz und offene Wunde werden verhindert. <em>Realistisch:</em> Ein Grad 1 erholt sich bei strikter Entlastung innerhalb von Stunden bis Tagen. <em>Terminiert:</em> Morgen früh." },
+        { id: "sz2b", text: "Die Rötung an der rechten Ferse ist innerhalb von 3 Tagen vollständig abgeblasst (Fingertest negativ). Die Ferse wird druckfrei gelagert (Fersenfreilage), und es entstehen keine neuen Hautschäden.", correct: true,
+          feedback: "<strong>SMART!</strong> <em>Spezifisch:</em> Rötung rechte Ferse, Fingertest. <em>Messbar:</em> Vollständig abgeblasst, Fersenfreilage als Maßnahmen-Indikator. <em>Attraktiv:</em> Vermeidet offene Wunde und Schmerz. <em>Realistisch:</em> Bei strikter Druckentlastung erholt sich Grad 1 typischerweise in 1-3 Tagen — bei dieser sturzängstlichen Patientin sind 3 Tage realistisch (sie wird nicht zuverlässig spontan umlagern). <em>Terminiert:</em> 3 Tage." },
         { id: "sz2c", text: "Die Pflegekraft cremt die Ferse dreimal täglich dick mit Melkfett ein.", correct: false,
           feedback: "<strong>Fachlich falsch und keine Zielformulierung!</strong> Das ist eine (falsche) Maßnahme. Poren verschließen durch Fett begünstigt Mazeration. Druckentlastung ist das Mittel der Wahl!" }
       ]
@@ -3278,9 +3288,9 @@ Die Mutter berichtet, Luka werde seit einigen Wochen in der Schule von Mitschül
       grund: "Zeigt Wissensmangel der Eltern über Triggerfaktoren und Alltagsmanagement bei Neurodermitis – klarer Edukationsbedarf.",
       clusterGrund: "Wissensmangel als pflegerisches Problem der Bezugsperson – ATL Kommunizieren / Edukation." },
     { id: "c12", text: "Fingernägel kurzgeschnitten, Baumwollkleidung vorhanden",
-      relevant: false, cluster: null,
-      grund: "Bereits umgesetzte präventive Maßnahmen – kein aktuelles Pflegeproblem, sondern eine vorhandene Ressource.",
-      clusterGrund: "" },
+      relevant: true, cluster: "haut",
+      grund: "Wichtige Pflegeressource: bereits umgesetzte Kratzprophylaxe schützt vor zusätzlichen Hautläsionen. Pflege erkennt das an, baut darauf auf (Lob, Verstärkung) und ergänzt nur, was noch fehlt — statt von Null zu beginnen.",
+      clusterGrund: "Direkte Ressource gegen den Juckreiz-Kratz-Zyklus — gehört zur ATL Sich waschen und kleiden / Hautintegrität." },
     { id: "c13", text: "Stationäre Aufnahme seit gestern Nachmittag",
       relevant: false, cluster: null,
       grund: "Kontextinformation zur Aufnahme – kein eigenständig pflegerisch steuerbares Problem.",
@@ -3308,7 +3318,7 @@ Die Mutter berichtet, Luka werde seit einigen Wochen in der Schule von Mitschül
   ],
 
   clusters: [
-    { id: "haut",         name: "ATL: Sich waschen und kleiden (Hautintegrität)", correctCues: ["c2","c3","c4","c5","c14"] },
+    { id: "haut",         name: "ATL: Sich waschen und kleiden (Hautintegrität)", correctCues: ["c2","c3","c4","c5","c12","c14"] },
     { id: "schlafen",     name: "ATL: Ruhen und schlafen",                    correctCues: ["c6","c7","c17"] },
     { id: "kommunizieren",name: "ATL: Kommunizieren / Soziale Teilhabe",          correctCues: ["c8","c9","c10","c11"] },
   ],
@@ -3571,13 +3581,13 @@ Im Aufnahmegespräch ergibt sich: Anna ist seit drei Wochen krankgeschrieben (Be
       grund: "Objektives Zeichen der Selbstvernachlässigung – zeigt den Grad des Antriebsverlusts und ist pflegerisch direkt adressierbar.",
       clusterGrund: "Äußeres Zeichen des Selbstversorgungsdefizits – ATL Raum und Zeit gestalten, arbeiten und spielen." },
     { id: "c10", text: "Frühstück fast unberührt gelassen",
-      relevant: false, cluster: null,
-      grund: "Appetitlosigkeit ist ein Depressionssymptom, aber die Ernährung bildet hier keinen eigenständigen Pflegeschwerpunkt – sekundäres Symptom des Antriebsverlusts.",
-      clusterGrund: "" },
+      relevant: true,  cluster: "antrieb",
+      grund: "Direkt beobachtbares Antriebs- und Anhedoniesymptom — pflegerisch wichtig zur Verlaufseinschätzung und für die Tagesstrukturierung (Mahlzeitenbegleitung, kleine Portionen, Wunschkost).",
+      clusterGrund: "Mahlzeiteneinnahme als Teil der Tagesstruktur — gehört zur ATL Raum und Zeit gestalten / Selbstfürsorge." },
     { id: "c11", text: "Gewichtsabnahme 4 kg in 4 Wochen",
-      relevant: false, cluster: null,
-      grund: "Relevant für ärztliche Verlaufskontrolle, aber kein eigenständiger pflegerischer Cluster – wird im Kontext der Depression mitbehandelt.",
-      clusterGrund: "" },
+      relevant: true,  cluster: "antrieb",
+      grund: "Kardinal-Symptom der schweren depressiven Episode (somatisches Syndrom). Pflegerisch relevant für Beobachtung, Wiegerhythmus und ggf. Trinknahrung — kein rein ärztliches Thema.",
+      clusterGrund: "Gewichtsverlust als somatisches Depressionssymptom — pflegerische Beobachtung und Maßnahmen (Mahlzeitenbegleitung, Wiegen) gehören zur ATL Selbstfürsorge." },
     { id: "c12", text: "Sozialer Rückzug: Freundinnenkontakt abgebrochen, Nachrichten unbeantwortet",
       relevant: true,  cluster: "kommunizieren",
       grund: "Sozialer Rückzug ist ein Kernsymptom der Depression und pflegerisch durch schrittweisen Beziehungsaufbau beeinflussbar.",
@@ -3599,9 +3609,9 @@ Im Aufnahmegespräch ergibt sich: Anna ist seit drei Wochen krankgeschrieben (Be
       grund: "Fehlende Eigeninitiative ist Ausdruck des Antriebsverlusts – pflegerisch durch strukturierte Tagesplanung und Begleitung kompensierbar.",
       clusterGrund: "Initiativlosigkeit bei der Alltagsgestaltung – ATL Raum und Zeit gestalten, arbeiten und spielen." },
     { id: "c17", text: "Antidepressivum neu angesetzt (Sertralin 50 mg)",
-      relevant: false, cluster: null,
-      grund: "Ärztliche Maßnahme – kein eigenständiges Pflegeproblem, aber für Medikamentenwirkung und Nebenwirkungsmonitoring zu beachten.",
-      clusterGrund: "" },
+      relevant: true,  cluster: "kommunizieren",
+      grund: "Pflegerische Pflichtbeobachtung in Phase 1–4 nach SSRI-Beginn: in dieser Zeit kann der Antrieb VOR der Stimmung wiederkehren — paradoxe Suizidgefahr. Außerdem Beobachtung von Nebenwirkungen (Übelkeit, Schlafstörungen, Unruhe). Keine reine Arzt-Aufgabe.",
+      clusterGrund: "Engmaschige Beobachtung der Suizidalität und Wirkung gehört zur ATL Kommunizieren / Sicherheit (existenzielles Erleben)." },
     { id: "c18", text: "Stimmungstief morgens, leichte Besserung am Nachmittag (morgendliches Tief)",
       relevant: true,  cluster: "schlafen",
       grund: "Morgendliches Tief (circadianer Rhythmus der Depression) – hat direkte Konsequenz für Zeitplanung pflegerischer Interventionen und Aktivitäten.",
@@ -3609,16 +3619,16 @@ Im Aufnahmegespräch ergibt sich: Anna ist seit drei Wochen krankgeschrieben (Be
   ],
 
   clusters: [
-    { id: "antrieb",       name: "ATL: Raum und Zeit gestalten, arbeiten und spielen / Selbstfürsorge",         correctCues: ["c2","c3","c8","c9","c14","c16"] },
+    { id: "antrieb",       name: "ATL: Raum und Zeit gestalten, arbeiten und spielen / Selbstfürsorge",         correctCues: ["c2","c3","c8","c9","c10","c11","c14","c16"] },
     { id: "schlafen",      name: "ATL: Ruhen und schlafen",                      correctCues: ["c6","c15","c18"] },
-    { id: "kommunizieren", name: "ATL: Kommunizieren / Existenzielles Erleben",      correctCues: ["c4","c5","c7","c12"] },
+    { id: "kommunizieren", name: "ATL: Kommunizieren / Existenzielles Erleben",      correctCues: ["c4","c5","c7","c12","c17"] },
   ],
 
   pes: [
     {
       cluster: "antrieb",
       clusterName: "Antrieb / Selbstfürsorge",
-      prioritaet: "Chronisches Problem",
+      prioritaet: "Akutes Problem",
       bausteine: [
         { id: "b1a", text: "Selbstversorgungsdefizit mit Antriebslosigkeit und Vernachlässigung der Körperpflege", type: "P" },
         { id: "b1b", text: "Schwere depressive Episode (Antriebsverlust, Anhedonie, psychomotorische Verlangsamung), fehlende Tagesstruktur", type: "E" },
@@ -3631,7 +3641,7 @@ Im Aufnahmegespräch ergibt sich: Anna ist seit drei Wochen krankgeschrieben (Be
     {
       cluster: "schlafen",
       clusterName: "Schlaf-Wach-Rhythmus",
-      prioritaet: "Chronisches Problem",
+      prioritaet: "Akutes Problem",
       bausteine: [
         { id: "b2a", text: "Schlaf-Wach-Rhythmus-Störung mit Früherwachen und nicht-erholsamem Schlaf", type: "P" },
         { id: "b2b", text: "Schwere depressive Episode (neurobiologische Schlafarchitekturstörung, Früherwachen als vegetatives Depressionssymptom, morgendliches Stimmungstief)", type: "E" },
@@ -3649,7 +3659,7 @@ Im Aufnahmegespräch ergibt sich: Anna ist seit drei Wochen krankgeschrieben (Be
         { id: "b3a", text: "Sozialer Rückzug mit passiven Suizidgedanken und erschwerter Kommunikation", type: "P" },
         { id: "b3b", text: "Schwere depressive Episode (Hoffnungslosigkeit, Grübeln, emotionale Erschöpfung, Antriebsverlust)", type: "E" },
         { id: "b3c", text: '„Es hat alles keinen Sinn mehr", passiver Todeswunsch, kein Augenkontakt, sehr leises Sprechen, Kontaktabbruch zu Freundinnen', type: "S" },
-        { id: "b3e", text: "Öffnet sich zunehmend im Gespräch; Ehemann als Sicherheitsressource benannt; zeigt Krankheitseinsicht", type: "R" },
+        { id: "b3e", text: "Antwortet auf direkte Nachfrage; Ehemann als Sicherheits- und Bezugsressource verfügbar; bei früheren Episoden therapeutischer Zugang etabliert", type: "R" },
         { id: "b3d", text: "Ehemann hat den Hausarzt alarmiert", type: "X" },
       ],
       explanation: "Der soziale Rückzug mit passiven Suizidgedanken ist das <strong>Problem</strong> (P). Die <strong>Ursachen</strong> (E) liegen in der Depression selbst: Hoffnungslosigkeit und emotionale Erschöpfung lassen Kontakte als Belastung erleben. Die <strong>Symptome</strong> (S) sind die Aussagen, die eingeschränkte nonverbale Kommunikation und der vollständige Rückzug. Dass der Ehemann geholfen hat, ist eine stützende Ressource, keine Ursache des Problems."
@@ -3931,13 +3941,13 @@ Im Erstgespräch der Tagesklinik wirkt Ben niedergeschlagen, aber kooperativ. Er
       grund: "Hinweis auf Selbstvernachlässigung – bei leichter Anpassungsstörung bildet die Körperpflege keinen eigenständigen pflegerischen Schwerpunkt; sie wird im Rahmen der Alltagsgestaltung mitbehandelt.",
       clusterGrund: "" },
     { id: "c14", text: "Kooperativ im Erstgespräch, zeigt Krankheitseinsicht",
-      relevant: false, cluster: null,
-      grund: "Positive Ressource, aber kein Pflegeproblem – die Kooperationsbereitschaft fließt in die Ressourcen (R) der PESR-Diagnosen ein.",
-      clusterGrund: "" },
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Stärkste Therapieressource: Kooperation und Krankheitseinsicht ermöglichen Edukation, Tagesstrukturierung im Dialog und Verhaltensaktivierung. Pflege baut auf dieser Ressource gezielt auf.",
+      clusterGrund: "Krankheitseinsicht ist Voraussetzung für die ATL-Zielarbeit Raum und Zeit gestalten / Selbstfürsorge." },
     { id: "c15", text: "Keine Suizidalität (auf Nachfrage verneint)",
-      relevant: false, cluster: null,
-      grund: "Wichtige Sicherheitsinformation – keine Suizidalität bedeutet, dass kein eigenständiger Sicherheitsschwerpunkt gebildet werden muss. Die Information gehört in die Falldokumentation, ist aber kein Pflegeproblem.",
-      clusterGrund: "" },
+      relevant: true,  cluster: "alltagsgestaltung",
+      grund: "Verneinung wirkt entwarnend, gehört aber dokumentiert und regelmäßig nachgefragt — Suizidalität kann sich gerade in der Ambivalenzphase einer depressiven Reaktion entwickeln. Kein einmaliges Häkchen, sondern fortlaufende pflegerische Risikoeinschätzung.",
+      clusterGrund: "Sicherheitsbeobachtung im psychiatrischen Setting — gehört zur ATL Kommunizieren / Existenzielles Erleben (hier in alltagsgestaltung gemappt, weil Tagesstruktur und Gesprächsangebote zusammenhängen)." },
     { id: "c16", text: "Niedergeschlagene Stimmung, Gefühl innerer Leere seit 3 Monaten",
       relevant: true,  cluster: "alltagsgestaltung",
       grund: "Das subjektive Erleben von Leere und Niedergeschlagenheit ist das Leitsymptom der Anpassungsstörung und Grundlage für das pflegerische Beziehungsangebot.",
@@ -3946,7 +3956,7 @@ Im Erstgespräch der Tagesklinik wirkt Ben niedergeschlagen, aber kooperativ. Er
 
   clusters: [
     { id: "schlafen",          name: "ATL: Ruhen und schlafen",                                        correctCues: ["c6","c7","c8"] },
-    { id: "alltagsgestaltung", name: "ATL: Raum und Zeit gestalten, arbeiten und spielen",             correctCues: ["c2","c3","c4","c5","c11","c12","c16"] },
+    { id: "alltagsgestaltung", name: "ATL: Raum und Zeit gestalten, arbeiten und spielen",             correctCues: ["c2","c3","c4","c5","c11","c12","c14","c15","c16"] },
     { id: "essen",             name: "ATL: Essen und trinken",                                         correctCues: ["c9","c10"] },
   ],
 
@@ -3954,7 +3964,7 @@ Im Erstgespräch der Tagesklinik wirkt Ben niedergeschlagen, aber kooperativ. Er
     {
       cluster: "schlafen",
       clusterName: "Schlafen / Ruhen und schlafen",
-      prioritaet: "Chronisches Problem",
+      prioritaet: "Akutes Problem",
       bausteine: [
         { id: "b1a", text: "Schlafstörung mit Ein- und Durchschlafproblemen und nicht-erholsamem Schlaf", type: "P" },
         { id: "b1b", text: "Grübeln und emotionale Anspannung durch die Trennung, abendlicher Koffeinkonsum (Energydrinks), gestörter Schlaf-Wach-Rhythmus", type: "E" },
