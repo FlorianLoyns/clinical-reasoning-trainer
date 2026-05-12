@@ -623,15 +623,73 @@
     /* Override JS inline style background:var(--bg) in dark mode for cards */
     [data-theme="dark"] [style*="background:var(--bg)"] { background:var(--bg) !important; color:var(--fg) !important; }
 
-    /* Logo as dark mode toggle */
-    #appLogo { transition: opacity .15s ease; margin-top:2px; }
-    #appLogo:hover { opacity: .75; }
-    #appLogo:focus { outline: none; }
+    /* Logo (kein Klick mehr) */
+    #appLogo { margin-top:2px; }
+
+    /* Toast */
+    #crt-toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(12px);
+      background: #1e293b; color: #f1f5f9;
+      padding: 12px 20px; border-radius: 12px;
+      font-size: 14px; font-weight: 500; line-height: 1.4;
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+      z-index: 1000; opacity: 0; pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      max-width: calc(100vw - 32px); text-align: center;
+      white-space: pre-wrap;
+    }
+    #crt-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: all; }
+    [data-theme="dark"] #crt-toast { background: #334155; }
+
+    /* Confirm-Dialog */
+    #crt-dialog {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 1001; padding: 0 12px max(24px, env(safe-area-inset-bottom));
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    #crt-dialog.open { opacity: 1; pointer-events: all; }
+    #crt-dialog-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 20px;
+      width: 100%; max-width: 420px;
+      transform: translateY(20px); transition: transform .2s;
+    }
+    #crt-dialog.open #crt-dialog-box { transform: translateY(0); }
+    #crt-dialog-title { font-size: 16px; font-weight: 700; color: var(--text); margin: 0 0 6px; }
+    #crt-dialog-msg   { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin: 0 0 18px; }
+    #crt-dialog-btns  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .crt-dbtn {
+      padding: 12px; border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--muted); color: var(--text);
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .crt-dbtn.danger { background: #dc2626; border-color: #dc2626; color: white; }
+    .crt-dbtn:active { opacity: .8; }
+
+    /* Theme-Toggle-Button */
+    #btn-theme {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      display: grid; place-items: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background .15s;
+      margin-left: auto;
+      align-self: flex-start;
+    }
+    #btn-theme:hover { background: var(--border); }
+    #btn-theme:active { opacity: .75; }
 
 </style>
 <body>
 
-<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:4px">
+<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:4px;width:100%">
 <svg id="appLogo" width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
      style="flex-shrink:0;cursor:pointer;" title="Dark Mode umschalten">
   <g id="logoStrokes" fill="none" stroke="#0d7377" stroke-linecap="round" stroke-linejoin="round">
@@ -660,6 +718,10 @@
     </div>
 
   </div>
+  <button id="btn-theme" aria-label="Farbschema umschalten">
+    <svg id="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
 </div>
 
 <div id="intro-text" style="margin:16px 0 24px;padding:12px 16px;background:var(--muted);border-radius:var(--radius-md);font-size:13px;line-height:1.55">
@@ -712,12 +774,49 @@
   <button class="btn-primary" id="btnNext" type="button">Weiter</button>
 </div>
 
+<!-- Toast -->
+<div id="crt-toast"></div>
 
+<!-- Confirm Dialog -->
+<div id="crt-dialog">
+  <div id="crt-dialog-box">
+    <p id="crt-dialog-title"></p>
+    <p id="crt-dialog-msg"></p>
+    <div id="crt-dialog-btns">
+      <button class="crt-dbtn" id="crt-dialog-cancel">Abbrechen</button>
+      <button class="crt-dbtn danger" id="crt-dialog-confirm">Löschen</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ============================================================
    CLINICAL REASONING TRAINER
    ============================================================ */
+
+// ---- Toast ----
+var _toastTimer = null;
+function showToast(msg) {
+  var t = document.getElementById('crt-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+// ---- Confirm Dialog ----
+function showConfirm(title, msg, confirmLabel, onConfirm) {
+  var overlay = document.getElementById('crt-dialog');
+  document.getElementById('crt-dialog-title').textContent = title;
+  document.getElementById('crt-dialog-msg').textContent = msg;
+  var confirmBtn = document.getElementById('crt-dialog-confirm');
+  confirmBtn.textContent = confirmLabel || 'OK';
+  overlay.classList.add('open');
+  var close = function() { overlay.classList.remove('open'); };
+  confirmBtn.onclick = function() { close(); onConfirm(); };
+  document.getElementById('crt-dialog-cancel').onclick = close;
+  overlay.onclick = function(e) { if (e.target === overlay) close(); };
+}
 
 // ---- FACHBEGRIFF-TOOLTIPS ----
 var fachbegriffe = {
@@ -5459,10 +5558,16 @@ function sessionCount() {
   try { return JSON.parse(localStorage.getItem('crt_session_v1') || '[]').length; } catch(e) { return 0; }
 }
 function clearSession() {
-  if (!confirm('Session leeren? Alle ' + sessionCount() + ' gespeicherten Ergebnisse werden gelöscht.')) return;
-  try { localStorage.removeItem('crt_session_v1'); } catch(e) {}
-  var btn = document.getElementById('btn-session-export');
-  if (btn) btn.textContent = 'Session exportieren (0 Fälle)';
+  showConfirm(
+    'Session leeren?',
+    'Alle ' + sessionCount() + ' gespeicherten Ergebnisse werden gelöscht.',
+    'Leeren',
+    function() {
+      try { localStorage.removeItem('crt_session_v1'); } catch(e) {}
+      var btn = document.getElementById('btn-session-export');
+      if (btn) btn.textContent = 'Session exportieren (0 Fälle)';
+    }
+  );
 }
 function exportSession() {
   var kuerzelInput = document.getElementById('export-kuerzel');
@@ -5474,7 +5579,7 @@ function exportSession() {
   if (!typed && kuerzel !== 'anonym' && kuerzelInput) kuerzelInput.value = kuerzel;
   try {
     var arr = JSON.parse(localStorage.getItem('crt_session_v1') || '[]');
-    if (arr.length === 0) { alert('Noch keine Ergebnisse in dieser Session.'); return; }
+    if (arr.length === 0) { showToast('Noch keine Ergebnisse in dieser Session.'); return; }
     var exportData = arr.map(function(e) {
       var d = { kuerzel: kuerzel, datum: e.datum, uhrzeit: e.uhrzeit,
         fall: e.fall, setting: e.setting, schwierigkeit: e.schwierigkeit,
@@ -5490,12 +5595,12 @@ function exportSession() {
     downloadBlob(JSON.stringify(exportData, null, 2),
       'CRT_Session_' + safe(kuerzel) + '_' + datum + '_' + arr.length + 'Faelle.json',
       'application/json');
-  } catch(e) { alert('Fehler: ' + e.message); }
+  } catch(e) { showToast('Fehler: ' + e.message); }
 }
 
 // ---- EXPORT: Ergebnisse lokal herunterladen ----
 function exportResultJSON() {
-  if (!window.lastResult) { alert('Kein Ergebnis zum Exportieren vorhanden.'); return; }
+  if (!window.lastResult) { showToast('Kein Ergebnis zum Exportieren vorhanden.'); return; }
   var r = window.lastResult;
   var kuerzelInput = document.getElementById('export-kuerzel');
   var kuerzel = (kuerzelInput && kuerzelInput.value.trim()) || 'anonym';
@@ -5530,7 +5635,7 @@ function exportResultJSON() {
 }
 
 function exportResultCSV() {
-  if (!window.lastResult) { alert('Kein Ergebnis zum Exportieren vorhanden.'); return; }
+  if (!window.lastResult) { showToast('Kein Ergebnis zum Exportieren vorhanden.'); return; }
   var r = window.lastResult;
   var kuerzelInput = document.getElementById('export-kuerzel');
   var kuerzel = (kuerzelInput && kuerzelInput.value.trim()) || 'anonym';
@@ -5780,7 +5885,7 @@ btnNext.addEventListener('click', function() {
   } else if (currentStep === 1) {
     if (!cuesFeedbackShown) {
       if (selectedCues.size === 0) {
-        alert('Bitte wähle mindestens einen Hinweis aus.');
+        showToast('Bitte wähle mindestens einen Hinweis aus.');
         return;
       }
       cuesFeedbackShown = true;
@@ -5800,7 +5905,7 @@ btnNext.addEventListener('click', function() {
     if (!clusterFeedbackShown) {
       var assigned = Object.keys(clusterAssignments).length;
       if (assigned === 0) {
-        alert('Bitte ordne mindestens einen Hinweis einer ATL zu.');
+        showToast('Bitte ordne mindestens einen Hinweis einer ATL zu.');
         return;
       }
       clusterFeedbackShown = true;
@@ -5822,7 +5927,7 @@ btnNext.addEventListener('click', function() {
     if (!pesFeedbackShownAll[currentPES]) {
       var assignedPES = Object.keys(pesAssignmentsAll[currentPES]).length;
       if (assignedPES === 0) {
-        alert('Bitte ordne mindestens einen Baustein zu.');
+        showToast('Bitte ordne mindestens einen Baustein zu.');
         return;
       }
       pesFeedbackShownAll[currentPES] = true;
@@ -5858,7 +5963,7 @@ btnNext.addEventListener('click', function() {
   } else if (currentStep === 4) {
     if (!smartFeedbackShownAll[currentSMART]) {
       if (smartSelections[currentSMART] === null) {
-        alert('Bitte wähle ein Ziel aus.');
+        showToast('Bitte wähle ein Ziel aus.');
         return;
       }
       smartFeedbackShownAll[currentSMART] = true;
@@ -5895,7 +6000,7 @@ btnNext.addEventListener('click', function() {
     if (!sechsWFeedbackShownAll[currentSechsW]) {
       var filled = Object.keys(sechsWSelections[currentSechsW]).length;
       if (filled === 0) {
-        alert('Bitte fülle mindestens ein Dropdown aus.');
+        showToast('Bitte fülle mindestens ein Dropdown aus.');
         return;
       }
       sechsWFeedbackShownAll[currentSechsW] = true;
@@ -5932,7 +6037,7 @@ btnNext.addEventListener('click', function() {
     if (!evalFeedbackShownAll[currentEval]) {
       var sel = evalSelections[currentEval];
       if (!sel.zielErreicht || !sel.massnahme || !sel.begruendung) {
-        alert('Bitte beantworte alle drei Fragen.');
+        showToast('Bitte beantworte alle drei Fragen.');
         return;
       }
       evalFeedbackShownAll[currentEval] = true;
@@ -6061,6 +6166,15 @@ btnBack.addEventListener('click', function() {
   var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   var isDark = stored ? stored === 'dark' : prefersDark;
 
+  function syncThemeIcon() {
+    var sun  = document.getElementById('theme-icon-sun');
+    var moon = document.getElementById('theme-icon-moon');
+    if (sun && moon) {
+      sun.style.display  = isDark ? 'block' : 'none';
+      moon.style.display = isDark ? 'none'  : 'block';
+    }
+  }
+
   function applyTheme(dark) {
     isDark = dark;
     html.setAttribute('data-theme', dark ? 'dark' : 'light');
@@ -6068,18 +6182,18 @@ btnBack.addEventListener('click', function() {
     if (logoStrokes) logoStrokes.style.stroke = dark ? '#2dd4bf' : '#0d7377';
     logo.title = dark ? 'Light Mode aktivieren' : 'Dark Mode aktivieren';
     localStorage.setItem('cr-theme', dark ? 'dark' : 'light');
+    syncThemeIcon();
     // Re-render current step so JS-generated inline styles update
     if (typeof render === 'function') render();
   }
 
   applyTheme(isDark);
 
-  logo.addEventListener('click', function() { applyTheme(!isDark); });
-  logo.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); applyTheme(!isDark); }
-  });
-  logo.setAttribute('tabindex', '0');
-  logo.setAttribute('role', 'button');
+  // Logo ist kein Toggle mehr – Button übernimmt das
+
+  // Neuer Toggle-Button
+  var btnTheme = document.getElementById('btn-theme');
+  if (btnTheme) btnTheme.addEventListener('click', function() { applyTheme(!isDark); });
 })();
 
 // Initial render
