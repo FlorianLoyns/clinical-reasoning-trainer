@@ -15,17 +15,25 @@
  * und ist kein Teil der PWA-Oberfläche.
  */
 
-const CACHE_VERSION = 'crt-v2';
+const CACHE_VERSION = 'crt-v3';
 
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './icons/favicon-16.png',
+  './icons/favicon-32.png',
+  './icons/icon-72.png',
+  './icons/icon-96.png',
+  './icons/icon-128.png',
+  './icons/icon-144.png',
+  './icons/icon-152.png',
   './icons/icon-192.png',
+  './icons/icon-384.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
-  './icons/icon-maskable-512.png',
-  './icons/favicon-32.png'
+  './icons/icon-maskable-192.png',
+  './icons/icon-maskable-512.png'
 ];
 
 // ---- INSTALL: Kern-Dateien vorab in den Cache legen ----
