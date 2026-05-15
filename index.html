@@ -101,7 +101,8 @@
       transition:var(--transition);
     }
     .step-indicator.active .step-num { border-color:var(--accent); background:var(--accent); color:#fff; }
-    .step-indicator.done .step-num { border-color:var(--success); background:var(--success); color:#fff; }
+    .step-indicator.done .step-num { border-color:var(--success); background:var(--success); color:#fff; font-size:0; }
+    .step-indicator.done .step-num::before { content:'✓'; color:#fff; font-size:13px; font-weight:700; }
     .step-label { font-size:11px; display:block; color:var(--fg); opacity:.5; }
     .step-indicator.active .step-label { opacity:1; font-weight:700; color:var(--accent); }
     .step-indicator.done .step-label { opacity:.7; color:var(--success); }
