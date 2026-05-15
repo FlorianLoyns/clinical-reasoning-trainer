@@ -54,6 +54,10 @@
       --transition:all .2s ease;
       --card-pad:20px;
       --btn-h:46px;
+      --chip-good-bg:#dcfce7; --chip-good-fg:#166534;
+      --chip-mid-bg:#fef9c3;  --chip-mid-fg:#854d0e;
+      --chip-low-bg:#fee2e2;  --chip-low-fg:#991b1b;
+      --bar-mid:#d97706;
     }
 
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -82,7 +86,6 @@
     .step-indicator {
       flex:1; text-align:center; position:relative; padding-bottom:8px;
     }
-
     .step-indicator.clickable { cursor:pointer; }
     .step-indicator::after {
       content:''; position:absolute; bottom:0; left:0; right:0;
@@ -117,13 +120,29 @@
     /* Fall-Text */
     .fall-text {
       background:var(--bg); border:1px solid var(--border);
-      border-radius:var(--radius-md); padding:var(--card-pad); margin-bottom:16px;
+      border-left:4px solid var(--accent);
+      border-radius:0 var(--radius-md) var(--radius-md) 0;
+      padding:var(--card-pad); margin-bottom:16px;
       font-size:14px; line-height:1.65; box-shadow:var(--shadow-sm);
     }
     .fall-label {
       font-size:11px; font-weight:700; text-transform:uppercase;
       letter-spacing:.5px; opacity:.4; margin-bottom:8px;
     }
+    .fall-header {
+      display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+      margin-bottom:12px; padding-bottom:10px;
+      border-bottom:1px solid var(--border-light);
+    }
+    .fall-name { font-size:15px; font-weight:700; color:var(--fg); }
+    .fall-badge {
+      font-size:11px; font-weight:600; padding:3px 9px;
+      border-radius:var(--radius-full); background:var(--muted);
+      color:var(--fg); opacity:.8;
+    }
+    .fall-badge-diff.leicht { background:#dcfce7; color:#166534; opacity:1; }
+    .fall-badge-diff.mittel { background:#fef9c3; color:#854d0e; opacity:1; }
+    .fall-badge-diff.schwer { background:#fee2e2; color:#991b1b; opacity:1; }
 
     /* Cue Items */
     .cue-item {
@@ -594,11 +613,19 @@
       --info-bg:#1e293b; --info-border:#334155;
       --shadow-sm:0 1px 3px rgba(0,0,0,.3);
       --shadow-md:0 2px 8px rgba(0,0,0,.4);
+      --chip-good-bg:#14532d; --chip-good-fg:#86efac;
+      --chip-mid-bg:#713f12;  --chip-mid-fg:#fde68a;
+      --chip-low-bg:#7f1d1d;  --chip-low-fg:#fca5a5;
+      --bar-mid:#f59e0b;
     }
     [data-theme="dark"] body { background:var(--bg); color:var(--fg); }
     [data-theme="dark"] .card { background:var(--muted); }
     [data-theme="dark"] .card-white { background:#1e293b; border-color:var(--border); }
-    [data-theme="dark"] .fall-text { background:#1e293b; border-color:var(--border); }
+    [data-theme="dark"] .fall-text { background:#1e293b; border-color:var(--border); border-left-color:var(--accent); }
+    [data-theme="dark"] .fall-badge { background:var(--muted); color:var(--fg); }
+    [data-theme="dark"] .fall-badge-diff.leicht { background:#14532d; color:#86efac; }
+    [data-theme="dark"] .fall-badge-diff.mittel { background:#713f12; color:#fde68a; }
+    [data-theme="dark"] .fall-badge-diff.schwer { background:#7f1d1d; color:#fca5a5; }
     [data-theme="dark"] .cue-item { background:#1e293b; border-color:var(--border); }
     [data-theme="dark"] .cue-item.selected { background:var(--accent-light); }
     [data-theme="dark"] .cluster-zone { background:#1e293b; border-color:var(--border); }
@@ -686,15 +713,109 @@
     }
     #btn-theme:hover { background: var(--border); }
     #btn-theme:active { opacity: .75; }
+    #btn-settings {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      display: grid; place-items: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background .15s;
+    }
+    #btn-settings:hover { background: var(--border); }
+    #btn-settings:active { opacity: .75; }
+    #btn-settings.panel-open { background: var(--border); color: var(--fg); }
+    #settings-panel {
+      position: absolute;
+      top: 46px; right: 0;
+      width: 224px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(0,0,0,.13);
+      z-index: 200;
+      padding: 6px;
+      display: none;
+    }
+    #settings-panel.open { display: block; }
+    .settings-panel-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: 4px 8px 6px;
+    }
+    .settings-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .settings-opt:hover { background: var(--muted); }
+    .settings-opt.active { background: rgba(13,115,119,.07); }
+    .settings-opt.active .mode-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(22,163,74,.12); border-color: transparent; }
+    .settings-opt-title { font-size: 13px; font-weight: 600; color: var(--fg); line-height: 1.2; }
+    .settings-opt-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.2; }
+    .sett-divider { height: 1px; background: var(--border); margin: 6px 2px; }
+    .sett-diff-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+    .sett-diff-dot.alle   { background: var(--border); }
+    .sett-diff-dot.leicht { background: #16a34a; }
+    .sett-diff-dot.mittel { background: #d97706; }
+    .sett-diff-dot.schwer { background: #dc2626; }
+    .sett-diff-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sett-diff-row .settings-opt-title { color: var(--text-muted); font-weight: 500; }
+    .sett-diff-row.active .settings-opt-title { color: var(--fg); font-weight: 700; }
+    .sett-diff-row.active .sett-diff-dot.alle   { box-shadow: 0 0 0 3px rgba(100,116,139,.2); }
+    .sett-diff-row.active .sett-diff-dot.leicht { box-shadow: 0 0 0 3px rgba(22,163,74,.2); }
+    .sett-diff-row.active .sett-diff-dot.mittel { box-shadow: 0 0 0 3px rgba(217,119,6,.2); }
+    .sett-diff-row.active .sett-diff-dot.schwer { box-shadow: 0 0 0 3px rgba(220,38,38,.2); }
+    .sett-toggle {
+      width: 36px; height: 20px;
+      border-radius: 999px;
+      background: var(--border);
+      position: relative;
+      flex-shrink: 0;
+      transition: background .2s;
+      pointer-events: none;
+    }
+    .sett-toggle.on { background: var(--accent); }
+    .sett-toggle-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 2px; left: 2px;
+      transition: left .2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    }
+    .sett-toggle.on .sett-toggle-thumb { left: 18px; }
 
 </style>
 <body>
 
-<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:4px;width:100%">
+<div style="display:flex;align-items:flex-start;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border-light);margin-bottom:0;width:100%">
 <svg id="appLogo" width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
      style="flex-shrink:0;cursor:pointer;" title="Dark Mode umschalten">
   <g id="logoStrokes" fill="none" stroke="#0d7377" stroke-linecap="round" stroke-linejoin="round">
-    
+
     <path d="M38.2 14.4
              A20 20 0 1 0 36.2 50.7
              V35
@@ -710,22 +831,62 @@
     <path d="M41.5 49.1 L54.2 60" stroke-width="3.7"/>
   </g>
 </svg>
-  <div>
+  <div style="flex:1;min-width:0;">
     <h1 style="margin:0 0 2px;">Clinical-Reasoning</h1>
     <div style="font-size:15px;color:var(--accent);font-weight:500;">Klinisches Urteilen in der Pflege</div>
-
-    <div id="filterHintInline" style="font-size:12px;color:var(--text-muted);margin-top:6px;">
-            Fall-Auswahl: <strong id="filterValue">alle</strong> · Tastatur: L/M/S/A
-    </div>
-
   </div>
-  <button id="btn-theme" aria-label="Farbschema umschalten">
-    <svg id="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-    <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-  </button>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;position:relative;">
+    <button id="btn-settings" aria-label="Einstellungen öffnen">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <strong id="filterValue" style="display:none"></strong>
+    <div id="settings-panel" role="dialog" aria-label="Einstellungen">
+      <div class="settings-panel-title">Modus</div>
+      <div class="settings-opt" id="sopt-lernen" data-mode="lernen" tabindex="0" role="button">
+        <span class="mode-dot"></span>
+        <div>
+          <div class="settings-opt-title">Lernmodus</div>
+          <div class="settings-opt-sub">Mit Erklärungen und Hilfen</div>
+        </div>
+      </div>
+      <div class="settings-opt" id="sopt-pruefung" data-mode="pruefung" tabindex="0" role="button">
+        <span class="mode-dot"></span>
+        <div>
+          <div class="settings-opt-title">Prüfungsmodus</div>
+          <div class="settings-opt-sub">Ohne Hilfen, direkte Kontrolle</div>
+        </div>
+      </div>
+      <div class="sett-divider"></div>
+      <div class="settings-panel-title">Schwierigkeit</div>
+      <div class="sett-diff-row sett-diff-opt" data-filter="alle" tabindex="0" role="button">
+        <span class="sett-diff-dot alle"></span>
+        <div class="settings-opt-title">Alle Fälle</div>
+      </div>
+      <div class="sett-diff-row sett-diff-opt" data-filter="leicht" tabindex="0" role="button">
+        <span class="sett-diff-dot leicht"></span>
+        <div class="settings-opt-title">Leicht</div>
+      </div>
+      <div class="sett-diff-row sett-diff-opt" data-filter="mittel" tabindex="0" role="button">
+        <span class="sett-diff-dot mittel"></span>
+        <div class="settings-opt-title">Mittel</div>
+      </div>
+      <div class="sett-diff-row sett-diff-opt" data-filter="schwer" tabindex="0" role="button">
+        <span class="sett-diff-dot schwer"></span>
+        <div class="settings-opt-title">Schwer</div>
+      </div>
+      <div class="sett-divider"></div>
+      <div class="settings-opt" id="sopt-theme" tabindex="0" role="button" aria-pressed="false">
+        <div style="flex:1">
+          <div class="settings-opt-title">Dark Mode</div>
+          <div class="settings-opt-sub">Dunkles Farbschema</div>
+        </div>
+        <div class="sett-toggle" id="sett-toggle-theme"><div class="sett-toggle-thumb"></div></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div id="intro-text" style="margin:16px 0 24px;padding:12px 16px;background:var(--muted);border-radius:var(--radius-md);font-size:13px;line-height:1.55">
+<div id="intro-text" style="margin:14px 0 20px;padding:12px 16px;background:var(--muted);border-radius:var(--radius-md);font-size:13px;line-height:1.55">
   <span class="fach" tabindex="0"><span class="fach-tip">Klinisches Urteilen – der systematische Denkprozess von der Beobachtung zur Pflegeentscheidung.</span>Clinical Reasoning</span> bedeutet pflegerisch zu denken und gute Entscheidungen zu treffen – eine Kernkompetenz in der Pflege. Dieser Trainer führt dich Schritt für Schritt durch den Clinical-Reasoning-Zyklus nach Levett-Jones et al. (2010) und nutzt dabei den Pflegeprozess nach Fiechter und Meier (1981) als Struktur: von der Informationssammlung über die Pflegediagnose (<span class="fach" tabindex="0"><span class="fach-tip">Pflegediagnose-Format: <strong>P</strong>roblem – <strong>E</strong>tiologie / Einflussfaktoren (Ursache) – <strong>S</strong>ymptome (Zeichen) – <strong>R</strong>essourcen.</span>PESR</span>) und Zielformulierung (<span class="fach" tabindex="0"><span class="fach-tip">Zielformulierung: <strong>S</strong>pezifisch – <strong>M</strong>essbar – <strong>A</strong>ttraktiv – <strong>R</strong>ealistisch – <strong>T</strong>erminiert.</span>SMART</span>) bis zur Maßnahmenplanung und <span class="fach" tabindex="0"><span class="fach-tip">Überprüfung: Wurde das Ziel erreicht? Maßnahme beibehalten, anpassen oder beenden?</span>Evaluation</span>.
 </div>
 
@@ -4342,9 +4503,10 @@ function getGefilterteFaelle() {
 
 function updateFilterDisplay() {
   var el = document.getElementById('filterValue');
-  if (!el) return;
-  var label = (fallFilter === 'alle') ? 'alle' : fallFilter;
-  el.textContent = label;
+  if (el) el.textContent = (fallFilter === 'alle') ? 'alle' : fallFilter;
+  document.querySelectorAll('.sett-diff-opt').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.filter === fallFilter);
+  });
 }
 
 
@@ -4633,26 +4795,20 @@ function renderStep0() {
       <div class="instruction">
         Lies das folgende Fallbeispiel aufmerksam durch. Achte auf alle Details – pflegerisch relevante und weniger relevante Informationen sind bewusst gemischt.
       </div>
-      <div class="mode-grid" id="modeGrid">
-        <div class="mode-card${modus==='lernen' ? ' active' : ''}" data-mode="lernen" tabindex="0" role="button">
-          <div class="mode-title"><span class="mode-dot"></span>Lernmodus</div>
-          <div class="mode-sub">Mit Erklärungen, Rückmeldungen und Hilfen zum Üben</div>
-        </div>
-        <div class="mode-card${modus==='pruefung' ? ' active' : ''}" data-mode="pruefung" tabindex="0" role="button">
-          <div class="mode-title"><span class="mode-dot"></span>Prüfungsmodus</div>
-          <div class="mode-sub">Ohne Hilfen – nur Aufgaben und direkte Kontrolle</div>
-        </div>
-      </div>
       <div class="fall-text">
-        <div class="fall-label">` + (function(){
+        ` + (function(){
           var setting = fall.setting || fall.einsatzbereich || '';
           var diffRaw = (fall.schwierigkeit || fall.schwierigkeitsgrad || fall.schwirigkeit || 'mittel').toString().toLowerCase().trim();
           var diff = 'mittel';
           if (diffRaw.indexOf('leicht') !== -1 || diffRaw.indexOf('einfach') !== -1) diff = 'leicht';
           else if (diffRaw.indexOf('schwer') !== -1) diff = 'schwer';
           else if (diffRaw.indexOf('mittel') !== -1) diff = 'mittel';
-          return fall.titel + ' · ' + setting + ' · ' + diff;
-        })() + `</div>
+          return '<div class="fall-header">' +
+            '<span class="fall-name">' + fall.titel + '</span>' +
+            (setting ? '<span class="fall-badge">' + setting + '</span>' : '') +
+            '<span class="fall-badge fall-badge-diff ' + diff + '">' + diff + '</span>' +
+          '</div>';
+        })() + `
         ` + fall.text.split('\n\n').map(function(p){ return '<p style="margin-bottom:10px">' + p + '</p>'; }).join('') + `
             </div>` +
       (function() {
@@ -4676,22 +4832,6 @@ function renderStep0() {
     </div>
   `;
 
-  var modeGrid = document.getElementById('modeGrid');
-  if (modeGrid) {
-    modeGrid.querySelectorAll('.mode-card').forEach(function(card){
-      function activateMode(){
-        modus = card.dataset.mode;
-        render();
-      }
-      card.addEventListener('click', activateMode);
-      card.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          activateMode();
-        }
-      });
-    });
-  }
 }
 
 // ---- STEP 1: Cues erkennen ----
@@ -5782,9 +5922,24 @@ function renderStepResult() {
   var barsHtml = '';
   for (var i = 0; i < 6; i++) {
     var pct = Math.round((xpEarned[i] / xpMax[i]) * 100);
+    var sc = stepScores[i];
+    var chipBg, chipFg, barColor;
+    if (sc >= 80) {
+      chipBg = 'var(--chip-good-bg)'; chipFg = 'var(--chip-good-fg)'; barColor = 'var(--success)';
+    } else if (sc >= 60) {
+      chipBg = 'var(--chip-mid-bg)';  chipFg = 'var(--chip-mid-fg)';  barColor = 'var(--bar-mid)';
+    } else {
+      chipBg = 'var(--chip-low-bg)';  chipFg = 'var(--chip-low-fg)';  barColor = 'var(--error)';
+    }
     barsHtml += '<div class="result-row">' +
-      '<div class="result-row-head"><span>' + xpLabels[i] + '</span><strong>' + xpEarned[i] + ' / ' + xpMax[i] + ' XP</strong></div>' +
-      '<div class="result-bar-track result-track-lg"><div class="result-bar-fill green" style="width:' + pct + '%"></div></div>' +
+      '<div class="result-row-head">' +
+        '<span>' + xpLabels[i] + '</span>' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">' +
+          '<span style="font-size:12px;font-weight:700;padding:2px 9px;border-radius:var(--radius-full);background:' + chipBg + ';color:' + chipFg + '">' + sc + ' %</span>' +
+          '<strong>' + xpEarned[i] + ' / ' + xpMax[i] + ' XP</strong>' +
+        '</div>' +
+      '</div>' +
+      '<div class="result-bar-track result-track-lg"><div class="result-bar-fill" style="width:' + pct + '%;background:' + barColor + ';border-radius:999px"></div></div>' +
     '</div>';
   }
 
@@ -6181,20 +6336,88 @@ btnBack.addEventListener('click', function() {
     html.setAttribute('data-theme', dark ? 'dark' : 'light');
     var logoStrokes = document.getElementById('logoStrokes');
     if (logoStrokes) logoStrokes.style.stroke = dark ? '#2dd4bf' : '#0d7377';
-    logo.title = dark ? 'Light Mode aktivieren' : 'Dark Mode aktivieren';
+    if (logo) logo.title = dark ? 'Light Mode aktivieren' : 'Dark Mode aktivieren';
     localStorage.setItem('cr-theme', dark ? 'dark' : 'light');
     syncThemeIcon();
-    // Re-render current step so JS-generated inline styles update
+    var toggle = document.getElementById('sett-toggle-theme');
+    if (toggle) toggle.classList.toggle('on', dark);
+    var soptTheme = document.getElementById('sopt-theme');
+    if (soptTheme) soptTheme.setAttribute('aria-pressed', dark ? 'true' : 'false');
     if (typeof render === 'function') render();
   }
 
   applyTheme(isDark);
 
-  // Logo ist kein Toggle mehr – Button übernimmt das
 
-  // Neuer Toggle-Button
-  var btnTheme = document.getElementById('btn-theme');
-  if (btnTheme) btnTheme.addEventListener('click', function() { applyTheme(!isDark); });
+  // Settings panel
+  function updateSettingsPanel() {
+    var panel = document.getElementById('settings-panel');
+    if (!panel) return;
+    panel.querySelectorAll('.settings-opt').forEach(function(opt) {
+      opt.classList.toggle('active', opt.dataset.mode === modus);
+    });
+  }
+
+  var btnSettings = document.getElementById('btn-settings');
+  var settingsPanel = document.getElementById('settings-panel');
+
+  if (btnSettings && settingsPanel) {
+    btnSettings.addEventListener('click', function(e) {
+      e.stopPropagation();
+      updateSettingsPanel();
+      var isOpen = settingsPanel.classList.toggle('open');
+      btnSettings.classList.toggle('panel-open', isOpen);
+    });
+
+    settingsPanel.querySelectorAll('.settings-opt').forEach(function(opt) {
+      function selectMode() {
+        modus = opt.dataset.mode;
+        updateSettingsPanel();
+        settingsPanel.classList.remove('open');
+        btnSettings.classList.remove('panel-open');
+        render();
+      }
+      opt.addEventListener('click', selectMode);
+      opt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectMode(); }
+      });
+    });
+
+    var soptTheme = document.getElementById('sopt-theme');
+    if (soptTheme) {
+      soptTheme.addEventListener('click', function(e) {
+        e.stopPropagation();
+        applyTheme(!isDark);
+      });
+      soptTheme.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); applyTheme(!isDark); }
+      });
+    }
+
+    settingsPanel.querySelectorAll('.sett-diff-opt').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        fallFilter = btn.dataset.filter;
+        try { localStorage.setItem('fallFilter', fallFilter); } catch(e) {}
+        resetVerbleibendeFaelle();
+        if (currentStep === 0) fall = verbleibendeFaelle.pop();
+        updateFilterDisplay();
+        settingsPanel.classList.remove('open');
+        btnSettings.classList.remove('panel-open');
+        render();
+      });
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!settingsPanel.contains(e.target) && e.target !== btnSettings) {
+        settingsPanel.classList.remove('open');
+        btnSettings.classList.remove('panel-open');
+      }
+    });
+  }
+
+  updateSettingsPanel();
+  updateFilterDisplay();
 })();
 
 // Initial render
