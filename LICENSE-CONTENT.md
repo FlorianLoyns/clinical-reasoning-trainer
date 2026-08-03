@@ -50,6 +50,6 @@ Bedingungen eingehalten werden.
 
 ## Vorschlag für die Namensnennung
 
-> „clinical-reasoning-trainer“ von Florian Loyns, lizenziert unter
+> „florianloyns.github.io“ von Florian Loyns, lizenziert unter
 > [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.de).
-> Quelle: <https://github.com/FlorianLoyns/clinical-reasoning-trainer>
+> Quelle: <https://github.com/FlorianLoyns/florianloyns.github.io>
